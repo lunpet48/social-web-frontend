@@ -1,4 +1,10 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {}
+// import { API } from "./config";
 
-module.exports = nextConfig
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  env: {
+    API: "https://social-media-api-x2vv.onrender.com",
+  },
+};
+
+module.exports = nextConfig;
