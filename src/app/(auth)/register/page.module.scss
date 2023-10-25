@@ -11,7 +11,7 @@
 
     .card{
       border-radius: 25px;
-      padding: 70px;
+      padding: 40px;
       background: white;
 
       .right{
@@ -33,12 +33,17 @@
           text-align: center;
           font-size: 1.8rem;
         }
+        
       }
 
       .left{
         padding: 0 50px;
         h2{
           font-size: 5rem;
+        }
+        .btn-register{
+          margin-top: -12px;
+          text-align: center;
         }
       }
     }

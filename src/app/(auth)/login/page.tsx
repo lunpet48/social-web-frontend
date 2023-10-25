@@ -46,8 +46,6 @@ export default function Login() {
 
       const data = await response.json();
 
-      console.log(data);
-
       if (data.error) {
         // fail
         setLoading(false);
@@ -62,7 +60,7 @@ export default function Login() {
       }
     } catch (err) {
       console.log(err);
-      setLoading(true);
+      setLoading(false);
     }
   };
 
