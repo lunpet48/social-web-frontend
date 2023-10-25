@@ -100,6 +100,7 @@ export default function Register() {
           fullName: inputs.fullname,
           otpCode: inputs.otp,
         }),
+        credentials: "include",
       });
 
       const data = await response.json();
