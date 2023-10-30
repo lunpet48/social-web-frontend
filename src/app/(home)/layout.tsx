@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Menu, Space, MenuProps } from "antd";
 import Link from "next/link";
 import { InstagramOutlined, HomeOutlined, SearchOutlined, MessageOutlined } from "@ant-design/icons";
+import { useAuth } from "@/context/AuthContext";
 
 const labelContents = ["Trang chủ", "Tìm kiếm", "Tin nhắn"];
 
@@ -17,6 +18,16 @@ const items: MenuProps["items"] = [HomeOutlined, SearchOutlined, MessageOutlined
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const { loginContext } = useAuth();
+  useEffect(() => {
+    /// sau này sửa lại logic call RefreshToken API
+    const user = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    if (user && token) {
+      const userJson = JSON.parse(user);
+      loginContext(userJson, token);
+    }
+  }, []);
 
   return (
     <html lang="en">

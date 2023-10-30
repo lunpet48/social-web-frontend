@@ -8,6 +8,7 @@ import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Login() {
   const [inputs, setInputs] = useState({ username: "", password: "" });
@@ -15,6 +16,8 @@ export default function Login() {
 
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const { loginContext } = useAuth();
 
   const handleChange = (event: any) => {
     const name = event.target.name;
@@ -54,6 +57,7 @@ export default function Login() {
       } else {
         //  success
         setLoading(false);
+        loginContext(data.data.user, data.data.accessToken);
         notify("success", "Đăng nhập thành công");
         setTimeout(() => {
           router.push("/");
