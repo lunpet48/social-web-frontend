@@ -1,7 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Menu, Space, MenuProps } from "antd";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+
+const labelContents = ["Trang chủ", "Tìm kiếm", "Tin nhắn"];
 import {
   InstagramOutlined,
   HomeOutlined,
@@ -34,6 +37,17 @@ export default function RootLayout({
     onClick: index == 3 ? () => setShowCreatePost(true) : undefined,
   }));
   const [collapsed, setCollapsed] = useState(false);
+  const { loginContext } = useAuth();
+  useEffect(() => {
+    /// sau này sửa lại logic call RefreshToken API
+    const user = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    if (user && token) {
+      const userJson = JSON.parse(user);
+      loginContext(userJson, token);
+    }
+  }, []);
+
   const [showCreatePost, setShowCreatePost] = useState(false);
   return (
     <html lang="en">
