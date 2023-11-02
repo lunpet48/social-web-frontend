@@ -2,21 +2,40 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Menu, Space, MenuProps } from "antd";
 import Link from "next/link";
-import { InstagramOutlined, HomeOutlined, SearchOutlined, MessageOutlined } from "@ant-design/icons";
 import { useAuth } from "@/context/AuthContext";
 
 const labelContents = ["Trang chủ", "Tìm kiếm", "Tin nhắn"];
+import {
+  InstagramOutlined,
+  HomeOutlined,
+  SearchOutlined,
+  MessageOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
+import CreatePost from "@/component/create-post";
+import { root } from "postcss";
 
-const items: MenuProps["items"] = [HomeOutlined, SearchOutlined, MessageOutlined].map((icon, index) => ({
-  key: String(index + 1),
-  icon: React.createElement(icon, {
-    style: { fontSize: "25px", marginRight: "5px" },
-  }),
-  label: <span style={{ fontSize: "16px" }}>{labelContents[index]}</span>,
-  style: { margin: "0px 0px 15px 4px", padding: "0px 0px 0px 24px" },
-}));
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const labelContents = ["Trang chủ", "Tìm kiếm", "Tin nhắn", "Tạo bài"];
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const items: MenuProps["items"] = [
+    HomeOutlined,
+    SearchOutlined,
+    MessageOutlined,
+    PlusOutlined,
+  ].map((icon, index) => ({
+    key: String(index + 1),
+    icon: React.createElement(icon, {
+      style: { fontSize: "25px", marginRight: "5px" },
+    }),
+    label: <span style={{ fontSize: "16px" }}>{labelContents[index]}</span>,
+    style: { margin: "0px 0px 15px 4px", padding: "0px 0px 0px 24px" },
+    onClick: index == 3 ? () => setShowCreatePost(true) : undefined,
+  }));
   const [collapsed, setCollapsed] = useState(false);
   const { loginContext } = useAuth();
   useEffect(() => {
@@ -29,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     }
   }, []);
 
+  const [showCreatePost, setShowCreatePost] = useState(false);
   return (
     <html lang="en">
       <body>
@@ -56,7 +76,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 style: { fontSize: "50px", color: "#000000" },
               })}
               <img style={{ height: "3px" }} src="./logo.jpg" alt="logo" /> */}
-                  <InstagramOutlined style={{ fontSize: "50px", color: "#000000" }} />
+                  <InstagramOutlined
+                    style={{ fontSize: "50px", color: "#000000" }}
+                  />
                   <span
                     style={{
                       color: "#000000",
@@ -69,7 +91,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </Space>
               </Link>
             </div>
-            <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]} items={items} />
+            <Menu
+              theme="light"
+              mode="inline"
+              defaultSelectedKeys={["1"]}
+              items={items}
+            />
+            <CreatePost open={showCreatePost} setOpen={setShowCreatePost}></CreatePost>
           </Layout.Sider>
           <Layout className="site-layout" style={{ marginLeft: 300 }}>
             {children}
