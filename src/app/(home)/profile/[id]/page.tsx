@@ -4,6 +4,7 @@ import { Col, Divider, Row } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./page.module.scss";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 type user = {
   id: string;
@@ -28,7 +29,6 @@ type post = {
 };
 
 const Profile = ({ params }: { params: { id: string } }) => {
-  console.log("render");
   const [user, setUser] = useState<user>({
     id: "",
     username: "",
@@ -128,7 +128,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div style={{ fontSize: "30px" }}>{`${user.username}`}</div>
                 <div style={{ display: "flex", gap: "20px" }}>
-                  <div className={`${styles.button} ${styles["btn-link"]}`}>Chỉnh sửa trang cá nhân</div>
+                  <Link href="edit" className={`${styles.button} ${styles["btn-link"]}`}>
+                    Chỉnh sửa trang cá nhân
+                  </Link>
                   <div className={styles.clickable}>
                     <FontAwesomeIcon icon={faGear} style={{ fontSize: "30px" }} />
                   </div>
