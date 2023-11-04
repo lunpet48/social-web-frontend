@@ -66,6 +66,7 @@ export default function Register() {
           body: JSON.stringify({
             email: inputs.email,
           }),
+          credentials: "include",
         });
 
         if (response.ok) {

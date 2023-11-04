@@ -45,6 +45,7 @@ export default function Login() {
           username: inputs.username,
           password: inputs.password,
         }),
+        credentials: "include",
       });
 
       const data = await response.json();
@@ -64,6 +65,7 @@ export default function Login() {
       }
     } catch (err) {
       console.log(err);
+      notify("error", JSON.stringify(err));
       setLoading(false);
     }
   };
