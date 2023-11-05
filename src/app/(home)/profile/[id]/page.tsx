@@ -150,46 +150,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
             <div className={`${styles.tag} ${styles.button}`}>Đã thích</div>
           </Row>
           <Row gutter={[3, 3]}>
-            {posts.map((post) => (
-              <Col xs={8}>
+            {posts.map((post, id) => (
+              <Col xs={8} key={id}>
                 <img src={`${post.files[0]}`} alt="post image" style={{ aspectRatio: "1/1", objectFit: "cover" }} />
               </Col>
             ))}
-            {/* <Col xs={8}>
-              <img
-                src="https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg"
-                alt="post image"
-                style={{ aspectRatio: "1/1", objectFit: "cover" }}
-              />
-            </Col>
-            <Col xs={8}>
-              <img
-                src="https://haycafe.vn/wp-content/uploads/2022/05/Anh-songoku-baby-goku-cute.jpg"
-                alt="post image"
-                style={{ aspectRatio: "1/1", objectFit: "cover" }}
-              />
-            </Col>
-            <Col xs={8}>
-              <img
-                src="https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg"
-                alt="post image"
-                style={{ aspectRatio: "1/1", objectFit: "cover" }}
-              />
-            </Col>
-            <Col xs={8}>
-              <img
-                src="https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg"
-                alt="post image"
-                style={{ aspectRatio: "1/1", objectFit: "cover" }}
-              />
-            </Col>
-            <Col xs={8}>
-              <img
-                src="https://huggingface.co/tasks/assets/image-classification/image-classification-input.jpeg"
-                alt="post image"
-                style={{ aspectRatio: "1/1", objectFit: "cover" }}
-              />
-            </Col> */}
+            
           </Row>
         </Col>
       </Row>

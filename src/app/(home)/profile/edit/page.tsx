@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Col, Form, Input, Row, message } from "antd";
 
-import styles from "./page.module.scss";
 import { useAuth } from "@/context/AuthContext";
 
 const formItemLayout = {
@@ -99,7 +98,7 @@ const EditProfile = () => {
         <div>
           <h1 style={{ fontSize: "20px", marginBottom: "50px", fontWeight: 600 }}>Chỉnh sửa trang cá nhân</h1>
         </div>
-        <div className={styles.content} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           <Row>
             <Col xs={{ span: 24 }} sm={{ span: 4 }} style={{ textAlign: "right", paddingRight: "13.6px" }}>
               <span>Avatar</span>
