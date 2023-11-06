@@ -19,6 +19,7 @@ type GlobalContent = {
   currentUser: user;
   loginContext: (user: user, token: string) => void;
   signOut: () => void;
+  setCurrentUser: (user: user) => void;
 };
 
 export const AuthContext = createContext<GlobalContent>({
@@ -37,6 +38,7 @@ export const AuthContext = createContext<GlobalContent>({
   },
   loginContext: () => {},
   signOut: () => {},
+  setCurrentUser: () => {},
 });
 
 interface Props {
@@ -64,13 +66,11 @@ export function AuthProvider({ children }: Props) {
 
   function loginContext(user: user, token: string) {
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
     setCurrentUser(user);
   }
 
   function signOut() {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
     setCurrentUser({
       id: "",
       username: "",
@@ -92,6 +92,7 @@ export function AuthProvider({ children }: Props) {
         currentUser,
         loginContext,
         signOut,
+        setCurrentUser,
       }}
     >
       {children}
