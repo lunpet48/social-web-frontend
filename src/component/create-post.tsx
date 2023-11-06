@@ -13,7 +13,7 @@ const CreatePost = ({open, setOpen}: any) => {
 
   const [messageApi, contextHolder] = message.useMessage();
   const [tag, setTag] = useState([""]);
-  const [mode, setMode] = useState("");
+  const [mode, setMode] = useState("PUBLIC");
   const [content, setContent] = useState([""]);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
@@ -28,7 +28,6 @@ const CreatePost = ({open, setOpen}: any) => {
   const handlePostMode = (value: string) => {
     setMode(value);
   }
-  console.log(mode)
   
   const notify = (type: any, message: string) => {
     messageApi.open({
@@ -41,6 +40,7 @@ const CreatePost = ({open, setOpen}: any) => {
 
   const handleSubmit = async (event: any) => {
     try {
+      setLoading(true);
       const formData:any = new FormData();
 
       const dto_object = new Blob([JSON.stringify({
@@ -66,43 +66,46 @@ const CreatePost = ({open, setOpen}: any) => {
           formData.append("files", fileList[i].originFileObj);
       }
       const token = localStorage.getItem("token");
-      // const response = await fetch(`${process.env.API}/api/v1/post`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "multipart/form-data; boundary=",
-      //     Authorization: "Bearer " + token 
-      //   },
-      //   body: formData,
-      // });
-      // const data = await response.json();
+      const response = await fetch(`${process.env.API}/api/v1/post`, {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token 
+        },
+        body: formData,
+      });
+      const data = await response.json();
 
-      // if (data.error) {
-      //   // fail
-      //   setLoading(false);
-      //   notify("error", data.message);
-      // } else {
-      //   //  success
+      console.log(data);
+
+      if (data.error === true) {
+        // fail
+        setLoading(false);
+        setOpen(false);
+        notify("error", data.message);
+      } else {
+        //  success
+        setLoading(false);
+        setOpen(false);
+        notify("success", "Đăng bài thành công");
+      }
+      // axios.post(
+      //   `${process.env.API}/api/v1/post`,
+      //   formData,
+      //   {
+      //     headers: {
+      //     "Content-Type": "multipart/form-data; ",
+      //     Authorization: "Bearer " + token,
+      //     "Accept" : "*/*"
+      //     }
+      //   }
+      // ).then(res => {
       //   setLoading(false);
       //   notify("success", "Đăng bài thành công");
-      // }
-      axios.post(
-        `${process.env.API}/api/v1/post`,
-        formData,
-        {
-          headers: {
-          "Content-Type": "multipart/form-data; ",
-          Authorization: "Bearer " + token,
-          "Accept" : "*/*"
-          }
-        }
-      ).then(res => {
-        setLoading(false);
-        notify("success", "Đăng bài thành công");
-      })
-      .catch(err => {
-        setLoading(false);
-        notify("error", err.message);
-      })
+      // })
+      // .catch(err => {
+      //   setLoading(false);
+      //   notify("error", err.message);
+      // })
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -125,6 +128,7 @@ const CreatePost = ({open, setOpen}: any) => {
 
   return (
     <>
+      {contextHolder}
       <Modal
         open={open}
         title="Bài viết"
@@ -152,9 +156,9 @@ const CreatePost = ({open, setOpen}: any) => {
             style={{ width: 120 }}
             onChange={handlePostMode}
             options={[
+              { value: 'PUBLIC', label: 'Công Khai' },
               { value: 'FRIEND', label: 'Bạn Bè' },
               { value: 'PRIVATE', label: 'Riêng Tư' },
-              { value: 'PUBLIC', label: 'Công Khai' },
             ]}
           />
         </Space>
