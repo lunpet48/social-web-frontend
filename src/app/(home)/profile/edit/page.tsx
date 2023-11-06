@@ -26,9 +26,11 @@ const formItemLayout = {
 
 const EditProfile = () => {
   const [loading, setLoading] = useState(false);
+  const [avatarLoading, setAvatarLoading] = useState(false);
+  const [backgroundLoading, setBackgroundLoading] = useState(false);
   const [inputs, setInputs] = useState({ fullname: "" });
 
-  const { currentUser } = useAuth();
+  const { currentUser, setCurrentUser } = useAuth();
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -84,6 +86,10 @@ const EditProfile = () => {
         //  success
         setLoading(false);
         notify("success", "Cập nhật thành công");
+        setCurrentUser({
+          ...currentUser,
+          profile: { ...currentUser.profile, ...data.data },
+        });
       }
     } catch (err) {
       console.log(err);
@@ -91,16 +97,133 @@ const EditProfile = () => {
       setLoading(false);
     }
   };
+
+  const selectAndUpdateAvatar = () => {
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = async (e) => {
+      const token = localStorage.getItem("token");
+
+      const files = (e.target as HTMLInputElement).files;
+      if (files) {
+        const file = files[0];
+        // if(file.type !== "image/png")
+        var formdata = new FormData();
+        formdata.append("file", file);
+
+        try {
+          setAvatarLoading(true);
+          const response = await fetch(
+            `${process.env.API}/api/v1/profile/avatar/${currentUser.id}`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+              body: formdata,
+            }
+          );
+
+          const data = await response.json();
+
+          if (data.error) {
+            // fail
+            setAvatarLoading(false);
+            notify("error", data.message);
+          } else {
+            //  success
+            setAvatarLoading(false);
+            notify("success", "Cập nhật thành công");
+            setCurrentUser({
+              ...currentUser,
+              profile: { ...currentUser.profile, ...data.data },
+            });
+          }
+        } catch (err) {
+          console.log(err);
+          notify("error", JSON.stringify(err));
+          setAvatarLoading(false);
+        }
+      }
+    };
+
+    input.click();
+  };
+
+  const selectAndUpdateBackground = () => {
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = async (e) => {
+      const token = localStorage.getItem("token");
+
+      const files = (e.target as HTMLInputElement).files;
+      if (files) {
+        const file = files[0];
+        // if(file.type !== "image/png")
+        var formdata = new FormData();
+        formdata.append("file", file);
+
+        try {
+          setBackgroundLoading(true);
+          const response = await fetch(
+            `${process.env.API}/api/v1/profile/background/${currentUser.id}`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+              body: formdata,
+            }
+          );
+
+          const data = await response.json();
+
+          if (data.error) {
+            // fail
+            setBackgroundLoading(false);
+            notify("error", data.message);
+          } else {
+            //  success
+            setBackgroundLoading(false);
+            notify("success", "Cập nhật thành công");
+            setCurrentUser({
+              ...currentUser,
+              profile: { ...currentUser.profile, ...data.data },
+            });
+          }
+        } catch (err) {
+          console.log(err);
+          notify("error", JSON.stringify(err));
+          setBackgroundLoading(false);
+        }
+      }
+    };
+
+    input.click();
+  };
+
   return (
     <>
       {contextHolder}
       <div style={{ padding: "50px 70px" }}>
         <div>
-          <h1 style={{ fontSize: "20px", marginBottom: "50px", fontWeight: 600 }}>Chỉnh sửa trang cá nhân</h1>
+          <h1
+            style={{ fontSize: "20px", marginBottom: "50px", fontWeight: 600 }}
+          >
+            Chỉnh sửa trang cá nhân
+          </h1>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 4 }} style={{ textAlign: "right", paddingRight: "13.6px" }}>
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 4 }}
+              style={{ textAlign: "right", paddingRight: "13.6px" }}
+            >
               <span>Avatar</span>
             </Col>
             <Col xs={{ span: 24 }} sm={{ span: 10 }}>
@@ -110,12 +233,23 @@ const EditProfile = () => {
                   src={`${currentUser.profile.avatar}`}
                   alt="avatar"
                 />
-                <Button style={{ marginTop: "12px", backgroundColor: "#fafafa" }}>Chọn ảnh</Button>
+
+                <Button
+                  style={{ marginTop: "12px", backgroundColor: "#fafafa" }}
+                  onClick={selectAndUpdateAvatar}
+                  disabled={avatarLoading}
+                >
+                  {avatarLoading ? "Please wait..." : "Chọn ảnh"}
+                </Button>
               </div>
             </Col>
           </Row>
           <Row>
-            <Col xs={{ span: 24 }} sm={{ span: 4 }} style={{ textAlign: "right", paddingRight: "13.6px" }}>
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 4 }}
+              style={{ textAlign: "right", paddingRight: "13.6px" }}
+            >
               <span>Background</span>
             </Col>
             <Col xs={{ span: 24 }} sm={{ span: 10 }}>
@@ -125,7 +259,13 @@ const EditProfile = () => {
                   src={`${currentUser.profile.bio}`}
                   alt="background"
                 />
-                <Button style={{ marginTop: "12px", backgroundColor: "#fafafa" }}>Chọn ảnh</Button>
+                <Button
+                  style={{ marginTop: "12px", backgroundColor: "#fafafa" }}
+                  onClick={selectAndUpdateBackground}
+                  disabled={backgroundLoading}
+                >
+                  {backgroundLoading ? "Please wait..." : "Chọn ảnh"}
+                </Button>
               </div>
             </Col>
           </Row>
@@ -149,10 +289,19 @@ const EditProfile = () => {
                   },
                 ]}
               >
-                <Input name="fullname" value={inputs.fullname} onChange={handleChange} />
+                <Input
+                  name="fullname"
+                  value={inputs.fullname}
+                  onChange={handleChange}
+                />
               </Form.Item>
               <Form.Item name="Gender" label="Gender">
-                <Input name="Gender" value={inputs.fullname} onChange={handleChange} disabled />
+                <Input
+                  name="Gender"
+                  value={inputs.fullname}
+                  onChange={handleChange}
+                  disabled
+                />
               </Form.Item>
               <Row>
                 <Col xs={{ offset: 0 }} sm={{ offset: 4 }}>
