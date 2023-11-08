@@ -2,10 +2,11 @@
 import React, { useState } from "react";
 import "./index.css";
 
-import { Layout, theme } from "antd";
+import { Layout, Space, theme } from "antd";
 import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PostView from "../../component/post";
+import SugguestFriend from "@/component/suggest-friend";
 
 const { Content } = Layout;
 
@@ -16,10 +17,10 @@ const Home = () => {
 
   return (
     <Container>
-      <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
+      <Content style={{ margin: "0px 100px 0px 0px", overflow: "initial" }}>
         <div
           style={{
-            padding: 24,
+            padding: "24px 50px 24px 50px",
             background: colorBgContainer,
           }}
         >
@@ -33,7 +34,11 @@ const Home = () => {
                 </React.Fragment>
               ))
             } */}
-          <PostView></PostView>
+          <div style={{ display: "inline-flex", gap: "0px" }}>
+            <PostView />
+            <div className="w-1/12"/>
+            <SugguestFriend />
+          </div>
         </div>
       </Content>
     </Container>
