@@ -209,7 +209,7 @@ const EditProfile = () => {
   return (
     <>
       {contextHolder}
-      <div style={{ padding: "50px 70px" }}>
+      <div style={{ padding: "50px 70px", background: "white" }}>
         <div>
           <h1
             style={{ fontSize: "20px", marginBottom: "50px", fontWeight: 600 }}

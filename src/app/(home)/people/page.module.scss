@@ -1,0 +1,14 @@
+.tab-item {
+    padding: 10px 20px;
+    background-color: #efefef;
+    border-radius: 40px;
+    cursor: pointer;
+
+    &.active {
+        background-color: #bfe1fc;
+        color: #1677ff;
+        
+        // background-color: #1677ff;
+        // color: white;
+    }
+}
