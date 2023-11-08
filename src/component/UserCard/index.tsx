@@ -1,6 +1,8 @@
 import { Button, Col, Row } from "antd";
 import React, { useState } from "react";
 
+import styles from "./style.module.scss";
+
 type user = {
   id: string;
   username: string;
@@ -24,6 +26,7 @@ const UserCard = ({
   btnPrimary: {
     text: string;
     onClick: (
+      event: React.MouseEvent<HTMLElement>,
       user: user,
       setLoading: React.Dispatch<React.SetStateAction<boolean>>,
       setStatus: React.Dispatch<
@@ -34,6 +37,7 @@ const UserCard = ({
   btnSecondary: {
     text: string;
     onClick: (
+      event: React.MouseEvent<HTMLElement>,
       user: user,
       setLoading: React.Dispatch<React.SetStateAction<boolean>>,
       setStatus: React.Dispatch<
@@ -47,14 +51,9 @@ const UserCard = ({
 
   return (
     <div
-      style={{
-        height: "200px",
-        border: "#dbdbdb 1px solid",
-        borderRadius: "10px",
-        padding: "10px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+      className={styles.card}
+      onClick={() => {
+        onClick(user);
       }}
     >
       <img
@@ -79,7 +78,10 @@ const UserCard = ({
           </Col>
         ) : status.isSuccess ? (
           <Col xs={24}>
-            <Button style={{ width: "100%", background: "#efefef" }} disabled>
+            <Button
+              style={{ width: "100%", background: "#04AA6D", color: "white" }}
+              disabled
+            >
               {status.text}
             </Button>
           </Col>
@@ -89,8 +91,8 @@ const UserCard = ({
               <Button
                 type="primary"
                 style={{ width: "100%" }}
-                onClick={() => {
-                  btnPrimary.onClick(user, setLoading, setStatus);
+                onClick={(e) => {
+                  btnPrimary.onClick(e, user, setLoading, setStatus);
                 }}
               >
                 {btnPrimary.text}
@@ -99,8 +101,8 @@ const UserCard = ({
             <Col xs={12}>
               <Button
                 style={{ width: "100%", background: "#efefef" }}
-                onClick={() => {
-                  btnSecondary.onClick(user, setLoading, setStatus);
+                onClick={(e) => {
+                  btnSecondary.onClick(e, user, setLoading, setStatus);
                 }}
               >
                 {btnSecondary.text}

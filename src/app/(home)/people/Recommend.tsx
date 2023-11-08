@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import UserCard from "@/component/UserCard";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 type user = {
   id: string;
@@ -18,6 +19,7 @@ type user = {
 
 const FriendRequest = () => {
   const [users, setUsers] = useState<user[]>([]);
+  const router = useRouter();
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -47,12 +49,14 @@ const FriendRequest = () => {
   }, []);
 
   const addFriend = async (
+    event: React.MouseEvent<HTMLElement>,
     user: user,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setStatus: React.Dispatch<
       React.SetStateAction<{ isSuccess: boolean; text: string }>
     >
   ) => {
+    event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {
@@ -83,11 +87,15 @@ const FriendRequest = () => {
       setLoading(false);
     }
   };
-  const viewProfile = (user: user) => {};
+  const viewProfile = (user: user) => {
+    router.push(`/profile/${user.username}`);
+  };
 
   return (
     <>
-      <div style={{ marginBottom: "20px" }}>Gợi ý kết bạn</div>
+      <div style={{ marginBottom: "20px", marginTop: "20px" }}>
+        Gợi ý kết bạn
+      </div>
       <Row gutter={[5, 5]}>
         {users.map((user, index) => {
           return (
@@ -98,7 +106,13 @@ const FriendRequest = () => {
                 btnPrimary={{ text: "Kết bạn", onClick: addFriend }}
                 btnSecondary={{
                   text: "Xem",
-                  onClick: viewProfile,
+                  onClick: (
+                    event: React.MouseEvent<HTMLElement>,
+                    user: user
+                  ) => {
+                    event.stopPropagation;
+                    viewProfile(user);
+                  },
                 }}
               />
             </Col>

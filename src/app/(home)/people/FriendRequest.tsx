@@ -1,5 +1,6 @@
 import { Col, Row } from "antd";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import UserCard from "@/component/UserCard";
 import Recommend from "./Recommend";
@@ -25,6 +26,7 @@ type relationship = {
 
 const FriendRequest = () => {
   const [relationships, setRelationships] = useState<relationship[]>([]);
+  const router = useRouter();
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -53,14 +55,18 @@ const FriendRequest = () => {
     fetchData();
   }, []);
 
-  const viewProfile = () => {};
+  const viewProfile = (user: user) => {
+    router.push(`/profile/${user.username}`);
+  };
   const acceptFriendRequest = async (
+    event: React.MouseEvent<HTMLElement>,
     user: user,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setStatus: React.Dispatch<
       React.SetStateAction<{ isSuccess: boolean; text: string }>
     >
   ) => {
+    event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {
@@ -92,12 +98,14 @@ const FriendRequest = () => {
     }
   };
   const denyFriendRequest = async (
+    event: React.MouseEvent<HTMLElement>,
     user: user,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setStatus: React.Dispatch<
       React.SetStateAction<{ isSuccess: boolean; text: string }>
     >
   ) => {
+    event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {

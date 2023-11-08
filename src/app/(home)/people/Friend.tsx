@@ -1,5 +1,7 @@
-import { Button, Col, Row } from "antd";
+import { Col, Row } from "antd";
 import React, { useEffect, useState } from "react";
+
+import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/context/AuthContext";
 import UserCard from "@/component/UserCard";
@@ -24,6 +26,8 @@ type relationship = {
 
 const Friend = () => {
   const [relationships, setRelationships] = useState<relationship[]>([]);
+
+  const router = useRouter();
 
   const { currentUser } = useAuth();
 
@@ -53,15 +57,22 @@ const Friend = () => {
     fetchData();
   }, []);
 
-  const viewProfile = () => {};
-  const goToMessage = () => {};
+  const viewProfile = (user: user) => {
+    router.push(`/profile/${user.username}`);
+  };
+  const goToMessage = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    alert("Tính năng này chưa có");
+  };
   const deleteFriend = async (
+    event: React.MouseEvent<HTMLElement>,
     user: user,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     setStatus: React.Dispatch<
       React.SetStateAction<{ isSuccess: boolean; text: string }>
     >
   ) => {
+    event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {
