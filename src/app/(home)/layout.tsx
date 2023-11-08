@@ -9,26 +9,30 @@ import {
   InstagramOutlined,
   HomeOutlined,
   SearchOutlined,
-  MessageOutlined,
+  TeamOutlined,
   PlusOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import CreatePost from "@/component/create-post";
 import { root } from "postcss";
 import { useRouter } from "next/navigation";
+import Icon from "@ant-design/icons/lib/components/Icon";
+import { icon } from "@fortawesome/fontawesome-svg-core";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const labelContents = ["Trang chủ", "Tìm kiếm", "Tin nhắn", "Tạo bài"];
-
+  const labelContents = ["Trang chủ", "Tìm kiếm", "Bạn bè", "Tạo bài", "Trang cá nhân"];
+  const { currentUser } = useAuth();
   const router = useRouter();
   const items: MenuProps["items"] = [
     HomeOutlined,
     SearchOutlined,
-    MessageOutlined,
+    TeamOutlined,
     PlusOutlined,
+    UserOutlined
   ].map((icon, index) => ({
     key: String(index + 1),
     icon: React.createElement(icon, {
@@ -36,8 +40,26 @@ export default function RootLayout({
     }),
     label: <span style={{ fontSize: "16px" }}>{labelContents[index]}</span>,
     style: { margin: "0px 0px 15px 4px", padding: "0px 0px 0px 24px" },
-    onClick: index == 3 ? () => setShowCreatePost(true) : undefined,
+    onClick: () => {
+      switch (index) {
+        case 0:
+          router.push('/');
+          break;
+        case 1:
+          router.push('');
+          break;
+        case 2:
+          router.push('/people')
+          break;
+        case 3:
+          setShowCreatePost(true);
+          break;
+        case 4:
+          router.push('/profile/' + currentUser.username)
+      }
+    },
   }));
+
   const [collapsed, setCollapsed] = useState(false);
   const { loginContext } = useAuth();
   useEffect(() => {

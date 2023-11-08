@@ -5,13 +5,13 @@ import styles from "./page.module.scss";
 import FriendRequest from "./FriendRequest";
 import FriendRequestHaveBeenSent from "./FriendRequestHaveBeenSent";
 import Friend from "./Friend";
-import Block from "./Block";
+//import Block from "./Block";
 
 enum pages {
   FriendRequest,
   FriendRequestHaveBeenSent,
   Friend,
-  Block,
+//  Block,
 }
 
 const People = () => {
@@ -27,9 +27,9 @@ const People = () => {
     case pages.FriendRequestHaveBeenSent:
       Component = FriendRequestHaveBeenSent;
       break;
-    case pages.Block:
-      Component = Block;
-      break;
+    // case pages.Block:
+    //   Component = Block;
+    //   break;
     default:
       Component = FriendRequest;
       break;
