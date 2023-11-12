@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import { useAuth } from "@/context/AuthContext";
 import styles from "./page.module.scss";
+import ButtonWrapper from "./ButtonWrapper";
 
 enum RelationshipProfile {
   SELF = "SELF",
@@ -53,8 +54,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
     postCount: 0,
     relationship: RelationshipProfile.STRANGER,
   });
-
-  const [loading, setLoading] = useState(false);
 
   const [posts, setPosts] = useState<post[]>([]);
 
@@ -119,7 +118,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
     alert("Tính năng này chưa có");
   };
 
-  const cancelRequest = async () => {
+  const cancelRequest = async (
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     const token = localStorage.getItem("token");
 
     try {
@@ -149,7 +150,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const acceptFriendRequest = async () => {
+  const acceptFriendRequest = async (
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     const token = localStorage.getItem("token");
 
     try {
@@ -180,7 +183,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
       setLoading(false);
     }
   };
-  const denyFriendRequest = async () => {
+  const denyFriendRequest = async (
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     const token = localStorage.getItem("token");
 
     try {
@@ -210,7 +215,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const deleteFriend = async () => {
+  const deleteFriend = async (
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     const token = localStorage.getItem("token");
 
     try {
@@ -240,7 +247,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const addFriend = async () => {
+  const addFriend = async (
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
     const token = localStorage.getItem("token");
 
     try {
@@ -338,78 +347,53 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   </div>
                 ) : user.relationship == RelationshipProfile.PENDING ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <Button
-                      type="primary"
-                      style={{ width: "100%" }}
-                      onClick={goToMessage}
-                    >
+                    <ButtonWrapper onClick={goToMessage} primary>
                       Nhắn tin
-                    </Button>
-                    <Button
-                      style={{ width: "100%", background: "#efefef" }}
+                    </ButtonWrapper>
+                    <ButtonWrapper
                       onClick={cancelRequest}
+                      style={{ background: "#efefef" }}
                     >
                       Hủy yêu cầu
-                    </Button>
+                    </ButtonWrapper>
                   </div>
                 ) : user.relationship ==
                   RelationshipProfile.INCOMMINGREQUEST ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <Button
-                      type="primary"
-                      style={{ width: "100%" }}
-                      onClick={acceptFriendRequest}
-                    >
+                    <ButtonWrapper onClick={acceptFriendRequest} primary>
                       Chấp nhận
-                    </Button>
-                    <Button
-                      type="primary"
-                      danger
-                      style={{ width: "100%" }}
-                      onClick={denyFriendRequest}
-                    >
+                    </ButtonWrapper>
+                    <ButtonWrapper onClick={denyFriendRequest} primary danger>
                       Từ chối
-                    </Button>
-                    <Button
-                      style={{ width: "100%", background: "#d8dadf" }}
+                    </ButtonWrapper>
+
+                    <ButtonWrapper
                       onClick={goToMessage}
+                      style={{ background: "#d8dadf" }}
                     >
                       Nhắn tin
-                    </Button>
+                    </ButtonWrapper>
                   </div>
                 ) : user.relationship == RelationshipProfile.FRIEND ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <Button
-                      type="primary"
-                      style={{ width: "100%" }}
-                      onClick={goToMessage}
-                    >
+                    <ButtonWrapper onClick={goToMessage} primary>
                       Nhắn tin
-                    </Button>
-                    <Button
-                      danger
-                      type="primary"
-                      style={{ width: "100%" }}
-                      onClick={deleteFriend}
-                    >
+                    </ButtonWrapper>
+                    <ButtonWrapper onClick={deleteFriend} primary danger>
                       Xóa
-                    </Button>
+                    </ButtonWrapper>
                   </div>
                 ) : user.relationship == RelationshipProfile.STRANGER ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <Button
-                      type="primary"
-                      style={{ width: "100%" }}
-                      onClick={addFriend}
-                    >
+                    <ButtonWrapper onClick={addFriend} primary>
                       Thêm bạn bè
-                    </Button>
-                    <Button
-                      style={{ width: "100%", background: "#efefef" }}
+                    </ButtonWrapper>
+                    <ButtonWrapper
                       onClick={goToMessage}
+                      style={{ background: "#efefef" }}
                     >
                       Nhắn tin
-                    </Button>
+                    </ButtonWrapper>
                   </div>
                 ) : (
                   <></>
