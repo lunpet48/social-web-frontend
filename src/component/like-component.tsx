@@ -12,6 +12,9 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
     const [like, setLike] = useState<number>(numberOfLike);
     const likeClick = async () => {
         if (reaction?.liked === false) {
+            setLike(like + 1);
+            reaction.liked = true;
+            setReaction(reaction);
             const response = await fetch(`${process.env.API}/api/v1/post/${reaction?.postId}/like`, {
                 method: "POST",
                 headers: {
@@ -24,8 +27,14 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
             } else if (response.status === 401) {
                 console.log("JWT expired");
             }
+            setLike(like - 1);
+            reaction.liked = false;
+            setReaction(reaction)
         }
         else {
+            setLike(like - 1);
+            reaction!.liked = false;
+            setReaction(reaction)
             const response = await fetch(`${process.env.API}/api/v1/post/${reaction?.postId}/like`, {
                 method: "DELETE",
                 headers: {
@@ -38,6 +47,9 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
             } else if (response.status === 401) {
                 console.log("JWT expired");
             }
+            setLike(like + 1)
+            reaction!.liked = true;
+            setReaction(reaction)
         }
     };
     const likeNumber = async () => {
