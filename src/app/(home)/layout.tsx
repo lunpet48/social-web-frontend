@@ -38,7 +38,7 @@ export default function RootLayout({
     icon: React.createElement(icon, {
       style: { fontSize: "25px", marginRight: "5px" },
     }),
-    label: <span style={{ fontSize: "16px" }}>{labelContents[index]}</span>,
+    label: <span className="noselect" style={{ fontSize: "16px" }}>{labelContents[index]}</span>,
     style: { margin: "0px 0px 15px 4px", padding: "0px 0px 0px 24px" },
     onClick: () => {
       switch (index) {
