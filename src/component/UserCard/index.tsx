@@ -62,6 +62,7 @@ const UserCard = ({
           height: "100px",
           objectFit: "cover",
           borderRadius: "50%",
+          background: "white",
         }}
         src={`${user.avatar}`}
         alt="avatar"

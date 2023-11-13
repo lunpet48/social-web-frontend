@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import UserCard from "@/component/UserCard";
 import Recommend from "./Recommend";
 import { useAuth } from "@/context/AuthContext";
+import Loading from "@/component/Loading";
 
 type user = {
   id: string;
@@ -25,6 +26,7 @@ type relationship = {
 };
 
 const FriendRequest = () => {
+  const [loadingPage, setLoadingPage] = useState(true);
   const [relationships, setRelationships] = useState<relationship[]>([]);
   const router = useRouter();
   const { currentUser } = useAuth();
@@ -47,6 +49,7 @@ const FriendRequest = () => {
         if (!data.error) {
           //success
           setRelationships(data.data);
+          setLoadingPage(false);
         }
       } catch (err) {
         console.log(err);
@@ -134,6 +137,10 @@ const FriendRequest = () => {
       setLoading(false);
     }
   };
+
+  if (loadingPage) {
+    return <Loading />;
+  }
 
   return (
     <div>

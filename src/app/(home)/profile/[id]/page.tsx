@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./page.module.scss";
 import ButtonWrapper from "./ButtonWrapper";
+import Loading from "@/component/Loading";
 
 enum RelationshipProfile {
   SELF = "SELF",
@@ -42,6 +43,7 @@ type post = {
 };
 
 const Profile = ({ params }: { params: { id: string } }) => {
+  const [loadingPage, setLoadingPage] = useState(true);
   const [user, setUser] = useState<user>({
     id: "",
     username: "",
@@ -60,6 +62,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
   const setData = (user: user, posts: post[]) => {
     setUser(user);
     setPosts(posts);
+    setLoadingPage(false);
   };
 
   const { currentUser } = useAuth();
@@ -142,8 +145,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
+        await fetchData();
         setLoading(false);
-        fetchData();
       }
     } catch (err) {
       setLoading(false);
@@ -176,8 +179,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
       if (!data.error) {
         //success
+        await fetchData();
         setLoading(false);
-        fetchData();
       }
     } catch (err) {
       setLoading(false);
@@ -207,8 +210,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
+        await fetchData();
         setLoading(false);
-        fetchData();
       }
     } catch (err) {
       setLoading(false);
@@ -239,8 +242,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
+        await fetchData();
         setLoading(false);
-        fetchData();
       }
     } catch (err) {
       setLoading(false);
@@ -273,13 +276,17 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
       if (!data.error) {
         //success
+        await fetchData();
         setLoading(false);
-        fetchData();
       }
     } catch (err) {
       setLoading(false);
     }
   };
+
+  if (loadingPage) {
+    return <Loading height="100vh" />;
+  }
 
   return (
     <div>
@@ -297,6 +304,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   height: "300px",
                   borderRadius: "5px",
                   objectFit: "cover",
+                  background: "white",
                 }}
                 src={`${user.bio}`}
                 alt="background"
@@ -316,6 +324,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   marginLeft: "50px",
                   border: "5px solid white",
                   borderRadius: "50%",
+                  background: "white",
                 }}
                 src={`${user.avatar}`}
                 alt="avatar"

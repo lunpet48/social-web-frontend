@@ -18,6 +18,7 @@ import { root } from "postcss";
 import { useRouter } from "next/navigation";
 import Icon from "@ant-design/icons/lib/components/Icon";
 import { icon } from "@fortawesome/fontawesome-svg-core";
+import Loading from "@/component/Loading";
 
 export default function RootLayout({
   children,
@@ -25,6 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const labelContents = ["Trang chủ", "Tìm kiếm", "Bạn bè", "Tạo bài", "Trang cá nhân"];
+  const [loadingPage, setLoadingPage] = useState(true);
   const { currentUser } = useAuth();
   const router = useRouter();
   const items: MenuProps["items"] = [
@@ -82,6 +84,7 @@ export default function RootLayout({
         } else {
           //  success
           loginContext(data.data.user, data.data.accessToken);
+          setLoadingPage(false);
         }
       } catch (err) {
         console.log(err);
@@ -141,7 +144,7 @@ export default function RootLayout({
         <CreatePost open={showCreatePost} setOpen={setShowCreatePost}></CreatePost>
       </Layout.Sider>
       <Layout className="site-layout" style={{ marginLeft: 300 }}>
-        {children}
+        {loadingPage ? <Loading height="100vh" /> : children}
       </Layout>
     </Layout>
   );

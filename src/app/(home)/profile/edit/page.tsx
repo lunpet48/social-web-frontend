@@ -229,7 +229,12 @@ const EditProfile = () => {
             <Col xs={{ span: 24 }} sm={{ span: 10 }}>
               <div>
                 <img
-                  style={{ width: "100%", height: "auto", borderRadius: "5px" }}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: "5px",
+                    background: "white",
+                  }}
                   src={`${currentUser.profile.avatar}`}
                   alt="avatar"
                 />
@@ -255,7 +260,12 @@ const EditProfile = () => {
             <Col xs={{ span: 24 }} sm={{ span: 10 }}>
               <div>
                 <img
-                  style={{ width: "100%", height: "auto", borderRadius: "5px" }}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: "5px",
+                    background: "white",
+                  }}
                   src={`${currentUser.profile.bio}`}
                   alt="background"
                 />

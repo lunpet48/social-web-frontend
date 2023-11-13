@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import UserCard from "@/component/UserCard";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import Loading from "@/component/Loading";
 
 type user = {
   id: string;
@@ -18,6 +19,7 @@ type user = {
 };
 
 const FriendRequest = () => {
+  const [loadingPage, setLoadingPage] = useState(true);
   const [users, setUsers] = useState<user[]>([]);
   const router = useRouter();
   const { currentUser } = useAuth();
@@ -40,6 +42,8 @@ const FriendRequest = () => {
         if (!data.error) {
           //success
           setUsers(data.data);
+
+          setLoadingPage(false);
         }
       } catch (err) {
         console.log(err);
@@ -90,6 +94,10 @@ const FriendRequest = () => {
   const viewProfile = (user: user) => {
     router.push(`/profile/${user.username}`);
   };
+
+  if (loadingPage) {
+    return <Loading />;
+  }
 
   return (
     <>
