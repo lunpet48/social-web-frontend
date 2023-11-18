@@ -1,6 +1,12 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
 
+enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  EMPTY = "",
+}
+
 type user = {
   id: string;
   username: string;
@@ -12,6 +18,9 @@ type user = {
     bio: string;
     avatar: string;
     fullName: string;
+    gender: Gender;
+    address: string;
+    dateOfBirth: string;
   };
 };
 
@@ -34,6 +43,9 @@ export const AuthContext = createContext<GlobalContent>({
       bio: "",
       avatar: "",
       fullName: "",
+      gender: Gender.EMPTY,
+      address: "",
+      dateOfBirth: "",
     },
   },
   loginContext: () => {},
@@ -61,6 +73,9 @@ export function AuthProvider({ children }: Props) {
       bio: "",
       avatar: "",
       fullName: "",
+      gender: Gender.EMPTY,
+      address: "",
+      dateOfBirth: "",
     },
   });
 
@@ -82,6 +97,9 @@ export function AuthProvider({ children }: Props) {
         bio: "",
         avatar: "",
         fullName: "",
+        gender: Gender.EMPTY,
+        address: "",
+        dateOfBirth: "",
       },
     });
   }

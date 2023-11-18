@@ -2,13 +2,20 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Divider, Row } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear } from "@fortawesome/free-solid-svg-icons";
+import {
+  faGear,
+  faLocationDot,
+  faMars,
+  faVenus,
+} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import dayjs from "dayjs";
 
 import { useAuth } from "@/context/AuthContext";
 import styles from "./page.module.scss";
 import ButtonWrapper from "./ButtonWrapper";
 import Loading from "@/component/Loading";
+import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 
 enum RelationshipProfile {
   SELF = "SELF",
@@ -17,6 +24,12 @@ enum RelationshipProfile {
   INCOMMINGREQUEST = "INCOMMINGREQUEST",
   FRIEND = "FRIEND",
   BLOCK = "BLOCK",
+}
+
+enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  EMPTY = "",
 }
 
 type user = {
@@ -30,6 +43,9 @@ type user = {
   friendCount: number;
   postCount: number;
   relationship: RelationshipProfile;
+  gender: Gender;
+  address: string;
+  dateOfBirth: string;
 };
 
 type post = {
@@ -55,6 +71,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
     friendCount: 0,
     postCount: 0,
     relationship: RelationshipProfile.STRANGER,
+    gender: Gender.EMPTY,
+    address: "",
+    dateOfBirth: "",
   });
 
   const [posts, setPosts] = useState<post[]>([]);
@@ -347,12 +366,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
                     >
                       Chỉnh sửa trang cá nhân
                     </Link>
-                    <div className={styles.clickable}>
+                    {/* <div className={styles.clickable}>
                       <FontAwesomeIcon
                         icon={faGear}
                         style={{ fontSize: "30px" }}
                       />
-                    </div>
+                    </div> */}
                   </div>
                 ) : user.relationship == RelationshipProfile.PENDING ? (
                   <div style={{ display: "flex", gap: "10px" }}>
@@ -408,13 +427,99 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   <></>
                 )}
               </div>
-              <div style={{ display: "flex", gap: "20px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  margin: "10px 0",
+                }}
+              >
                 <span>{`${user.fullName}`}</span>
-                <span>{`${user.postCount} bài viết`}</span>
-                <div
-                  className={styles.button}
-                >{`${user.friendCount} bạn bè`}</div>
+                <div style={{ display: "flex", gap: "20px" }}>
+                  <span>{`${user.postCount} bài viết`}</span>
+                  <div
+                    className={styles.button}
+                  >{`${user.friendCount} bạn bè`}</div>
+                </div>
               </div>
+
+              {user.gender || user.address || user.dateOfBirth ? (
+                <div>
+                  <span style={{ fontWeight: 600 }}>{`Giới thiệu`}</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    {user.gender ? (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        {user.gender == Gender.MALE ? (
+                          <FontAwesomeIcon
+                            icon={faMars}
+                            color="blue"
+                            style={{ width: "20px" }}
+                          />
+                        ) : user.gender == Gender.FEMALE ? (
+                          <FontAwesomeIcon
+                            icon={faVenus}
+                            color="red"
+                            style={{ width: "20px" }}
+                          />
+                        ) : (
+                          ""
+                        )}
+
+                        <div style={{ width: "120px" }}>Giới tính:</div>
+                        <div>
+                          {user.gender == Gender.MALE
+                            ? "Nam"
+                            : user.gender == Gender.FEMALE
+                            ? "Nữ"
+                            : ""}
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+
+                    {user.address ? (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <FontAwesomeIcon
+                          icon={faLocationDot}
+                          color="#2666c0"
+                          style={{ width: "20px" }}
+                        />
+                        <div style={{ width: "120px" }}>Sống tại:</div>
+                        <div>{user.address}</div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+
+                    {user.dateOfBirth ? (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <FontAwesomeIcon
+                          icon={faCalendar}
+                          color="#4889f4"
+                          style={{ width: "20px" }}
+                        />
+
+                        <div style={{ width: "120px" }}>Ngày sinh:</div>
+                        <div>
+                          {dayjs(user.dateOfBirth, "YYYY-MM-DD").format(
+                            "DD/MM/YYYY"
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
             </Col>
           </Row>
           <Divider
