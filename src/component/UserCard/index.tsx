@@ -64,7 +64,7 @@ const UserCard = ({
           borderRadius: "50%",
           background: "white",
         }}
-        src={`${user.avatar}`}
+        src={`${user.avatar ? user.avatar : "/default-avatar.jpg"}`}
         alt="avatar"
       />
 

@@ -270,7 +270,11 @@ const EditProfile = () => {
                     borderRadius: "5px",
                     background: "white",
                   }}
-                  src={`${currentUser.profile.avatar}`}
+                  src={`${
+                    currentUser.profile.avatar
+                      ? currentUser.profile.avatar
+                      : "/default-avatar.jpg"
+                  }`}
                   alt="avatar"
                 />
 
@@ -301,7 +305,11 @@ const EditProfile = () => {
                     borderRadius: "5px",
                     background: "white",
                   }}
-                  src={`${currentUser.profile.bio}`}
+                  src={`${
+                    currentUser.profile.bio
+                      ? currentUser.profile.bio
+                      : "/default-background.png"
+                  }`}
                   alt="background"
                 />
                 <Button

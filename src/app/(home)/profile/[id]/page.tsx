@@ -325,7 +325,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   objectFit: "cover",
                   background: "white",
                 }}
-                src={`${user.bio}`}
+                src={`${user.bio ? user.bio : "/default-background.png"}`}
                 alt="background"
               />
             </Col>
@@ -345,7 +345,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   borderRadius: "50%",
                   background: "white",
                 }}
-                src={`${user.avatar}`}
+                src={`${user.avatar ? user.avatar : "/default-avatar.jpg"}`}
                 alt="avatar"
               />
             </Col>
@@ -375,14 +375,14 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   </div>
                 ) : user.relationship == RelationshipProfile.PENDING ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={goToMessage} primary>
-                      Nhắn tin
+                    <ButtonWrapper onClick={cancelRequest} primary danger>
+                      Hủy yêu cầu
                     </ButtonWrapper>
                     <ButtonWrapper
-                      onClick={cancelRequest}
-                      style={{ background: "#efefef" }}
+                      onClick={goToMessage}
+                      style={{ background: "#d8dadf" }}
                     >
-                      Hủy yêu cầu
+                      Nhắn tin
                     </ButtonWrapper>
                   </div>
                 ) : user.relationship ==
@@ -404,11 +404,14 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   </div>
                 ) : user.relationship == RelationshipProfile.FRIEND ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={goToMessage} primary>
-                      Nhắn tin
-                    </ButtonWrapper>
                     <ButtonWrapper onClick={deleteFriend} primary danger>
                       Xóa
+                    </ButtonWrapper>
+                    <ButtonWrapper
+                      onClick={goToMessage}
+                      style={{ background: "#d8dadf" }}
+                    >
+                      Nhắn tin
                     </ButtonWrapper>
                   </div>
                 ) : user.relationship == RelationshipProfile.STRANGER ? (
@@ -418,7 +421,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                     </ButtonWrapper>
                     <ButtonWrapper
                       onClick={goToMessage}
-                      style={{ background: "#efefef" }}
+                      style={{ background: "#d8dadf" }}
                     >
                       Nhắn tin
                     </ButtonWrapper>
