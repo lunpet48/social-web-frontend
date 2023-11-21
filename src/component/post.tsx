@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import "./index.css";
-import {
-  HeartOutlined,
-  HeartFilled,
-  CommentOutlined,
-
-} from "@ant-design/icons";
 import LikeComponent from "./like-component";
+import MediaView from "./media-view";
 
 type user = {
   id: string;
@@ -146,10 +141,12 @@ const PostView = () => {
                     </div>
                   </div>
                   <div className="feed-img">
-                    <img style={{ width: "100%" }}
+                    <MediaView slides={post.files}></MediaView>
+                    {/* <Carousel slides={post.files}></Carousel> */}
+                    {/* <img style={{ width: "100%" }}
                       src={post.files[0]}
                       alt=""
-                    />
+                    /> */}
                     {/* <video width="100%" height="500px" controls>
                       <source src={""} />
                     </video> */}

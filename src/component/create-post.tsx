@@ -14,7 +14,7 @@ const CreatePost = ({open, setOpen}: any) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [tag, setTag] = useState([""]);
   const [mode, setMode] = useState("PUBLIC");
-  const [content, setContent] = useState([""]);
+  const [content, setContent] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const handleChange = (event: any) => {

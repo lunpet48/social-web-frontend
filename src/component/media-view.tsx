@@ -1,46 +1,79 @@
-import "https://unpkg.com/flowbite@1.4.0/dist/flowbite.js"
+'use client'
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "react-feather";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const MediaView = () => {
+const MediaView = ({
+    autoSlide = false,
+    autoSlideInterval = 3000,
+    slides,
+}: {
+    autoSlide?: boolean;
+    autoSlideInterval?: number;
+    slides: string[];
+}) => {
+    const [curr, setCurr] = useState(0);
+
+    const prev = () =>
+        setCurr((curr) => (curr === 0 ? slides.length - 1 : curr - 1));
+    const next = () =>
+        setCurr((curr) => (curr === slides.length - 1 ? 0 : curr + 1));
+
+    useEffect(() => {
+        require("bootstrap/dist/js/bootstrap.bundle.min.js");
+        if (!autoSlide) return;
+        const slideInterval = setInterval(next, autoSlideInterval);
+        return () => clearInterval(slideInterval);
+    }, []);
+
     return (
-        <div className="max-w-2xl mx-auto">
-
-            <div id="default-carousel" className="relative" data-carousel="static">
-                <div className="overflow-hidden relative h-56 rounded-lg sm:h-64 xl:h-80 2xl:h-96">
-                    <div className="hidden duration-700 ease-in-out" data-carousel-item>
-                        <span className="absolute top-1/2 left-1/2 text-2xl font-semibold text-white -translate-x-1/2 -translate-y-1/2 sm:text-3xl dark:text-gray-800">First Slide</span>
-                        <img src={"https://flowbite.com/docs/images/carousel/carousel-1.svg"} className="block absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2" alt="..." />
-                    </div>
-                    <div className="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src={"https://flowbite.com/docs/images/carousel/carousel-2.svg"} className="block absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2" alt="..." />
-                    </div>
-                    <div className="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src="https://flowbite.com/docs/images/carousel/carousel-3.svg" className="block absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2" alt="..." />
-                    </div>
-                </div>
-                <div className="flex absolute bottom-5 left-1/2 z-30 space-x-3 -translate-x-1/2">
-                    <button type="button" className="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 1" data-carousel-slide-to="0"></button>
-                    <button type="button" className="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
-                    <button type="button" className="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
-                </div>
-                <button type="button" className="flex absolute top-0 left-0 z-30 justify-center items-center px-4 h-full cursor-pointer group focus:outline-none" data-carousel-prev>
-                    <span className="inline-flex justify-center items-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                        <svg className="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                        <span className="hidden">Previous</span>
-                    </span>
+        <div className="overflow-hidden relative">
+            <div
+                className="flex transition-transform ease-out duration-500"
+                style={{ transform: `translateX(-${curr * 100}%)`, minWidth: "auto" }}
+            >
+                {slides.map((img, index) => (
+                    //<object className="object-cover w-full h-fit" data={img} />
+                    // eslint-disable-next-line react/jsx-key
+                    <img src={img} className="object-contain w-full" />
+                    // <video src={img} controls autoPlay /> 
+                    //<object className="object-fit w-full h-fit" data={img} />
+                ))}
+            </div>
+            <div className="absolute inset-0 flex items-center justify-between p-4">
+                <button
+                    style={curr === 0 ? { visibility: "hidden" } : {}}
+                    onClick={prev}
+                    className="p-1 rounded-full shadow bg-gray-100 text-gray-800 hover:bg-white "
+                >
+                    <ChevronLeft size={20} />
                 </button>
-                <button type="button" className="flex absolute top-0 right-0 z-30 justify-center items-center px-4 h-full cursor-pointer group focus:outline-none" data-carousel-next>
-                    <span className="inline-flex justify-center items-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                        <svg className="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                        <span className="hidden">Next</span>
-                    </span>
+                <button
+                    style={curr === slides.length - 1 ? { visibility: "hidden" } : {}}
+                    onClick={next}
+                    className="p-1 rounded-full shadow bg-gray-100 text-gray-800 hover:bg-white"
+                >
+                    <ChevronRight size={20} />
                 </button>
             </div>
-
-            <p className="mt-5">This carousel slider component is part of a larger, open-source library of Tailwind CSS components. Learn
-                more
-                by going to the official <a className="text-blue-600 hover:underline"
-                    href="https://flowbite.com/docs/getting-started/introduction/" target="_blank">Flowbite Documentation</a>.
-            </p>
+            {
+                slides.length !== 1 ?
+                    <div className="absolute bottom-4 right-0 left-0">
+                        <div className="flex items-center justify-center gap-2">
+                            {slides.map((_, i) => (
+                                // eslint-disable-next-line react/jsx-key
+                                <div
+                                    className={`
+              transition-all w-1 h-1 bg-white rounded-full
+              ${curr === i ? "p-2" : "bg-opacity-50"}
+            `}
+                                />
+                            ))}
+                        </div>
+                    </div> : undefined
+            }
         </div>
-    )
+    );
 }
+
+export default MediaView;

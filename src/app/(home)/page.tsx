@@ -16,7 +16,7 @@ const Home = () => {
   } = theme.useToken();
 
   return (
-    <Container>
+    <div style={{ backgroundColor: "white" }}>
       <Content style={{ margin: "0px 100px 0px 0px", overflow: "initial" }}>
         <div
           style={{
@@ -36,12 +36,12 @@ const Home = () => {
             } */}
           <div style={{ display: "inline-flex", gap: "0px" }}>
             <PostView />
-            <div className="w-1/12"/>
+            <div className="w-1/12" />
             <SugguestFriend />
           </div>
         </div>
       </Content>
-    </Container>
+    </div>
   );
 };
 

@@ -8,3 +8,8 @@
   direction: ltr;
   font-weight: 400;
 }
+.antd-modal-content .antd-modal-body{
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
