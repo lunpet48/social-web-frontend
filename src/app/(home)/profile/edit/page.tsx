@@ -1,14 +1,29 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button, Col, Form, Input, Row, message } from "antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Row,
+  Select,
+  message,
+} from "antd";
+import dayjs from "dayjs";
 
 import { useAuth } from "@/context/AuthContext";
+enum Gender {
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  EMPTY = "",
+}
 
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 24,
+      span: 20,
     },
     sm: {
       span: 4,
@@ -16,10 +31,10 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: {
-      span: 24,
+      span: 20,
     },
     sm: {
-      span: 10,
+      span: 12,
     },
   },
 };
@@ -28,7 +43,12 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [backgroundLoading, setBackgroundLoading] = useState(false);
-  const [inputs, setInputs] = useState({ fullname: "" });
+  const [inputs, setInputs] = useState({
+    fullname: "",
+    gender: "",
+    address: "",
+    dateOfBirth: "",
+  });
 
   const { currentUser, setCurrentUser } = useAuth();
 
@@ -73,6 +93,8 @@ const EditProfile = () => {
         body: JSON.stringify({
           userId: currentUser.id,
           fullName: inputs.fullname,
+          gender: inputs.gender ? inputs.gender : null,
+          dateOfBirth: inputs.dateOfBirth,
         }),
       });
 
@@ -209,24 +231,37 @@ const EditProfile = () => {
   return (
     <>
       {contextHolder}
-      <div style={{ padding: "50px 70px", background: "white" }}>
+      <div
+        style={{
+          padding: "50px 70px",
+          background: "white",
+        }}
+      >
         <div>
-          <h1
-            style={{ fontSize: "20px", marginBottom: "50px", fontWeight: 600 }}
-          >
-            Chỉnh sửa trang cá nhân
-          </h1>
+          <Row>
+            <Col xs={{ span: 20, offset: 4 }}>
+              <h1
+                style={{
+                  fontSize: "22px",
+                  marginBottom: "50px",
+                  fontWeight: 600,
+                }}
+              >
+                Chỉnh sửa trang cá nhân
+              </h1>
+            </Col>
+          </Row>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           <Row>
-            <Col
-              xs={{ span: 24 }}
-              sm={{ span: 4 }}
-              style={{ textAlign: "right", paddingRight: "13.6px" }}
-            >
-              <span>Avatar</span>
+            <Col xs={{ span: 20, offset: 4 }}>
+              <div
+                style={{ fontWeight: "600", height: "32px", fontSize: "16px" }}
+              >
+                Ảnh đại diện
+              </div>
             </Col>
-            <Col xs={{ span: 24 }} sm={{ span: 10 }}>
+            <Col xs={{ span: 12, offset: 4 }}>
               <div>
                 <img
                   style={{
@@ -235,7 +270,11 @@ const EditProfile = () => {
                     borderRadius: "5px",
                     background: "white",
                   }}
-                  src={`${currentUser.profile.avatar}`}
+                  src={`${
+                    currentUser.profile.avatar
+                      ? currentUser.profile.avatar
+                      : "/default-avatar.jpg"
+                  }`}
                   alt="avatar"
                 />
 
@@ -250,14 +289,14 @@ const EditProfile = () => {
             </Col>
           </Row>
           <Row>
-            <Col
-              xs={{ span: 24 }}
-              sm={{ span: 4 }}
-              style={{ textAlign: "right", paddingRight: "13.6px" }}
-            >
-              <span>Background</span>
+            <Col xs={{ span: 20, offset: 4 }}>
+              <div
+                style={{ fontWeight: "600", height: "32px", fontSize: "16px" }}
+              >
+                Ảnh bìa
+              </div>
             </Col>
-            <Col xs={{ span: 24 }} sm={{ span: 10 }}>
+            <Col xs={{ span: 12, offset: 4 }}>
               <div>
                 <img
                   style={{
@@ -266,7 +305,11 @@ const EditProfile = () => {
                     borderRadius: "5px",
                     background: "white",
                   }}
-                  src={`${currentUser.profile.bio}`}
+                  src={`${
+                    currentUser.profile.bio
+                      ? currentUser.profile.bio
+                      : "/default-background.png"
+                  }`}
                   alt="background"
                 />
                 <Button
@@ -291,7 +334,11 @@ const EditProfile = () => {
             >
               <Form.Item
                 name="fullname"
-                label="Fullname"
+                label={
+                  <label style={{ fontSize: "16px", fontWeight: 600 }}>
+                    Họ và tên
+                  </label>
+                }
                 rules={[
                   {
                     required: true,
@@ -305,14 +352,89 @@ const EditProfile = () => {
                   onChange={handleChange}
                 />
               </Form.Item>
-              <Form.Item name="Gender" label="Gender">
-                <Input
-                  name="Gender"
-                  value={inputs.fullname}
-                  onChange={handleChange}
-                  disabled
+
+              <Form.Item
+                name="gender"
+                label={
+                  <label style={{ fontSize: "16px", fontWeight: 600 }}>
+                    Giới tính
+                  </label>
+                }
+              >
+                <Select
+                  defaultValue={currentUser.profile.gender}
+                  style={{
+                    width: 120,
+                  }}
+                  onChange={(value: string) => {
+                    setInputs((values) => ({ ...values, ["gender"]: value }));
+                  }}
+                  options={[
+                    {
+                      value: null,
+                      label: "Ẩn",
+                    },
+                    {
+                      value: `${Gender.MALE}`,
+                      label: "Nam",
+                    },
+                    {
+                      value: `${Gender.FEMALE}`,
+                      label: "Nữ",
+                    },
+                  ]}
                 />
               </Form.Item>
+
+              <Form.Item
+                name="dateOfBirth"
+                label={
+                  <label style={{ fontSize: "16px", fontWeight: 600 }}>
+                    Ngày sinh
+                  </label>
+                }
+              >
+                <DatePicker
+                  format={"DD/MM/YYYY"}
+                  defaultValue={
+                    currentUser.profile.dateOfBirth
+                      ? dayjs(currentUser.profile.dateOfBirth, "YYYY-MM-DD")
+                      : undefined
+                  }
+                  onChange={(date, dateString) => {
+                    const formattedDate = date ? date.format("YYYY-MM-DD") : "";
+                    setInputs((values) => ({
+                      ...values,
+                      ["dateOfBirth"]: formattedDate,
+                    }));
+                  }}
+                />
+              </Form.Item>
+              {/* <Row>
+                <Col xs={{ offset: 0 }} sm={{ offset: 4 }}>
+                  <Select
+                    defaultValue={currentUser.profile.gender}
+                    style={{
+                      width: 120,
+                    }}
+                    onChange={handleChangeGender}
+                    options={[
+                      {
+                        value: `${Gender.EMPTY}`,
+                        label: "Ẩn",
+                      },
+                      {
+                        value: `${Gender.MALE}`,
+                        label: "Nam",
+                      },
+                      {
+                        value: `${Gender.FEMALE}`,
+                        label: "nữ",
+                      },
+                    ]}
+                  />
+                </Col>
+              </Row> */}
               <Row>
                 <Col xs={{ offset: 0 }} sm={{ offset: 4 }}>
                   <Button type="primary" htmlType="submit" disabled={loading}>
