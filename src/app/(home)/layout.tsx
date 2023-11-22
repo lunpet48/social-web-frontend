@@ -48,7 +48,7 @@ export default function RootLayout({
           router.push('/');
           break;
         case 1:
-          router.push('');
+          router.push('/search');
           break;
         case 2:
           router.push('/people')
