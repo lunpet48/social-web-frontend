@@ -1,9 +1,89 @@
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Loading from "./Loading";
+import SuggestUser from "./SuggestUser";
+import RequestUser from "./RequestUser";
 
-const SugguestFriend = () => {
+type user = {
+  id: string;
+  username: string;
+  email: string;
+  isLocked: false;
+  bio: string;
+  avatar: string;
+  fullName: string;
+  friendCount: number;
+  postCount: number;
+};
+
+type relationship = {
+  user: user;
+  userRelated: user;
+  status: string;
+};
+
+const SuggestFriend = () => {
+  const [loadingPage, setLoadingPage] = useState(true);
+  const [suggestUsers, setSuggestUsers] = useState<user[]>([]);
+  const [requestFriends, setRequestFriends] = useState<relationship[]>([]);
+
   const router = useRouter();
   const { currentUser } = useAuth();
+
+  useEffect(() => {
+    const fetchRequestFriend = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.API}/api/v1/relationship/incoming-requests`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (!data.error) {
+          //success
+          setRequestFriends(data.data);
+          setLoadingPage(false);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    const fetchSuggestFriend = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.API}/api/v1/user/recommend`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (!data.error) {
+          //success
+          setSuggestUsers(data.data);
+
+          setLoadingPage(false);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchSuggestFriend();
+    fetchRequestFriend();
+  }, []);
+
+  if (loadingPage) return <Loading height="100vh" />;
   return (
     <>
       <div className="right w-4/12 h-screen overflow-visible h-full">
@@ -34,6 +114,19 @@ const SugguestFriend = () => {
               </span>
             </div>
           </div>
+          {requestFriends.length > 0 && (
+            <div className="suggestion-users" style={{ paddingBottom: "30px" }}>
+              <div className="title flex w-full justify-between text-sm">
+                <div className="left">
+                  <h1 className="font-bold">Lời mời kết bạn</h1>
+                </div>
+              </div>
+
+              {requestFriends.map((requestFriends, index) => {
+                return <RequestUser user={requestFriends.user} key={index} />;
+              })}
+            </div>
+          )}
           <div className="suggestion-users">
             <div className="title flex w-full justify-between text-sm">
               <div className="left">
@@ -43,67 +136,9 @@ const SugguestFriend = () => {
                 <span>Xem tất cả</span>
               </div> */}
             </div>
-
-            <div className="users-wrapper mt-4 flex w-full justify-between items-center">
-              <div className="user-item flex flex-row pl-2">
-                <div className="user-img h-10 w-10 border rounded-full overflow-hidden mr-4">
-                  <img
-                    alt="realdonaldtrump's profile picture"
-                    className=""
-                    src="https://yt3.googleusercontent.com/WoDkWmAjQ5Dbw-ccjqFku8ThK2UYcqaOqq25PBE9eGb_S-vsqxiKU2kL2kZJVz_BcAMv3WUWsA=s900-c-k-c0x00ffffff-no-rj"
-                  />
-                </div>
-                <div className="user-name flex flex-col ">
-                  <span className="text-sm font-semibold">Fullname</span>
-                  <span className="text-xs -mt-1 text-gray-700">Username</span>
-                </div>
-              </div>
-              <a href="" className="follow text-blue-600 text-sm font-semibold">
-                Kết bạn
-              </a>
-            </div>
-
-            <div className="users-wrapper mt-4 flex w-full justify-between items-center">
-              <div className="user-item flex flex-row pl-2">
-                <div className="user-img h-10 w-10 border rounded-full overflow-hidden mr-4">
-                  <img
-                    alt="shinzoabe's profile picture"
-                    className="_6q-tv"
-                    data-testid="user-avatar"
-                    draggable="false"
-                    src="https://yt3.googleusercontent.com/WoDkWmAjQ5Dbw-ccjqFku8ThK2UYcqaOqq25PBE9eGb_S-vsqxiKU2kL2kZJVz_BcAMv3WUWsA=s900-c-k-c0x00ffffff-no-rj"
-                  />
-                </div>
-                <div className="user-name flex flex-col ">
-                  <span className="text-sm font-semibold">Fullname</span>
-                  <span className="text-xs -mt-1 text-gray-700">Username</span>
-                </div>
-              </div>
-              <a href="" className="follow text-blue-600 text-sm font-semibold">
-                Kết bạn
-              </a>
-            </div>
-
-            <div className="users-wrapper mt-4 flex w-full justify-between items-center">
-              <div className="user-item flex flex-row pl-2">
-                <div className="user-img h-10 w-10 border rounded-full overflow-hidden mr-4">
-                  <img
-                    alt="nike's profile picture"
-                    className="_6q-tv"
-                    data-testid="user-avatar"
-                    draggable="false"
-                    src="https://yt3.googleusercontent.com/WoDkWmAjQ5Dbw-ccjqFku8ThK2UYcqaOqq25PBE9eGb_S-vsqxiKU2kL2kZJVz_BcAMv3WUWsA=s900-c-k-c0x00ffffff-no-rj"
-                  />
-                </div>
-                <div className="user-name flex flex-col ">
-                  <span className="text-sm font-semibold">Fullname</span>
-                  <span className="text-xs -mt-1 text-gray-700">Username</span>
-                </div>
-              </div>
-              <a href="" className="follow text-blue-600 text-sm font-semibold">
-                Kết bạn
-              </a>
-            </div>
+            {suggestUsers.map((user, index) => {
+              return <SuggestUser user={user} key={index} />;
+            })}
           </div>
         </div>
       </div>
@@ -111,4 +146,4 @@ const SugguestFriend = () => {
   );
 };
 
-export default SugguestFriend;
+export default SuggestFriend;
