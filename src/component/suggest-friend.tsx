@@ -94,7 +94,7 @@ const SuggestFriend = () => {
           <div
             className="profile flex items-center p-3 mb-4"
             onClick={() => {
-              router.push("/profile/khoihuynh");
+              router.push(`/profile/${currentUser.username}`);
             }}
           >
             <div className="avatar rounded-full overflow-hidden mr-3">
