@@ -86,13 +86,13 @@ const SuggestFriend = () => {
   if (loadingPage) return <Loading height="100vh" />;
   return (
     <>
-      <div className="right w-4/12 h-screen overflow-visible h-full">
+      <div className="right w-12/12 h-screen overflow-visible h-full">
         <div
           className="first pl-4 w-full"
           style={{ top: "85px", maxWidth: "293px" }}
         >
           <div
-            className="profile flex items-center p-3 mb-4"
+            className="profile flex items-center  mb-4"
             onClick={() => {
               router.push(`/profile/${currentUser.username}`);
             }}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./index.css";
 import LikeComponent from "./like-component";
 import MediaView from "./media-view";
+import Loading from "./Loading";
 
 type user = {
   id: string;
@@ -27,6 +28,7 @@ type post = {
 
 const PostView = () => {
   const [result, setResult] = useState(new Map());
+  const [loadingPage, setLoadingPage] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,15 +78,18 @@ const PostView = () => {
         }
 
         setResult(map);
+        setLoadingPage(false);
       }
     };
 
     fetchData();
   }, []);
 
+  if (loadingPage)
+    return <Loading height="100%" />;
   return (
     <>
-      <div className="left w-6/12 pr-4">
+      <div className="left w-12/12 pr-4">
         {Array.from(result).map(([post, user], index) => (
           <div key={index}>
             <div className="feeds">

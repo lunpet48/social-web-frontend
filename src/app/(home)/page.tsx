@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "./index.css";
 
-import { Layout, Space, theme } from "antd";
+import { Col, Layout, Row, Space, theme } from "antd";
 import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PostView from "../../component/post";
@@ -17,10 +17,10 @@ const Home = () => {
 
   return (
     <div style={{ backgroundColor: "white" }}>
-      <Content style={{ margin: "0px 100px 0px 0px", overflow: "initial" }}>
+      <Content style={{ margin: "0px", overflow: "initial" }}>
         <div
           style={{
-            padding: "24px 50px 24px 50px",
+            padding: "24px 10px 24px 50px",
             background: colorBgContainer,
           }}
         >
@@ -34,11 +34,15 @@ const Home = () => {
                 </React.Fragment>
               ))
             } */}
-          <div style={{ display: "inline-flex", gap: "0px" }}>
+            <Row>
+              <Col xs={14}><PostView /></Col>
+              <Col xs={{span:8, offset:2 }}><SugguestFriend /></Col>
+            </Row>
+          {/* <div style={{ display: "inline-flex", gap: "0px" }}>
             <PostView />
             <div className="w-1/12" />
             <SugguestFriend />
-          </div>
+          </div> */}
         </div>
       </Content>
     </div>
