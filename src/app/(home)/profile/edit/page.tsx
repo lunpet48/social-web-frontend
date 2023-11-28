@@ -1,19 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  Row,
-  Select,
-  message,
-} from "antd";
+import { Button, Col, DatePicker, Form, Input, Row, Select, message } from "antd";
 import dayjs from "dayjs";
 
 import { useAuth } from "@/context/AuthContext";
+import ImagePreviewWrapper from "@/component/ImagePreviewWrapper";
 enum Gender {
   MALE = "MALE",
   FEMALE = "FEMALE",
@@ -255,69 +247,61 @@ const EditProfile = () => {
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           <Row>
             <Col xs={{ span: 20, offset: 4 }}>
-              <div
-                style={{ fontWeight: "600", height: "32px", fontSize: "16px" }}
-              >
+              <div style={{ fontWeight: "600", height: "32px", fontSize: "16px" }}>
                 Ảnh đại diện
               </div>
             </Col>
             <Col xs={{ span: 12, offset: 4 }}>
               <div>
-                <img
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                    background: "white",
-                  }}
+                <ImagePreviewWrapper
+                  wrapperStyle={{ width: "100%" }}
+                  imageStyle={{ background: "white", width: "100%", height: "auto" }}
                   src={`${
-                    currentUser.profile.avatar
-                      ? currentUser.profile.avatar
-                      : "/default-avatar.jpg"
+                    currentUser.profile.avatar ? currentUser.profile.avatar : "/default-avatar.jpg"
                   }`}
-                  alt="avatar"
                 />
 
                 <Button
-                  style={{ marginTop: "12px", backgroundColor: "#fafafa" }}
+                  style={{
+                    marginTop: "12px",
+                    backgroundColor: "#fafafa",
+                    color: `${avatarLoading ? "#ccc" : "#4096ff"}`,
+                    borderColor: `${avatarLoading ? "#ccc" : "#4096ff"}`,
+                  }}
                   onClick={selectAndUpdateAvatar}
                   disabled={avatarLoading}
                 >
-                  {avatarLoading ? "Please wait..." : "Chọn ảnh"}
+                  {avatarLoading ? "Please wait..." : "Thay đổi ảnh đại diện"}
                 </Button>
               </div>
             </Col>
           </Row>
           <Row>
             <Col xs={{ span: 20, offset: 4 }}>
-              <div
-                style={{ fontWeight: "600", height: "32px", fontSize: "16px" }}
-              >
-                Ảnh bìa
-              </div>
+              <div style={{ fontWeight: "600", height: "32px", fontSize: "16px" }}>Ảnh bìa</div>
             </Col>
             <Col xs={{ span: 12, offset: 4 }}>
               <div>
-                <img
-                  style={{
+                <ImagePreviewWrapper
+                  wrapperStyle={{
                     width: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                    background: "white",
                   }}
+                  imageStyle={{ background: "white", width: "100%", height: "auto" }}
                   src={`${
-                    currentUser.profile.bio
-                      ? currentUser.profile.bio
-                      : "/default-background.png"
+                    currentUser.profile.bio ? currentUser.profile.bio : "/default-background.png"
                   }`}
-                  alt="background"
                 />
                 <Button
-                  style={{ marginTop: "12px", backgroundColor: "#fafafa" }}
+                  style={{
+                    marginTop: "12px",
+                    backgroundColor: "#fafafa",
+                    color: `${backgroundLoading ? "#ccc" : "#4096ff"}`,
+                    borderColor: `${backgroundLoading ? "#ccc" : "#4096ff"}`,
+                  }}
                   onClick={selectAndUpdateBackground}
                   disabled={backgroundLoading}
                 >
-                  {backgroundLoading ? "Please wait..." : "Chọn ảnh"}
+                  {backgroundLoading ? "Please wait..." : "Thay đổi ảnh bìa"}
                 </Button>
               </div>
             </Col>
@@ -334,11 +318,7 @@ const EditProfile = () => {
             >
               <Form.Item
                 name="fullname"
-                label={
-                  <label style={{ fontSize: "16px", fontWeight: 600 }}>
-                    Họ và tên
-                  </label>
-                }
+                label={<label style={{ fontSize: "16px", fontWeight: 600 }}>Họ và tên</label>}
                 rules={[
                   {
                     required: true,
@@ -346,20 +326,12 @@ const EditProfile = () => {
                   },
                 ]}
               >
-                <Input
-                  name="fullname"
-                  value={inputs.fullname}
-                  onChange={handleChange}
-                />
+                <Input name="fullname" value={inputs.fullname} onChange={handleChange} />
               </Form.Item>
 
               <Form.Item
                 name="gender"
-                label={
-                  <label style={{ fontSize: "16px", fontWeight: 600 }}>
-                    Giới tính
-                  </label>
-                }
+                label={<label style={{ fontSize: "16px", fontWeight: 600 }}>Giới tính</label>}
               >
                 <Select
                   defaultValue={currentUser.profile.gender}
@@ -388,11 +360,7 @@ const EditProfile = () => {
 
               <Form.Item
                 name="dateOfBirth"
-                label={
-                  <label style={{ fontSize: "16px", fontWeight: 600 }}>
-                    Ngày sinh
-                  </label>
-                }
+                label={<label style={{ fontSize: "16px", fontWeight: 600 }}>Ngày sinh</label>}
               >
                 <DatePicker
                   format={"DD/MM/YYYY"}
@@ -438,7 +406,7 @@ const EditProfile = () => {
               <Row>
                 <Col xs={{ offset: 0 }} sm={{ offset: 4 }}>
                   <Button type="primary" htmlType="submit" disabled={loading}>
-                    {loading ? "Please wait..." : "Submit"}
+                    {loading ? "Please wait..." : "Cập nhật"}
                   </Button>
                 </Col>
               </Row>

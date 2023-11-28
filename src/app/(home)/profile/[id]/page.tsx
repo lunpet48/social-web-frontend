@@ -1,21 +1,24 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Button, Col, Divider, Row } from "antd";
+import { Button, Col, Divider, Image, Row } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGear,
-  faLocationDot,
-  faMars,
-  faVenus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faGear, faLocationDot, faMars, faVenus } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import dayjs from "dayjs";
+import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 
 import { useAuth } from "@/context/AuthContext";
 import styles from "./page.module.scss";
 import ButtonWrapper from "./ButtonWrapper";
 import Loading from "@/component/Loading";
-import { faCalendar } from "@fortawesome/free-regular-svg-icons";
+import ImagePreviewWrapper from "@/component/ImagePreviewWrapper";
+import {
+  acceptFriendRequest,
+  cancelFriendRequest,
+  deleteFriend,
+  denyFriendRequest,
+  sendFriendRequest,
+} from "@/services/friendService";
 
 enum RelationshipProfile {
   SELF = "SELF",
@@ -90,15 +93,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
     const token = localStorage.getItem("token");
     if (token) {
       const fetchUserProfile = async () => {
-        const response = await fetch(
-          `${process.env.API}/api/v1/profile?id=${params.id}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        const response = await fetch(`${process.env.API}/api/v1/profile?id=${params.id}`, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
         if (response.status === 200) {
           const data = await response.json();
           return data.data;
@@ -108,15 +108,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
       };
 
       const fetchPost = async (userId: string) => {
-        const response = await fetch(
-          `${process.env.API}/api/v1/${userId}/posts`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        const response = await fetch(`${process.env.API}/api/v1/${userId}/posts`, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
         if (response.status === 200) {
           const data = await response.json();
           return data.data;
@@ -140,27 +137,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
     alert("Tính năng này chưa có");
   };
 
-  const cancelRequest = async (
+  const handleCancelFriendRequest = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
-    const token = localStorage.getItem("token");
-
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/friend-request`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await cancelFriendRequest(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -172,27 +154,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const acceptFriendRequest = async (
+  const handleAcceptFriendRequest = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
-    const token = localStorage.getItem("token");
-
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/received-friend-requests`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await acceptFriendRequest(user.id);
 
       const data = await response.json();
 
@@ -205,27 +172,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
       setLoading(false);
     }
   };
-  const denyFriendRequest = async (
+  const handleDenyFriendRequest = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
-    const token = localStorage.getItem("token");
-
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/received-friend-requests`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await denyFriendRequest(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -237,27 +189,10 @@ const Profile = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const deleteFriend = async (
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    const token = localStorage.getItem("token");
-
+  const handleDeleteFriend = async (setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/friends`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await deleteFriend(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -269,27 +204,12 @@ const Profile = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const addFriend = async (
+  const handleSendFriendRequest = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
-    const token = localStorage.getItem("token");
-
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/friend-request`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await sendFriendRequest(user.id);
 
       const data = await response.json();
 
@@ -310,43 +230,42 @@ const Profile = ({ params }: { params: { id: string } }) => {
   return (
     <div>
       <Row style={{ background: "white" }}>
-        <Col
-          xs={{ span: 24 }}
-          md={{ span: 20, offset: 2 }}
-          lg={{ span: 16, offset: 4 }}
-        >
+        <Col xs={{ span: 24 }} md={{ span: 20, offset: 2 }} lg={{ span: 16, offset: 4 }}>
           <Row>
             <Col xs={24}>
-              <img
-                style={{
-                  width: "100%",
-                  height: "300px",
+              <ImagePreviewWrapper
+                wrapperStyle={{
                   borderRadius: "5px",
+                  overflow: "hidden",
+                  height: "300px",
+                }}
+                imageStyle={{
                   objectFit: "cover",
                   background: "white",
                 }}
                 src={`${user.bio ? user.bio : "/default-background.png"}`}
-                alt="background"
               />
             </Col>
           </Row>
 
           <Row style={{ marginBottom: "40px" }}>
             <Col xs={7}>
-              <img
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  objectFit: "cover",
+              <ImagePreviewWrapper
+                wrapperStyle={{
                   position: "absolute",
                   top: "-50px",
                   marginLeft: "50px",
                   border: "5px solid white",
                   borderRadius: "50%",
+                  overflow: "hidden",
+                  height: "150px",
+                  width: "150px",
+                }}
+                imageStyle={{
+                  objectFit: "cover",
                   background: "white",
                 }}
                 src={`${user.avatar ? user.avatar : "/default-avatar.jpg"}`}
-                alt="avatar"
               />
             </Col>
             <Col xs={{ span: 17 }} style={{ fontSize: "18px" }}>
@@ -360,10 +279,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                 <div style={{ fontSize: "30px" }}>{`${user.username}`}</div>
                 {user.relationship == RelationshipProfile.SELF ? (
                   <div style={{ display: "flex", gap: "20px" }}>
-                    <Link
-                      href="edit"
-                      className={`${styles.button} ${styles["btn-link"]}`}
-                    >
+                    <Link href="edit" className={`${styles.button} ${styles["btn-link"]}`}>
                       Chỉnh sửa trang cá nhân
                     </Link>
                     {/* <div className={styles.clickable}>
@@ -375,54 +291,41 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   </div>
                 ) : user.relationship == RelationshipProfile.PENDING ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={cancelRequest} primary danger>
+                    <ButtonWrapper onClick={handleCancelFriendRequest} primary danger>
                       Hủy yêu cầu
                     </ButtonWrapper>
-                    <ButtonWrapper
-                      onClick={goToMessage}
-                      style={{ background: "#d8dadf" }}
-                    >
+                    <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
                       Nhắn tin
                     </ButtonWrapper>
                   </div>
-                ) : user.relationship ==
-                  RelationshipProfile.INCOMMINGREQUEST ? (
+                ) : user.relationship == RelationshipProfile.INCOMMINGREQUEST ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={acceptFriendRequest} primary>
+                    <ButtonWrapper onClick={handleAcceptFriendRequest} primary>
                       Chấp nhận
                     </ButtonWrapper>
-                    <ButtonWrapper onClick={denyFriendRequest} primary danger>
+                    <ButtonWrapper onClick={handleDenyFriendRequest} primary danger>
                       Từ chối
                     </ButtonWrapper>
 
-                    <ButtonWrapper
-                      onClick={goToMessage}
-                      style={{ background: "#d8dadf" }}
-                    >
+                    <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
                       Nhắn tin
                     </ButtonWrapper>
                   </div>
                 ) : user.relationship == RelationshipProfile.FRIEND ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={deleteFriend} primary danger>
+                    <ButtonWrapper onClick={handleDeleteFriend} primary danger>
                       Xóa
                     </ButtonWrapper>
-                    <ButtonWrapper
-                      onClick={goToMessage}
-                      style={{ background: "#d8dadf" }}
-                    >
+                    <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
                       Nhắn tin
                     </ButtonWrapper>
                   </div>
                 ) : user.relationship == RelationshipProfile.STRANGER ? (
                   <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={addFriend} primary>
+                    <ButtonWrapper onClick={handleSendFriendRequest} primary>
                       Thêm bạn bè
                     </ButtonWrapper>
-                    <ButtonWrapper
-                      onClick={goToMessage}
-                      style={{ background: "#d8dadf" }}
-                    >
+                    <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
                       Nhắn tin
                     </ButtonWrapper>
                   </div>
@@ -440,9 +343,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                 <span>{`${user.fullName}`}</span>
                 <div style={{ display: "flex", gap: "20px" }}>
                   <span>{`${user.postCount} bài viết`}</span>
-                  <div
-                    className={styles.button}
-                  >{`${user.friendCount} bạn bè`}</div>
+                  <div className={styles.button}>{`${user.friendCount} bạn bè`}</div>
                 </div>
               </div>
 
@@ -458,17 +359,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
                     {user.gender ? (
                       <div style={{ display: "flex", alignItems: "center" }}>
                         {user.gender == Gender.MALE ? (
-                          <FontAwesomeIcon
-                            icon={faMars}
-                            color="blue"
-                            style={{ width: "20px" }}
-                          />
+                          <FontAwesomeIcon icon={faMars} color="blue" style={{ width: "20px" }} />
                         ) : user.gender == Gender.FEMALE ? (
-                          <FontAwesomeIcon
-                            icon={faVenus}
-                            color="red"
-                            style={{ width: "20px" }}
-                          />
+                          <FontAwesomeIcon icon={faVenus} color="red" style={{ width: "20px" }} />
                         ) : (
                           ""
                         )}
@@ -509,11 +402,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                         />
 
                         <div style={{ width: "120px" }}>Ngày sinh:</div>
-                        <div>
-                          {dayjs(user.dateOfBirth, "YYYY-MM-DD").format(
-                            "DD/MM/YYYY"
-                          )}
-                        </div>
+                        <div>{dayjs(user.dateOfBirth, "YYYY-MM-DD").format("DD/MM/YYYY")}</div>
                       </div>
                     ) : (
                       ""
@@ -525,13 +414,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
               )}
             </Col>
           </Row>
-          <Divider
-            style={{ borderTop: "1px solid #dbdbdb", marginBottom: "-0.5px" }}
-          />
+          <Divider style={{ borderTop: "1px solid #dbdbdb", marginBottom: "-0.5px" }} />
           <Row style={{ display: "flex", justifyContent: "center" }}>
-            <div className={`${styles.tag} ${styles.active} ${styles.button}`}>
-              Bài viết
-            </div>
+            <div className={`${styles.tag} ${styles.active} ${styles.button}`}>Bài viết</div>
             {user.relationship == RelationshipProfile.SELF ? (
               <>
                 <div className={`${styles.tag} ${styles.button}`}>Đã lưu</div>

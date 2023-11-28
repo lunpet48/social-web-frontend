@@ -4,8 +4,13 @@ import { useRouter } from "next/navigation";
 
 import UserCard from "@/component/UserCard";
 import Recommend from "./Recommend";
-import { useAuth } from "@/context/AuthContext";
 import Loading from "@/component/Loading";
+import {
+  acceptFriendRequest,
+  cancelFriendRequest,
+  denyFriendRequest,
+  getIncomingRequest,
+} from "@/services/friendService";
 
 type user = {
   id: string;
@@ -29,22 +34,11 @@ const FriendRequest = () => {
   const [loadingPage, setLoadingPage] = useState(true);
   const [relationships, setRelationships] = useState<relationship[]>([]);
   const router = useRouter();
-  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.API}/api/v1/relationship/incoming-requests`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
-
+        const response = await getIncomingRequest();
         const data = await response.json();
         if (!data.error) {
           //success
@@ -61,34 +55,18 @@ const FriendRequest = () => {
   const viewProfile = (user: user) => {
     router.push(`/profile/${user.username}`);
   };
-  const acceptFriendRequest = async (
+  const handleAcceptFriendRequest = async (
     event: React.MouseEvent<HTMLElement>,
     user: user,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    setStatus: React.Dispatch<
-      React.SetStateAction<{ isSuccess: boolean; text: string }>
-    >
+    setStatus: React.Dispatch<React.SetStateAction<{ isSuccess: boolean; text: string }>>
   ) => {
     event.stopPropagation();
-    const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/received-friend-requests`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
 
+      const response = await acceptFriendRequest(user.id);
       const data = await response.json();
 
       if (!data.error) {
@@ -100,33 +78,17 @@ const FriendRequest = () => {
       setLoading(false);
     }
   };
-  const denyFriendRequest = async (
+  const handleDenyFriendRequest = async (
     event: React.MouseEvent<HTMLElement>,
     user: user,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    setStatus: React.Dispatch<
-      React.SetStateAction<{ isSuccess: boolean; text: string }>
-    >
+    setStatus: React.Dispatch<React.SetStateAction<{ isSuccess: boolean; text: string }>>
   ) => {
     event.stopPropagation();
-    const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/received-friend-requests`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await denyFriendRequest(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -152,10 +114,10 @@ const FriendRequest = () => {
               <UserCard
                 user={relationship.user}
                 onClick={viewProfile}
-                btnPrimary={{ text: "Chấp nhận", onClick: acceptFriendRequest }}
+                btnPrimary={{ text: "Chấp nhận", onClick: handleAcceptFriendRequest }}
                 btnSecondary={{
                   text: "Từ chối",
-                  onClick: denyFriendRequest,
+                  onClick: handleDenyFriendRequest,
                 }}
               />
             </Col>

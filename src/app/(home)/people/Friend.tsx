@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import UserCard from "@/component/UserCard";
 import Loading from "@/component/Loading";
+import { deleteFriend, getFriend } from "@/services/friendService";
 
 type user = {
   id: string;
@@ -36,16 +37,7 @@ const Friend = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.API}/api/v1/relationship/friends?userId=${currentUser.id}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        const response = await getFriend(currentUser.id);
 
         const data = await response.json();
         if (!data.error) {
@@ -67,33 +59,17 @@ const Friend = () => {
     event.stopPropagation();
     alert("Tính năng này chưa có");
   };
-  const deleteFriend = async (
+  const handleDeleteFriend = async (
     event: React.MouseEvent<HTMLElement>,
     user: user,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    setStatus: React.Dispatch<
-      React.SetStateAction<{ isSuccess: boolean; text: string }>
-    >
+    setStatus: React.Dispatch<React.SetStateAction<{ isSuccess: boolean; text: string }>>
   ) => {
     event.stopPropagation();
-    const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/friends`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await deleteFriend(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -122,7 +98,7 @@ const Friend = () => {
                 btnPrimary={{ text: "Nhắn tin", onClick: goToMessage }}
                 btnSecondary={{
                   text: "Xóa",
-                  onClick: deleteFriend,
+                  onClick: handleDeleteFriend,
                 }}
               />
             </Col>

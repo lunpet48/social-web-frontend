@@ -1,10 +1,14 @@
-import { Button, Col, Row } from "antd";
+import { Col, Row } from "antd";
 import React, { useEffect, useState } from "react";
 
 import UserCard from "@/component/UserCard";
-import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Loading from "@/component/Loading";
+import {
+  cancelFriendRequest,
+  getOutgoingRequest,
+  getRecommendUser,
+} from "@/services/friendService";
 
 type user = {
   id: string;
@@ -28,21 +32,11 @@ const FriendRequestHaveBeenSent = () => {
   const [loadingPage, setLoadingPage] = useState(true);
   const [relationships, setRelationships] = useState<relationship[]>([]);
   const router = useRouter();
-  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.API}/api/v1/relationship/outgoing-requests`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        const response = await getOutgoingRequest();
 
         const data = await response.json();
         if (!data.error) {
@@ -60,33 +54,17 @@ const FriendRequestHaveBeenSent = () => {
   const viewProfile = (user: user) => {
     router.push(`/profile/${user.username}`);
   };
-  const cancelRequest = async (
+  const handleCancelFriendRequest = async (
     event: React.MouseEvent<HTMLElement>,
     user: user,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    setStatus: React.Dispatch<
-      React.SetStateAction<{ isSuccess: boolean; text: string }>
-    >
+    setStatus: React.Dispatch<React.SetStateAction<{ isSuccess: boolean; text: string }>>
   ) => {
     event.stopPropagation();
-    const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/friend-request`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await cancelFriendRequest(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -112,13 +90,10 @@ const FriendRequestHaveBeenSent = () => {
               <UserCard
                 user={relationship.userRelated}
                 onClick={viewProfile}
-                btnPrimary={{ text: "Hủy yêu cầu", onClick: cancelRequest }}
+                btnPrimary={{ text: "Hủy yêu cầu", onClick: handleCancelFriendRequest }}
                 btnSecondary={{
                   text: "Xem",
-                  onClick: (
-                    event: React.MouseEvent<HTMLElement>,
-                    user: user
-                  ) => {
+                  onClick: (event: React.MouseEvent<HTMLElement>, user: user) => {
                     event.stopPropagation();
                     viewProfile(user);
                   },
