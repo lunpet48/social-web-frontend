@@ -80,13 +80,11 @@ const SuggestFriend = () => {
           >
             <div className="avatar rounded-full overflow-hidden mr-3">
               <img
-                width="56px"
-                height="56px"
                 src={`${
                   currentUser.profile.avatar ? currentUser.profile.avatar : "/default-avatar.jpg"
                 }`}
                 alt=""
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", width: "56px", height: "56px" }}
               />
             </div>
             <div className="user-name ">

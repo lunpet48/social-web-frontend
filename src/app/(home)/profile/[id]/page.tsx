@@ -248,6 +248,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                 imageStyle={{
                   objectFit: "cover",
                   background: "white",
+                  height: "300px",
                 }}
                 src={`${user.bio ? user.bio : "/default-background.png"}`}
               />
@@ -261,15 +262,17 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   position: "absolute",
                   top: "-50px",
                   marginLeft: "50px",
-                  border: "5px solid white",
                   borderRadius: "50%",
                   overflow: "hidden",
+                  border: "2px solid white",
                   height: "150px",
                   width: "150px",
                 }}
                 imageStyle={{
                   objectFit: "cover",
                   background: "white",
+                  height: "150px",
+                  width: "150px",
                 }}
                 src={`${user.avatar ? user.avatar : "/default-avatar.jpg"}`}
               />

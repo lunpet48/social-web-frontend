@@ -116,13 +116,10 @@ export default function RootLayout({
         <div style={{ margin: "50px 10px" }}>
           <Link href={"/"} className="text-decoration-none">
             <Space size={"large"}>
-              {/* {React.createElement(InstagramOutlined, {
-                style: { fontSize: "50px", color: "#000000" },
-              })}
-              <img style={{ height: "3px" }} src="./logo.jpg" alt="logo" /> */}
-              <InstagramOutlined
+              <img style={{ height: "50px" }} src="./logo.jpg" alt="logo" />
+              {/* <InstagramOutlined
                 style={{ fontSize: "50px", color: "#000000" }}
-              />
+              /> */}
               <span
                 style={{
                   color: "#000000",
