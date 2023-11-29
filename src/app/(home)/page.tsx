@@ -6,7 +6,7 @@ import { Col, Layout, Row, Space, theme } from "antd";
 import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PostView from "../../component/post";
-import SugguestFriend from "@/component/suggest-friend";
+import SuggestFriend from "@/component/suggest-friend";
 
 const { Content } = Layout;
 
@@ -34,10 +34,14 @@ const Home = () => {
                 </React.Fragment>
               ))
             } */}
-            <Row>
-              <Col xs={14}><PostView /></Col>
-              <Col xs={{span:8, offset:2 }}><SugguestFriend /></Col>
-            </Row>
+          <Row>
+            <Col xs={{ span: 10, offset: 3 }}>
+              <PostView />
+            </Col>
+            <Col xs={{ span: 8, offset: 3 }}>
+              <SuggestFriend />
+            </Col>
+          </Row>
           {/* <div style={{ display: "inline-flex", gap: "0px" }}>
             <PostView />
             <div className="w-1/12" />

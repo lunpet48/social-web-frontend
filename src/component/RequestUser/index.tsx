@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
+import { acceptFriendRequest, denyFriendRequest } from "@/services/friendService";
 import { Button, Col, Row } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -22,26 +23,13 @@ const RequestUser = ({ user }: { user: user }) => {
   const router = useRouter();
   const { currentUser } = useAuth();
 
-  const acceptFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleAcceptFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/received-friend-requests`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await acceptFriendRequest(user.id);
 
       const data = await response.json();
 
@@ -54,26 +42,13 @@ const RequestUser = ({ user }: { user: user }) => {
       setLoading(false);
     }
   };
-  const denyFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleDenyFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/received-friend-requests`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await denyFriendRequest(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -110,10 +85,7 @@ const RequestUser = ({ user }: { user: user }) => {
           <Row gutter={5} style={{ width: "100%" }}>
             {loading ? (
               <Col xs={24}>
-                <Button
-                  style={{ width: "100%", background: "#efefef" }}
-                  disabled
-                >
+                <Button style={{ width: "100%", background: "#efefef" }} disabled>
                   Loading
                 </Button>
               </Col>
@@ -137,7 +109,7 @@ const RequestUser = ({ user }: { user: user }) => {
                     type="primary"
                     style={{ width: "100%", fontSize: "14px", padding: "0" }}
                     onClick={(e) => {
-                      acceptFriendRequest(e);
+                      handleAcceptFriendRequest(e);
                     }}
                   >
                     Chấp nhận
@@ -151,7 +123,7 @@ const RequestUser = ({ user }: { user: user }) => {
                       background: "#efefef",
                     }}
                     onClick={(e) => {
-                      denyFriendRequest(e);
+                      handleDenyFriendRequest(e);
                     }}
                   >
                     Từ chối

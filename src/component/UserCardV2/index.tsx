@@ -1,9 +1,15 @@
 import { Button, Col, Row } from "antd";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 
 import styles from "./style.module.scss";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import {
+  acceptFriendRequest,
+  cancelFriendRequest,
+  deleteFriend,
+  denyFriendRequest,
+  sendFriendRequest,
+} from "@/services/friendService";
 
 enum RelationshipProfile {
   SELF = "SELF",
@@ -31,26 +37,14 @@ const UserCardV2 = ({ user }: { user: user }) => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ isSuccess: false, text: "" });
 
-  const { currentUser } = useAuth();
   const router = useRouter();
 
-  const addFriend = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleSendFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.API}/api/v1/relationship/friend-request`, {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: currentUser.id,
-          userRelatedId: user.id,
-        }),
-      });
+      const response = await sendFriendRequest(user.id);
 
       const data = await response.json();
 
@@ -64,26 +58,13 @@ const UserCardV2 = ({ user }: { user: user }) => {
     }
   };
 
-  const acceptFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
+  const HandleAcceptFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/received-friend-requests`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await acceptFriendRequest(user.id);
 
       const data = await response.json();
 
@@ -96,26 +77,13 @@ const UserCardV2 = ({ user }: { user: user }) => {
       setLoading(false);
     }
   };
-  const denyFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleDenyFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.API}/api/v1/relationship/received-friend-requests`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: currentUser.id,
-            userRelatedId: user.id,
-          }),
-        }
-      );
+      const response = await denyFriendRequest(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -127,23 +95,13 @@ const UserCardV2 = ({ user }: { user: user }) => {
     }
   };
 
-  const cancelRequest = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleCancelFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.API}/api/v1/relationship/friend-request`, {
-        method: "DELETE",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: currentUser.id,
-          userRelatedId: user.id,
-        }),
-      });
+      const response = await cancelFriendRequest(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -163,7 +121,7 @@ const UserCardV2 = ({ user }: { user: user }) => {
             type="primary"
             style={{ width: "100%" }}
             onClick={(e) => {
-              addFriend(e);
+              handleSendFriendRequest(e);
             }}
           >
             Kết bạn
@@ -175,7 +133,7 @@ const UserCardV2 = ({ user }: { user: user }) => {
             type="primary"
             style={{ width: "100%" }}
             onClick={(e) => {
-              acceptFriendRequest(e);
+              HandleAcceptFriendRequest(e);
             }}
           >
             Chấp nhận
@@ -187,7 +145,7 @@ const UserCardV2 = ({ user }: { user: user }) => {
             type="primary"
             style={{ width: "100%" }}
             onClick={(e) => {
-              cancelRequest(e);
+              handleCancelFriendRequest(e);
             }}
           >
             Hủy yêu cầu
@@ -210,23 +168,13 @@ const UserCardV2 = ({ user }: { user: user }) => {
     }
   };
 
-  const deleteFriend = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleDeleteFriend = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     const token = localStorage.getItem("token");
 
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.API}/api/v1/relationship/friends`, {
-        method: "DELETE",
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: currentUser.id,
-          userRelatedId: user.id,
-        }),
-      });
+      const response = await deleteFriend(user.id);
 
       if (response.status >= 200 && response.status < 300) {
         //succcess
@@ -257,7 +205,7 @@ const UserCardV2 = ({ user }: { user: user }) => {
           <Button
             style={{ width: "100%", background: "#efefef" }}
             onClick={(e) => {
-              denyFriendRequest(e);
+              handleDenyFriendRequest(e);
             }}
           >
             Từ chối
@@ -280,7 +228,7 @@ const UserCardV2 = ({ user }: { user: user }) => {
           <Button
             style={{ width: "100%", background: "#efefef" }}
             onClick={(e) => {
-              deleteFriend(e);
+              handleDeleteFriend(e);
             }}
           >
             Xóa

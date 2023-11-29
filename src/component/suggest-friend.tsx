@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Loading from "./Loading";
 import SuggestUser from "./SuggestUser";
 import RequestUser from "./RequestUser";
+import { getIncomingRequest, getRecommendUser } from "@/services/friendService";
 
 type user = {
   id: string;
@@ -34,16 +35,7 @@ const SuggestFriend = () => {
   useEffect(() => {
     const fetchRequestFriend = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.API}/api/v1/relationship/incoming-requests`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        const response = await getIncomingRequest();
 
         const data = await response.json();
         if (!data.error) {
@@ -57,16 +49,7 @@ const SuggestFriend = () => {
     };
     const fetchSuggestFriend = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.API}/api/v1/user/recommend`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        const response = await getRecommendUser();
 
         const data = await response.json();
         if (!data.error) {
@@ -87,31 +70,30 @@ const SuggestFriend = () => {
   return (
     <>
       <div className="right w-12/12 h-screen overflow-visible h-full">
-        <div
-          className="first pl-4 w-full"
-          style={{ top: "85px", maxWidth: "293px" }}
-        >
+        <div className="first pl-4 w-full" style={{ top: "85px", maxWidth: "293px" }}>
           <div
             className="profile flex items-center  mb-4"
             onClick={() => {
               router.push(`/profile/${currentUser.username}`);
             }}
+            style={{ cursor: "pointer" }}
           >
             <div className="avatar rounded-full overflow-hidden mr-3">
               <img
                 width="56px"
                 height="56px"
-                src={currentUser.profile.avatar}
+                src={`${
+                  currentUser.profile.avatar ? currentUser.profile.avatar : "/default-avatar.jpg"
+                }`}
                 alt=""
+                style={{ objectFit: "cover" }}
               />
             </div>
             <div className="user-name ">
               <span className="text-lg font-semibold text-gray-700">
                 {currentUser.profile.fullName}
               </span>
-              <span className="text-sm text-gray-600  block">
-                {currentUser.username}
-              </span>
+              <span className="text-sm text-gray-600  block">{currentUser.username}</span>
             </div>
           </div>
           {requestFriends.length > 0 && (

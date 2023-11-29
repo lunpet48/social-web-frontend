@@ -7,7 +7,6 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 
-import { useAuth } from "@/context/AuthContext";
 import styles from "./page.module.scss";
 import ButtonWrapper from "./ButtonWrapper";
 import Loading from "@/component/Loading";
@@ -19,6 +18,8 @@ import {
   denyFriendRequest,
   sendFriendRequest,
 } from "@/services/friendService";
+import PostProfileComponent from "@/component/PostProfileComponent";
+import { useRouter } from "next/navigation";
 
 enum RelationshipProfile {
   SELF = "SELF",
@@ -59,10 +60,12 @@ type post = {
   caption: string;
   tagList: string[];
   files: string[];
+  reactions: string[];
 };
 
 const Profile = ({ params }: { params: { id: string } }) => {
   const [loadingPage, setLoadingPage] = useState(true);
+  const [loadingPost, setLoadingPost] = useState(false);
   const [user, setUser] = useState<user>({
     id: "",
     username: "",
@@ -87,12 +90,13 @@ const Profile = ({ params }: { params: { id: string } }) => {
     setLoadingPage(false);
   };
 
-  const { currentUser } = useAuth();
+  const router = useRouter();
 
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     if (token) {
       const fetchUserProfile = async () => {
+        setLoadingPage(true);
         const response = await fetch(`${process.env.API}/api/v1/profile?id=${params.id}`, {
           method: "GET",
           headers: {
@@ -101,6 +105,8 @@ const Profile = ({ params }: { params: { id: string } }) => {
         });
         if (response.status === 200) {
           const data = await response.json();
+          setUser(data.data);
+          setLoadingPage(false);
           return data.data;
         } else if (response.status === 401) {
           console.log("JWT expired");
@@ -108,6 +114,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
       };
 
       const fetchPost = async (userId: string) => {
+        setLoadingPost(true);
         const response = await fetch(`${process.env.API}/api/v1/${userId}/posts`, {
           method: "GET",
           headers: {
@@ -116,16 +123,15 @@ const Profile = ({ params }: { params: { id: string } }) => {
         });
         if (response.status === 200) {
           const data = await response.json();
-          return data.data;
+          setLoadingPost(false);
+          setPosts(data.data);
+          console.log("post", data.data);
         } else if (response.status === 401) {
           console.log("JWT expired");
         }
       };
-
       const user: user = await fetchUserProfile();
-      const posts: post[] = await fetchPost(user.id);
-
-      setData(user, posts);
+      await fetchPost(user.id);
     }
   };
 
@@ -426,17 +432,24 @@ const Profile = ({ params }: { params: { id: string } }) => {
               ""
             )}
           </Row>
-          <Row gutter={[3, 3]}>
-            {posts.map((post, id) => (
-              <Col xs={8} key={id}>
-                <img
-                  src={`${post.files[0]}`}
-                  alt="post image"
-                  style={{ aspectRatio: "1/1", objectFit: "cover" }}
-                />
-              </Col>
-            ))}
-          </Row>
+          {loadingPost ? (
+            <Loading height="50px" />
+          ) : (
+            <Row gutter={[3, 3]}>
+              {posts.map((post, id) => (
+                <Col xs={8} key={id}>
+                  <PostProfileComponent
+                    src={`${post.files[0]}`}
+                    onClick={() => {
+                      router.push(`/post/${post.postId}`, { scroll: false });
+                    }}
+                    likeNumber={post.reactions.length}
+                    commentNumber={0}
+                  />
+                </Col>
+              ))}
+            </Row>
+          )}
         </Col>
       </Row>
     </div>
