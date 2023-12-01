@@ -18,7 +18,9 @@ const ImagePreviewWrapper = ({
         width={"100%"}
         preview={{
           mask: <></>,
-          className: styles["preview-image"],
+          classNames: {
+            wrapper: styles["preview-image"]
+          },
         }}
         style={imageStyle}
         src={src}

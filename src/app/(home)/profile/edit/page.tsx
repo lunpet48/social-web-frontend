@@ -6,11 +6,9 @@ import dayjs from "dayjs";
 
 import { useAuth } from "@/context/AuthContext";
 import ImagePreviewWrapper from "@/component/ImagePreviewWrapper";
-enum Gender {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
-  EMPTY = "",
-}
+import { updateAvatar, updateBackground, updateProfileInfo } from "@/services/profileService";
+import { profile } from "@/type/type";
+import { Gender } from "@/type/enum";
 
 const formItemLayout = {
   labelCol: {
@@ -35,11 +33,11 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [backgroundLoading, setBackgroundLoading] = useState(false);
-  const [inputs, setInputs] = useState({
-    fullname: "",
-    gender: "",
-    address: "",
-    dateOfBirth: "",
+  const [inputs, setInputs] = useState<profile>({
+    fullName: null,
+    gender: null,
+    // address: null,
+    dateOfBirth: null,
   });
 
   const { currentUser, setCurrentUser } = useAuth();
@@ -63,32 +61,30 @@ const EditProfile = () => {
 
   // use effect: set data
   useEffect(() => {
-    const fullname = currentUser.profile.fullName;
-    setInputs((values) => ({ ...values, fullname }));
+    const fullName = currentUser.profile.fullName;
+    const gender = currentUser.profile.gender || "";
+    const dateOfBirth = currentUser.profile.dateOfBirth
+      ? dayjs(currentUser.profile.dateOfBirth, "YYYY-MM-DD")
+      : undefined;
+
+    setInputs((values) => ({
+      ...values,
+      fullName,
+      gender: currentUser.profile.gender,
+      dateOfBirth: currentUser.profile.dateOfBirth,
+    }));
     form.setFieldsValue({
-      fullname,
+      fullName,
+      gender,
+      dateOfBirth,
     });
   }, [currentUser]);
 
   const [form] = Form.useForm();
-  const handleSubmit = async (event: any) => {
+  const handleUpdateProfileInfo = async (event: any) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(`${process.env.API}/api/v1/profile`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-        body: JSON.stringify({
-          userId: currentUser.id,
-          fullName: inputs.fullname,
-          gender: inputs.gender ? inputs.gender : null,
-          dateOfBirth: inputs.dateOfBirth,
-        }),
-      });
+      const response = await updateProfileInfo(inputs);
 
       const data = await response.json();
 
@@ -118,27 +114,16 @@ const EditProfile = () => {
     input.accept = "image/*";
 
     input.onchange = async (e) => {
-      const token = localStorage.getItem("token");
-
       const files = (e.target as HTMLInputElement).files;
       if (files) {
         const file = files[0];
         // if(file.type !== "image/png")
-        var formdata = new FormData();
-        formdata.append("file", file);
+        var formData = new FormData();
+        formData.append("file", file);
 
         try {
           setAvatarLoading(true);
-          const response = await fetch(
-            `${process.env.API}/api/v1/profile/avatar/${currentUser.id}`,
-            {
-              method: "PUT",
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-              body: formdata,
-            }
-          );
+          const response = await updateAvatar(formData);
 
           const data = await response.json();
 
@@ -172,27 +157,16 @@ const EditProfile = () => {
     input.accept = "image/*";
 
     input.onchange = async (e) => {
-      const token = localStorage.getItem("token");
-
       const files = (e.target as HTMLInputElement).files;
       if (files) {
         const file = files[0];
         // if(file.type !== "image/png")
-        var formdata = new FormData();
-        formdata.append("file", file);
+        var formData = new FormData();
+        formData.append("file", file);
 
         try {
           setBackgroundLoading(true);
-          const response = await fetch(
-            `${process.env.API}/api/v1/profile/background/${currentUser.id}`,
-            {
-              method: "PUT",
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-              body: formdata,
-            }
-          );
+          const response = await updateBackground(formData);
 
           const data = await response.json();
 
@@ -308,7 +282,7 @@ const EditProfile = () => {
           </Row>
           <div>
             <Form
-              onFinish={handleSubmit}
+              onFinish={handleUpdateProfileInfo}
               form={form}
               autoComplete="off"
               {...formItemLayout}
@@ -317,7 +291,7 @@ const EditProfile = () => {
               scrollToFirstError
             >
               <Form.Item
-                name="fullname"
+                name="fullName"
                 label={<label style={{ fontSize: "16px", fontWeight: 600 }}>Họ và tên</label>}
                 rules={[
                   {
@@ -326,7 +300,7 @@ const EditProfile = () => {
                   },
                 ]}
               >
-                <Input name="fullname" value={inputs.fullname} onChange={handleChange} />
+                <Input name="fullName" onChange={handleChange} />
               </Form.Item>
 
               <Form.Item
@@ -334,16 +308,15 @@ const EditProfile = () => {
                 label={<label style={{ fontSize: "16px", fontWeight: 600 }}>Giới tính</label>}
               >
                 <Select
-                  defaultValue={currentUser.profile.gender}
                   style={{
                     width: 120,
                   }}
                   onChange={(value: string) => {
-                    setInputs((values) => ({ ...values, ["gender"]: value }));
+                    setInputs((values) => ({ ...values, ["gender"]: value || null }));
                   }}
                   options={[
                     {
-                      value: null,
+                      value: `${Gender.EMPTY}`,
                       label: "Ẩn",
                     },
                     {
@@ -364,11 +337,6 @@ const EditProfile = () => {
               >
                 <DatePicker
                   format={"DD/MM/YYYY"}
-                  defaultValue={
-                    currentUser.profile.dateOfBirth
-                      ? dayjs(currentUser.profile.dateOfBirth, "YYYY-MM-DD")
-                      : undefined
-                  }
                   onChange={(date, dateString) => {
                     const formattedDate = date ? date.format("YYYY-MM-DD") : "";
                     setInputs((values) => ({

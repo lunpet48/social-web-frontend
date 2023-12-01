@@ -116,7 +116,7 @@ export default function RootLayout({
         <div style={{ margin: "50px 10px" }}>
           <Link href={"/"} className="text-decoration-none">
             <Space size={"large"}>
-              <img style={{ height: "50px" }} src="./logo.jpg" alt="logo" />
+              <img style={{ height: "50px" }} src="/logo.jpg" alt="logo" />
               {/* <InstagramOutlined
                 style={{ fontSize: "50px", color: "#000000" }}
               /> */}
