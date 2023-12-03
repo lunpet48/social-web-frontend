@@ -4,6 +4,9 @@ import { Modal, Space } from 'antd';
 import * as React from 'react';
 import MediaView from './media-view';
 import CommentComponent from "./comment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEarthAmericas, faLock, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 
 type user = {
@@ -26,6 +29,7 @@ type post = {
     files: string[];
     reactions: string[];
     createdAt: string;
+    updatedAt: string;
 };
 
 type reaction = {
@@ -60,7 +64,8 @@ const PostDetail = ({ postId, like, reaction, setLike, setReaction }: any) => {
         tagList: [],
         files: [],
         reactions: [],
-        createdAt: ""
+        createdAt: "",
+        updatedAt: ""
     });
     const [user, setUser] = useState<user>({
         id: "",
@@ -293,7 +298,7 @@ const PostDetail = ({ postId, like, reaction, setLike, setReaction }: any) => {
                         <div className='flex grid grid-cols-1'>
                             <div className="header border-b pt-4 pb-4 pl-2 pr-2 flex justify-between items-center">
                                 <div className="left flex flex-row items-center">
-                                    <div className="user-img h-10 w-10 border rounded-full overflow-hidden mr-2">
+                                    <a className="user-img h-10 w-10 border rounded-full overflow-hidden mr-4" href={`/profile/${user?.username}`}>
                                         <img
                                             alt="avatar"
                                             className="_6q-tv"
@@ -301,12 +306,56 @@ const PostDetail = ({ postId, like, reaction, setLike, setReaction }: any) => {
                                             draggable="false"
                                             src={user?.avatar}
                                         />
-                                    </div>
-                                    <div className="user-name-and-place flex flex-col">
+                                    </a>
+                                    <a className="user-name-and-place flex flex-col no-underline text-gray-900 hover:text-gray-400" href={`/profile/${user?.username}`}>
                                         <span className="text-sm font-bold">{user?.username}</span>
                                         <span className="text-xs font-light text-gray-900">
                                         </span>
-                                    </div>
+                                    </a>
+                                    {
+                                        post.createdAt !== post.updatedAt ?
+                                            <>
+                                                <svg
+                                                    aria-label="More options"
+                                                    className="_8-yf5 "
+                                                    fill="darkgrey"
+                                                    height="16"
+                                                    viewBox="0 0 48 48"
+                                                    width="16"
+                                                >
+                                                    <circle
+                                                        clipRule="evenodd"
+                                                        cx="24"
+                                                        cy="24"
+                                                        fillRule="evenodd"
+                                                        r="4.5"
+                                                    ></circle>
+                                                </svg>
+                                                <span style={{ color: "darkgray" }}>Đã chỉnh sửa</span>
+                                            </>
+                                            : undefined
+                                    }
+                                    <svg
+                                        aria-label="More options"
+                                        className="_8-yf5 "
+                                        fill="darkgrey"
+                                        height="16"
+                                        viewBox="0 0 48 48"
+                                        width="16"
+                                    >
+                                        <circle
+                                            clipRule="evenodd"
+                                            cx="24"
+                                            cy="24"
+                                            fillRule="evenodd"
+                                            r="4.5"
+                                        ></circle>
+                                    </svg>
+                                    {post.postMode == "PUBLIC" ?
+                                        <FontAwesomeIcon icon={faEarthAmericas as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                                        : post.postMode == "FRIEND" ? <FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                                            : <FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                                    }
                                 </div>
                                 <div className="right">
                                     <svg
@@ -366,7 +415,7 @@ const PostDetail = ({ postId, like, reaction, setLike, setReaction }: any) => {
                                             </div>
                                             <div className="flex ml-14">
                                                 <Space>
-                                                    <span className="text-sm font-light text-gray-900">{new Date(post.createdAt).toLocaleString()}</span>
+                                                    <span className="text-sm font-light text-gray-900">{new Date(post.updatedAt).toLocaleString()}</span>
                                                 </Space>
                                             </div></> : undefined}
                                         {comments.map((comment, id) => (

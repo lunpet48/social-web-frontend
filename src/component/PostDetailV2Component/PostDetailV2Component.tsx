@@ -3,6 +3,10 @@ import MediaView from "../media-view";
 import { Space } from "antd";
 import CommentComponent from "../comment";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
+import MoreOption from "../more-option";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEarthAmericas, faLock, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 type user = {
   id: string;
@@ -24,6 +28,7 @@ type post = {
   files: string[];
   reactions: string[];
   createdAt: string;
+  updatedAt: string;
 };
 
 type reaction = {
@@ -53,6 +58,7 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
     files: [],
     reactions: [],
     createdAt: "",
+    updatedAt: ""
   });
   const [user, setUser] = useState<user>({
     id: "",
@@ -277,20 +283,53 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
                 <span className="text-sm font-bold">{user?.username}</span>
                 <span className="text-xs font-light text-gray-900"></span>
               </div>
-            </div>
-            <div className="right">
+              {
+                post.createdAt !== post.updatedAt ?
+                  <>
+                    <svg
+                      aria-label="More options"
+                      className="_8-yf5 "
+                      fill="darkgrey"
+                      height="16"
+                      viewBox="0 0 48 48"
+                      width="16"
+                    >
+                      <circle
+                        clipRule="evenodd"
+                        cx="24"
+                        cy="24"
+                        fillRule="evenodd"
+                        r="4.5"
+                      ></circle>
+                    </svg>
+                    <span style={{ color: "darkgray" }}>Đã chỉnh sửa</span>
+                  </>
+                  : undefined
+              }
               <svg
                 aria-label="More options"
                 className="_8-yf5 "
-                fill="#262626"
+                fill="darkgrey"
                 height="16"
                 viewBox="0 0 48 48"
                 width="16"
               >
-                <circle clipRule="evenodd" cx="8" cy="24" fillRule="evenodd" r="4.5"></circle>
-                <circle clipRule="evenodd" cx="24" cy="24" fillRule="evenodd" r="4.5"></circle>
-                <circle clipRule="evenodd" cx="40" cy="24" fillRule="evenodd" r="4.5"></circle>
+                <circle
+                  clipRule="evenodd"
+                  cx="24"
+                  cy="24"
+                  fillRule="evenodd"
+                  r="4.5"
+                ></circle>
               </svg>
+              {post.postMode == "PUBLIC" ?
+                <FontAwesomeIcon icon={faEarthAmericas as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                : post.postMode == "FRIEND" ? <FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                  : <FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} />
+              }
+            </div>
+            <div className="right">
+              <MoreOption post={post} user={user} userId={post.userId}></MoreOption>
             </div>
           </div>
           <div className="flex flex-column">
@@ -321,7 +360,7 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
                     <div className="flex ml-14">
                       <Space>
                         <span className="text-sm font-light text-gray-900">
-                          {new Date(post.createdAt).toLocaleString()}
+                          {new Date(post.updatedAt).toLocaleString()}
                         </span>
                       </Space>
                     </div>

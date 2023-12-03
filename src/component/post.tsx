@@ -3,6 +3,11 @@ import "./index.css";
 import LikeComponent from "./like-component";
 import MediaView from "./media-view";
 import Loading from "./Loading";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { faEarthAmericas, faLock, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { redirect } from "next/navigation";
+import MoreOption from "./more-option";
 
 type user = {
   id: string;
@@ -97,23 +102,68 @@ const PostView = () => {
                 <div className="feed-item border border-gray-400 rounded bg-white">
                   <div className="header border-b p-4 flex justify-between items-center">
                     <div className="left flex flex-row items-center">
-                      <div className="user-img h-10 w-10 border rounded-full overflow-hidden mr-4">
+                      <a className="user-img h-10 w-10 border rounded-full overflow-hidden mr-4" href={`/profile/${user?.username}`}>
                         <img
                           alt="avatar"
                           className="_6q-tv"
-                          data-testid="user-avatar"
                           draggable="false"
                           src={user?.avatar}
                         />
-                      </div>
-                      <div className="user-name-and-place flex flex-col">
+                      </a>
+                      <a className="user-name-and-place flex flex-col no-underline text-gray-900 hover:text-gray-400" href={`/profile/${user?.username}`}>
                         <span className="text-sm font-bold">{user?.username}</span>
                         <span className="text-xs font-light text-gray-900">
                         </span>
-                      </div>
+                      </a>
+
+                      {
+                        post.createdAt !== post.updatedAt ?
+                          <>
+                            <svg
+                              aria-label="More options"
+                              className="_8-yf5 "
+                              fill="darkgrey"
+                              height="16"
+                              viewBox="0 0 48 48"
+                              width="16"
+                            >
+                              <circle
+                                clipRule="evenodd"
+                                cx="24"
+                                cy="24"
+                                fillRule="evenodd"
+                                r="4.5"
+                              ></circle>
+                            </svg>
+                            <span style={{ color: "darkgray" }}>Đã chỉnh sửa</span>
+                          </>
+                          : undefined
+                      }
+                      <svg
+                        aria-label="More options"
+                        className="_8-yf5 "
+                        fill="darkgrey"
+                        height="16"
+                        viewBox="0 0 48 48"
+                        width="16"
+                      >
+                        <circle
+                          clipRule="evenodd"
+                          cx="24"
+                          cy="24"
+                          fillRule="evenodd"
+                          r="4.5"
+                        ></circle>
+                      </svg>
+                      {post.postMode == "PUBLIC" ?
+                        <FontAwesomeIcon icon={faEarthAmericas as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                        : post.postMode == "FRIEND" ? <FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                          : <FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                      }
                     </div>
                     <div className="right">
-                      <svg
+                      <MoreOption userId={post.userId}></MoreOption>
+                      {/* <svg
                         aria-label="More options"
                         className="_8-yf5 "
                         fill="#262626"
@@ -142,7 +192,7 @@ const PostView = () => {
                           fillRule="evenodd"
                           r="4.5"
                         ></circle>
-                      </svg>
+                      </svg> */}
                     </div>
                   </div>
                   <div className="feed-img">
@@ -169,7 +219,7 @@ const PostView = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="bottom border-t pt-3 mt-3">
+                    {/* <div className="bottom border-t pt-3 mt-3">
                       <form className="wrapper flex">
                         <input
                           type="text"
@@ -183,7 +233,7 @@ const PostView = () => {
                           post
                         </button>
                       </form>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

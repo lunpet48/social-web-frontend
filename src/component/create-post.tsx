@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./index.css";
 import { Button, Modal, Input, UploadFile, Select, Space, message } from "antd";
 import MediaUpload from "./media-upload";
-import axios from "axios";
-import { faL } from "@fortawesome/free-solid-svg-icons";
+import { faEarthAmericas, faL, faLock, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 const { TextArea } = Input;
 
@@ -153,12 +154,12 @@ const CreatePost = ({open, setOpen}: any) => {
           <span>Chế độ: </span>
           <Select
             defaultValue="PUBLIC"
-            style={{ width: 120 }}
+            style={{ width: 150 }}
             onChange={handlePostMode}
             options={[
-              { value: 'PUBLIC', label: 'Công Khai' },
-              { value: 'FRIEND', label: 'Bạn Bè' },
-              { value: 'PRIVATE', label: 'Riêng Tư' },
+                { value: 'PUBLIC', label: <span><FontAwesomeIcon icon={faEarthAmericas as IconProp} size="sm" style={{ color: "darkgrey", }} /> Công Khai </span> },
+                { value: 'FRIEND', label: <span><FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} /> Bạn bè</span> },
+                { value: 'PRIVATE', label: <span><FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} /> Riêng Tư</span> },
             ]}
           />
         </Space>
