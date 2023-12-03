@@ -10,11 +10,48 @@ const MoreOption = ({ post, user, userId }: any) => {
     const { currentUser } = useAuth();
     const [editPost, setEditPost] = useState(false);
 
+    const deletePost = async () => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            const deletePostAPI = async () => {
+                const response = await fetch(`${process.env.API}/api/v1/post/${post.postId}`, {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: "Bearer " + token,
+                    },
+                });
+                if (response.status === 200) {
+                    const data = await response.json();
+                    return data.data;
+                } else if (response.status === 401) {
+                    console.log("JWT expired");
+                }
+            };
+            await deletePostAPI();
+        }
+    }
+
     if (currentUser.id === userId) {
         const openEditModal = () => {
             setEditPost(true)
         }
 
+        const showDeleteConfirm = () => {
+            confirm({
+                title: 'Bạn có chắc là muốn xóa bài viết này không?',
+                icon: <ExclamationCircleFilled />,
+                content: '',
+                okText: 'Có',
+                okType: 'danger',
+                cancelText: 'Không',
+                onOk() {
+                    deletePost();
+                },
+                onCancel() {
+                    console.log('Cancel');
+                },
+            });
+        }
 
         const items: MenuProps['items'] = [
             {
@@ -22,7 +59,7 @@ const MoreOption = ({ post, user, userId }: any) => {
                 key: '0',
             },
             {
-                label: <a href="">Xóa bài viết</a>,
+                label: <a onClick={showDeleteConfirm}>Xóa bài viết</a>,
                 key: '1',
             },
         ];
@@ -51,7 +88,7 @@ const MoreOption = ({ post, user, userId }: any) => {
         );
     }
     else {
-        const showDeleteComfirm = () => {
+        const showDeleteConfirm = () => {
             confirm({
                 title: 'Bạn có chắc là muốn hủy kết bạn với người này không?',
                 icon: <ExclamationCircleFilled />,
@@ -70,7 +107,7 @@ const MoreOption = ({ post, user, userId }: any) => {
 
         const items: MenuProps['items'] = [
             {
-                label: <a onClick={showDeleteComfirm}>Hủy kết bạn</a>,
+                label: <a onClick={showDeleteConfirm}>Hủy kết bạn</a>,
                 key: '0',
             },
         ];
