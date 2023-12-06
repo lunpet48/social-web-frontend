@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import styles from "./index.module.scss";
 import { faComment, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { checkMediaType } from "@/utils";
+import { MediaType } from "@/type/enum";
 
 const PostProfileComponent = ({
   src,
@@ -17,12 +19,19 @@ const PostProfileComponent = ({
 }) => {
   return (
     <div className={styles.container} onClick={onClick}>
-      <img
-        src={src}
-        alt="post image"
-        style={{ aspectRatio: "1/1", objectFit: "cover" }}
-        className={styles.image}
-      />
+      {checkMediaType(src) === MediaType.IMAGE ? (
+        <img
+          src={src}
+          alt="post image"
+          style={{ aspectRatio: "1/1", objectFit: "cover" }}
+          className={styles.image}
+        />
+      ) : checkMediaType(src) === MediaType.VIDEO ? (
+        <video src={src} style={{ aspectRatio: "1/1", objectFit: "cover" }} />
+      ) : (
+        <></>
+      )}
+
       <div className={styles.overlay}>
         <div className={styles.text}>
           <FontAwesomeIcon icon={faHeart} />
