@@ -1,0 +1,69 @@
+.video-wrapper {
+  position: relative;
+  height: 550px;
+  overflow: hidden;
+  background: black;
+  .video {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    height: 100%;
+    cursor: pointer;
+  }
+  .action {
+    position: absolute;
+    bottom: 0;
+    padding: 0 20px 20px;
+    width: 100%;
+    color: white;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    .duration-bar {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      visibility: hidden;
+
+      .progress-bar {
+        flex: 1;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  .play{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-size: 50px;
+  }
+
+  &:hover .duration-bar {
+    visibility: visible;
+  }
+
+  progress {
+    color: white;
+  }
+
+  progress::-moz-progress-bar {
+    background: white;
+  }
+
+  progress::-webkit-progress-value {
+    background: white;
+  }
+
+  progress::-webkit-progress-bar {
+    background: rgba(255, 255, 255, 0.34);
+  }
+}

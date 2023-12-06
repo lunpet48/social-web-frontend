@@ -22,8 +22,10 @@ import Loading from "@/component/Loading";
 
 export default function RootLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const labelContents = ["Trang chủ", "Tìm kiếm", "Bạn bè", "Tạo bài", "Trang cá nhân"];
   const [loadingPage, setLoadingPage] = useState(true);
@@ -70,9 +72,9 @@ export default function RootLayout({
         const response = await fetch(
           `${process.env.API}/api/v1/auth/renew-token`,
           {
-            method: "POST",
-            credentials: "include",
-          }
+          method: "POST",
+          credentials: "include",
+        }
         );
 
         const data = await response.json();
@@ -96,53 +98,56 @@ export default function RootLayout({
 
   const [showCreatePost, setShowCreatePost] = useState(false);
   return (
-    <Layout hasSider>
-      <Layout.Sider
-        width={300}
-        theme="light"
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-        style={{
-          overflow: "auto",
-          height: "100vh",
-          position: "fixed",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          borderRight: "1px solid #dcdcdc",
-        }}
-      >
-        <div style={{ margin: "50px 10px" }}>
-          <Link href={"/"} className="text-decoration-none">
-            <Space size={"large"}>
-              <img style={{ height: "50px" }} src="/logo.jpg" alt="logo" />
-              {/* <InstagramOutlined
-                style={{ fontSize: "50px", color: "#000000" }}
-              /> */}
-              <span
-                style={{
-                  color: "#000000",
-                  fontSize: "30px",
-                  fontFamily: "monospace",
-                }}
-              >
-                Sunny
-              </span>
-            </Space>
-          </Link>
-        </div>
-        <Menu
+    <>
+      <Layout hasSider>
+        <Layout.Sider
+          width={300}
           theme="light"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={items}
-        />
-        <CreatePost open={showCreatePost} setOpen={setShowCreatePost}></CreatePost>
-      </Layout.Sider>
-      <Layout className="site-layout" style={{ marginLeft: 300 }}>
-        {loadingPage ? <Loading height="100vh" /> : children}
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          style={{
+            overflow: "auto",
+            height: "100vh",
+            position: "fixed",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            borderRight: "1px solid #dcdcdc",
+          }}
+        >
+          <div style={{ margin: "50px 10px" }}>
+            <Link href={"/"} className="text-decoration-none">
+              <Space size={"large"}>
+                <img style={{ height: "50px" }} src="/logo.jpg" alt="logo" />
+                {/* <InstagramOutlined
+                  style={{ fontSize: "50px", color: "#000000" }}
+                /> */}
+                <span
+                  style={{
+                    color: "#000000",
+                    fontSize: "30px",
+                    fontFamily: "monospace",
+                  }}
+                >
+                  Sunny
+                </span>
+              </Space>
+            </Link>
+          </div>
+          <Menu
+            theme="light"
+            mode="inline"
+            defaultSelectedKeys={["1"]}
+            items={items}
+          />
+          <CreatePost open={showCreatePost} setOpen={setShowCreatePost}></CreatePost>
+        </Layout.Sider>
+        <Layout className="site-layout" style={{ marginLeft: 300 }}>
+          {loadingPage ? <Loading height="100vh" /> : children}
+                </Layout>
       </Layout>
-    </Layout>
+      {modal}
+    </>
   );
 }

@@ -3,3 +3,9 @@ export enum Gender {
   FEMALE = "FEMALE",
   EMPTY = "",
 }
+
+export enum MediaType {
+  IMAGE = "IMAGE",
+  VIDEO = "VIDEO",
+  UNKNOWN = "UNKNOWN",
+}

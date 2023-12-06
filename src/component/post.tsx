@@ -6,8 +6,10 @@ import Loading from "./Loading";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faEarthAmericas, faLock, faUserGroup } from "@fortawesome/free-solid-svg-icons";
-import { redirect } from "next/navigation";
 import MoreOption from "./more-option";
+import { checkMediaType } from "@/utils";
+import { MediaType } from "@/type/enum";
+import VideoPlayerComponent from "./VideoPlayerComponent";
 
 type user = {
   id: string;
@@ -118,26 +120,26 @@ const PostView = () => {
 
                       {
                         post.createdAt !== post.updatedAt ?
-                          <>
-                            <svg
-                              aria-label="More options"
-                              className="_8-yf5 "
-                              fill="darkgrey"
-                              height="16"
-                              viewBox="0 0 48 48"
-                              width="16"
-                            >
-                              <circle
-                                clipRule="evenodd"
-                                cx="24"
-                                cy="24"
-                                fillRule="evenodd"
-                                r="4.5"
-                              ></circle>
-                            </svg>
-                            <span style={{ color: "darkgray" }}>Đã chỉnh sửa</span>
-                          </>
-                          : undefined
+                        <>
+                          <svg
+                            aria-label="More options"
+                            className="_8-yf5 "
+                            fill="darkgrey"
+                            height="16"
+                            viewBox="0 0 48 48"
+                            width="16"
+                          >
+                            <circle
+                              clipRule="evenodd"
+                              cx="24"
+                              cy="24"
+                              fillRule="evenodd"
+                              r="4.5"
+                            ></circle>
+                          </svg>
+                          <span style={{ color: "darkgray" }}>Đã chỉnh sửa</span>
+                        </>
+                      : undefined
                       }
                       <svg
                         aria-label="More options"
@@ -157,8 +159,8 @@ const PostView = () => {
                       </svg>
                       {post.postMode == "PUBLIC" ?
                         <FontAwesomeIcon icon={faEarthAmericas as IconProp} size="sm" style={{ color: "darkgrey", }} />
-                        : post.postMode == "FRIEND" ? <FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} />
-                          : <FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                      : post.postMode == "FRIEND" ? <FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                      : <FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} />
                       }
                     </div>
                     <div className="right">
@@ -196,7 +198,14 @@ const PostView = () => {
                     </div>
                   </div>
                   <div className="feed-img">
-                    <MediaView slides={post.files}></MediaView>
+                    {checkMediaType(post.files[0]) === MediaType.IMAGE ? (
+                      <MediaView slides={post.files}></MediaView>
+                    ) : checkMediaType(post.files[0]) === MediaType.VIDEO ? (
+                      <VideoPlayerComponent src={post.files[0]} />
+                    ) : (
+                      <></>
+                    )}
+
                     {/* <Carousel slides={post.files}></Carousel> */}
                     {/* <img style={{ width: "100%" }}
                       src={post.files[0]}

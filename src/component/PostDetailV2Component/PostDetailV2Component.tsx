@@ -7,6 +7,9 @@ import MoreOption from "../more-option";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEarthAmericas, faLock, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { checkMediaType } from "@/utils";
+import { MediaType } from "@/type/enum";
+import VideoPlayerComponent from "../VideoPlayerComponent";
 
 type user = {
   id: string;
@@ -264,7 +267,14 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
   return (
     <div className="relative" style={{ display: "flex", flexWrap: "wrap" }}>
       <div className="feed-img" style={{ flex: "50%" }}>
-        <MediaView slides={post?.files}></MediaView>
+        {/* <MediaView slides={post?.files}></MediaView> */}
+        {post && checkMediaType(post.files[0]) === MediaType.IMAGE ? (
+          <MediaView slides={post?.files}></MediaView>
+        ) : post && checkMediaType(post.files[0]) === MediaType.VIDEO ? (
+          <VideoPlayerComponent src={post.files[0]} />
+        ) : (
+          <></>
+        )}
       </div>
       <div className="header" style={{ flex: "50%" }}>
         <div className="flex grid grid-cols-1">
@@ -285,26 +295,26 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
               </div>
               {
                 post.createdAt !== post.updatedAt ?
-                  <>
-                    <svg
-                      aria-label="More options"
-                      className="_8-yf5 "
-                      fill="darkgrey"
-                      height="16"
-                      viewBox="0 0 48 48"
-                      width="16"
-                    >
-                      <circle
+                <>
+                  <svg
+                    aria-label="More options"
+                    className="_8-yf5 "
+                    fill="darkgrey"
+                    height="16"
+                    viewBox="0 0 48 48"
+                    width="16"
+                  >
+                    <circle
                         clipRule="evenodd"
                         cx="24"
                         cy="24"
                         fillRule="evenodd"
                         r="4.5"
                       ></circle>
-                    </svg>
-                    <span style={{ color: "darkgray" }}>Đã chỉnh sửa</span>
-                  </>
-                  : undefined
+                  </svg>
+                  <span style={{ color: "darkgray" }}>Đã chỉnh sửa</span>
+                </>
+              : undefined
               }
               <svg
                 aria-label="More options"
@@ -324,8 +334,8 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
               </svg>
               {post.postMode == "PUBLIC" ?
                 <FontAwesomeIcon icon={faEarthAmericas as IconProp} size="sm" style={{ color: "darkgrey", }} />
-                : post.postMode == "FRIEND" ? <FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} />
-                  : <FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} />
+              : post.postMode == "FRIEND" ? <FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} />
+              : <FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} />
               }
             </div>
             <div className="right">
