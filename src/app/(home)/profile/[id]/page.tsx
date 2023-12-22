@@ -426,14 +426,15 @@ const Profile = ({ params }: { params: { id: string } }) => {
           <Divider style={{ borderTop: "1px solid #dbdbdb", marginBottom: "-0.5px" }} />
           <Row style={{ display: "flex", justifyContent: "center" }}>
             <div className={`${styles.tag} ${styles.active} ${styles.button}`}>Bài viết</div>
-            {user.relationship == RelationshipProfile.SELF ? (
+            {/* <div className={`${styles.tag} ${styles.button}`} style={{cursor:"not-allowed"}}>Reels</div> */}
+            {/* {user.relationship == RelationshipProfile.SELF ? (
               <>
                 <div className={`${styles.tag} ${styles.button}`}>Đã lưu</div>
                 <div className={`${styles.tag} ${styles.button}`}>Đã thích</div>
               </>
             ) : (
               ""
-            )}
+            )} */}
           </Row>
           {loadingPost ? (
             <Loading height="50px" />

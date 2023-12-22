@@ -15,5 +15,5 @@ export function checkMediaType(url: string) {
     return MediaType.VIDEO;
   }
 
-  return MediaType.UNKNOWN;
+  return MediaType.IMAGE;
 }
