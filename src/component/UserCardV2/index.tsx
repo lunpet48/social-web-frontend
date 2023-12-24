@@ -10,28 +10,30 @@ import {
   denyFriendRequest,
   sendFriendRequest,
 } from "@/services/friendService";
+import { user } from "@/type/type";
+import { RelationshipProfile } from "@/type/enum";
 
-enum RelationshipProfile {
-  SELF = "SELF",
-  STRANGER = "STRANGER",
-  PENDING = "PENDING",
-  INCOMMINGREQUEST = "INCOMMINGREQUEST",
-  FRIEND = "FRIEND",
-  BLOCK = "BLOCK",
-}
+// enum RelationshipProfile {
+//   SELF = "SELF",
+//   STRANGER = "STRANGER",
+//   PENDING = "PENDING",
+//   INCOMMINGREQUEST = "INCOMMINGREQUEST",
+//   FRIEND = "FRIEND",
+//   BLOCK = "BLOCK",
+// }
 
-type user = {
-  id: string;
-  username: string;
-  email: string;
-  isLocked: false;
-  bio: string;
-  avatar: string;
-  fullName: string;
-  friendCount: number;
-  postCount: number;
-  relationship: RelationshipProfile;
-};
+// type user = {
+//   id: string;
+//   username: string;
+//   email: string;
+//   isLocked: false;
+//   bio: string;
+//   avatar: string;
+//   fullName: string;
+//   friendCount: number;
+//   postCount: number;
+//   relationship: RelationshipProfile;
+// };
 
 const UserCardV2 = ({ user }: { user: user }) => {
   const [loading, setLoading] = useState(false);

@@ -370,7 +370,7 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
                     <div className="flex ml-14">
                       <Space>
                         <span className="text-sm font-light text-gray-900">
-                          {new Date(post.updatedAt).toLocaleString()}
+                          {/* {new Date(post.updatedAt).toLocaleString()} */}
                         </span>
                       </Space>
                     </div>

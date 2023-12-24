@@ -9,3 +9,12 @@ export enum MediaType {
   VIDEO = "VIDEO",
   UNKNOWN = "UNKNOWN",
 }
+
+export enum RelationshipProfile {
+  SELF = "SELF",
+  STRANGER = "STRANGER",
+  PENDING = "PENDING",
+  INCOMMINGREQUEST = "INCOMMINGREQUEST",
+  FRIEND = "FRIEND",
+  BLOCK = "BLOCK",
+}

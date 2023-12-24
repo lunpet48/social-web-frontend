@@ -131,7 +131,7 @@ export default function Register() {
           <Col xs={24} sm={20} md={16}>
             <Row className={styles.card}>
               <Col className={styles.left} span={12}>
-                <h2 style={{ display: "block", textAlign: "center", marginBottom: "20px" }}>Register</h2>
+                <h2 style={{ display: "block", textAlign: "center", marginBottom: "20px" }}>Đăng ký</h2>
                 <Form onFinish={handleRegister} form={form} autoComplete="off" {...formItemLayout} scrollToFirstError>
                   <Form.Item
                     name="email"
@@ -139,11 +139,11 @@ export default function Register() {
                     rules={[
                       {
                         type: "email",
-                        message: "The input is not valid Email!",
+                        message: "Email không hợp lệ!",
                       },
                       {
                         required: true,
-                        message: "Please input your Email!",
+                        message: "Hãy nhập email của bạn!",
                       },
                     ]}
                   >
@@ -152,11 +152,11 @@ export default function Register() {
 
                   <Form.Item
                     name="username"
-                    label="Username"
+                    label="Tên tài khoản"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your username!",
+                        message: "Hãy nhập tên tài khoản!",
                       },
                     ]}
                   >
@@ -165,11 +165,11 @@ export default function Register() {
 
                   <Form.Item
                     name="fullname"
-                    label="Fullname"
+                    label="Họ và tên"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your name!",
+                        message: "Hãy nhập họ và tên!",
                       },
                     ]}
                   >
@@ -178,11 +178,11 @@ export default function Register() {
 
                   <Form.Item
                     name="password"
-                    label="Password"
+                    label="Mật khẩu"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your password!",
+                        message: "Hãy nhập mật khẩu của bạn!",
                       },
                     ]}
                     hasFeedback
@@ -192,13 +192,13 @@ export default function Register() {
 
                   <Form.Item
                     name="confirm"
-                    label="Confirm Password"
+                    label="Nhập lại mật khẩu"
                     dependencies={["password"]}
                     hasFeedback
                     rules={[
                       {
                         required: true,
-                        message: "Please confirm your password!",
+                        message: "Hãy nhập xác nhận mật khẩu!",
                       },
                       ({ getFieldValue }) => ({
                         validator(_, value) {
@@ -226,14 +226,14 @@ export default function Register() {
                           onClick={handleSendOtp}
                           disabled={loadingOTP}
                         >
-                          {loadingOTP ? "Please wait..." : "Send mail"}
+                          {loadingOTP ? "Please wait..." : "Gửi"}
                         </Button>
                       </Form.Item>
                     </Space>
                   </Form.Item>
                   <div className={styles["btn-register"]}>
                     <Button size="large" type="primary" htmlType="submit" disabled={loading}>
-                      {loading ? "Please wait..." : "Register"}
+                      {loading ? "Please wait..." : "Đăng ký"}
                     </Button>
                   </div>
                 </Form>
@@ -243,7 +243,7 @@ export default function Register() {
                 <figure>
                   <img src="./register.jpg" alt="sign up image" />
                 </figure>
-                <Link href="/login">I am already member</Link>
+                <Link href="/login">Trở về đăng nhập</Link>
               </Col>
             </Row>
           </Col>

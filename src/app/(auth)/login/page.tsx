@@ -81,18 +81,18 @@ export default function Login() {
                 <figure>
                   <img src="./login.jpg" alt="sign up image" />
                 </figure>
-                <Link href="/register">Create an account</Link>
+                <Link href="/register">Tạo tài khoản mới</Link>
               </Col>
               <Col className={styles.right} span={12}>
-                <h2 style={{ marginBottom: "40px" }}>Login</h2>
+                <h2 style={{ marginBottom: "40px" }}>Đăng nhập</h2>
                 <Form autoComplete="off" onFinish={handleSubmit}>
-                  <label>Username</label>
+                  <label>Tài khoản</label>
                   <Form.Item
                     name="username"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your username",
+                        message: "Nhập tên tài khoản!",
                       },
                     ]}
                   >
@@ -104,20 +104,20 @@ export default function Login() {
                           &nbsp;&nbsp;&nbsp;
                         </>
                       }
-                      placeholder="Enter your username or email"
+                      placeholder="Nhập tên tài khoản hoặc email"
                       name="username"
                       value={inputs.username}
                       onChange={handleChange}
                     />
                   </Form.Item>
 
-                  <label>Password</label>
+                  <label>Mật khẩu</label>
                   <Form.Item
                     name="password"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your password!",
+                        message: "Nhập mật khẩu của bạn!",
                       },
                     ]}
                   >
@@ -129,7 +129,7 @@ export default function Login() {
                           &nbsp;&nbsp;&nbsp;
                         </>
                       }
-                      placeholder="Enter your password"
+                      placeholder="Nhập mật khẩu"
                       name="password"
                       value={inputs.password}
                       onChange={handleChange}

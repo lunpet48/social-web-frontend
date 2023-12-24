@@ -164,7 +164,7 @@ const PostView = () => {
                       }
                     </div>
                     <div className="right">
-                      <MoreOption userId={post.userId}></MoreOption>
+                      {/* <MoreOption userId={post.userId}></MoreOption> */}
                       {/* <svg
                         aria-label="More options"
                         className="_8-yf5 "
