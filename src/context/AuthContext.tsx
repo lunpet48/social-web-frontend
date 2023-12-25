@@ -1,28 +1,7 @@
 "use client";
+import { Gender } from "@/type/enum";
+import { user } from "@/type/type";
 import { createContext, useContext, useState, ReactNode } from "react";
-
-enum Gender {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
-  EMPTY = "",
-}
-
-type user = {
-  id: string;
-  username: string;
-  email: string;
-  role: string;
-  isLocked: false;
-  profile: {
-    userId: string;
-    bio: string;
-    avatar: string;
-    fullName: string;
-    gender: Gender;
-    address: string;
-    dateOfBirth: string;
-  };
-};
 
 type GlobalContent = {
   currentUser: user;
@@ -38,15 +17,12 @@ export const AuthContext = createContext<GlobalContent>({
     email: "",
     role: "",
     isLocked: false,
-    profile: {
-      userId: "",
-      bio: "",
-      avatar: "",
-      fullName: "",
-      gender: Gender.EMPTY,
-      address: "",
-      dateOfBirth: "",
-    },
+    bio: "",
+    avatar: "",
+    fullName: "",
+    gender: Gender.EMPTY,
+    address: "",
+    dateOfBirth: "",
   },
   loginContext: () => {},
   signOut: () => {},
@@ -68,15 +44,12 @@ export function AuthProvider({ children }: Props) {
     email: "",
     role: "",
     isLocked: false,
-    profile: {
-      userId: "",
-      bio: "",
-      avatar: "",
-      fullName: "",
-      gender: Gender.EMPTY,
-      address: "",
-      dateOfBirth: "",
-    },
+    bio: "",
+    avatar: "",
+    fullName: "",
+    gender: Gender.EMPTY,
+    address: "",
+    dateOfBirth: "",
   });
 
   function loginContext(user: user, token: string) {
@@ -92,15 +65,12 @@ export function AuthProvider({ children }: Props) {
       email: "",
       role: "",
       isLocked: false,
-      profile: {
-        userId: "",
-        bio: "",
-        avatar: "",
-        fullName: "",
-        gender: Gender.EMPTY,
-        address: "",
-        dateOfBirth: "",
-      },
+      bio: "",
+      avatar: "",
+      fullName: "",
+      gender: Gender.EMPTY,
+      address: "",
+      dateOfBirth: "",
     });
   }
 
