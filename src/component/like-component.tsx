@@ -1,6 +1,5 @@
 import { CommentOutlined, HeartFilled, HeartOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
-import PostDetail from "./post-detail";
 import { useRouter } from "next/navigation";
 
 type reaction = {
@@ -15,6 +14,7 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
         postId: postId,
         liked: false
     });
+    let timeoutId: string | number | NodeJS.Timeout | undefined;
     //const [open, setOpen] = useState(false);
     //const { liked, numberOfLike, likeContext } = useLike();
     const [like, setLike] = useState<number>(numberOfLike);
@@ -24,6 +24,19 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
             setLike(like + 1);
             reaction.liked = true;
             setReaction(reaction);
+        }
+        else if (reaction?.liked === true) {
+            setLike(like - 1);
+            reaction!.liked = false;
+            setReaction(reaction)
+        }
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(await likeAPI, 2000);
+    };
+    const likeAPI = async () => {
+        if (reaction!.liked === true) {
             const response = await fetch(`${process.env.API}/api/v1/post/${reaction?.postId}/like`, {
                 method: "POST",
                 headers: {
@@ -32,18 +45,13 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
             });
             if (response.status == 200) {
                 const data = await response.json();
-                return data.data;
+                setReaction(data.data);
+                await likeNumber();
             } else if (response.status === 401) {
                 console.log("JWT expired");
             }
-            setLike(like - 1);
-            reaction.liked = false;
-            setReaction(reaction)
         }
-        else if (reaction?.liked === true) {
-            setLike(like - 1);
-            reaction!.liked = false;
-            setReaction(reaction)
+        else if (reaction!.liked === false) {
             const response = await fetch(`${process.env.API}/api/v1/post/${reaction?.postId}/like`, {
                 method: "DELETE",
                 headers: {
@@ -52,13 +60,11 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
             });
             if (response.status == 200) {
                 const data = await response.json();
-                return data.data;
+                setReaction(data.data);
+                await likeNumber();
             } else if (response.status === 401) {
                 console.log("JWT expired");
             }
-            setLike(like + 1)
-            reaction!.liked = true;
-            setReaction(reaction)
         }
     };
     const likeNumber = async () => {
@@ -70,7 +76,7 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
         });
         if (response.status == 200) {
             const data = await response.json();
-            return data.data.reactions.length;
+            setLike(data.data.reactions.length);
         } else if (response.status === 401) {
             console.log("JWT expired");
         }
@@ -78,10 +84,7 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
     console.log(like);
 
     const handleLikeClick = async () => {
-        const reaction = await likeClick();
-        const like = await likeNumber();
-        setReaction(reaction);
-        setLike(like);
+        likeClick();
     }
     useEffect(() => {
         const fetchData = async () => {
@@ -110,26 +113,26 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
     }, []);
     // console.log(reaction);
     return (
-      <>
-        <div className="icons flex flex-row justify-between items-center">
-          <div className="left flex flex-row">
-            <button onClick={handleLikeClick}>
-              <div className="like mr-4">
-                {reaction.liked === true ? <HeartFilled style={{ fontSize: "25px", color: "#FF2F41" }} /> : <HeartOutlined style={{ fontSize: "25px" }} />}
-              </div>
-            </button>
-            {/* <PostDetail postId={postId} like={like} reaction={reaction} setLike={setLike} setReaction={setReaction}></PostDetail> */}
-            <button onClick={()=>{router.push(`/post/${postId}`, { scroll: false });}}>
-              <div className="comment mr-4">
-                <CommentOutlined style={{ fontSize: "25px" }} />
-              </div>
-            </button>
-          </div>
-        </div >
-        <div className="likes mt-1">
-          <span className="font-bold text-sm">{like} likes</span>
-        </div>
-      </>
+        <>
+            <div className="icons flex flex-row justify-between items-center">
+                <div className="left flex flex-row">
+                    <button onClick={handleLikeClick}>
+                        <div className="like mr-4">
+                            {reaction.liked === true ? <HeartFilled style={{ fontSize: "25px", color: "#FF2F41" }} /> : <HeartOutlined style={{ fontSize: "25px" }} />}
+                        </div>
+                    </button>
+                    {/* <PostDetail postId={postId} like={like} reaction={reaction} setLike={setLike} setReaction={setReaction}></PostDetail> */}
+                    <button onClick={() => { router.push(`/post/${postId}`, { scroll: false }); }}>
+                        <div className="comment mr-4">
+                            <CommentOutlined style={{ fontSize: "25px" }} />
+                        </div>
+                    </button>
+                </div>
+            </div >
+            <div className="likes mt-1">
+                <span className="font-bold text-sm">{like} likes</span>
+            </div>
+        </>
 
     );
 }
