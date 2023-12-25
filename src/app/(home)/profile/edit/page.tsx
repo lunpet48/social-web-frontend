@@ -61,17 +61,17 @@ const EditProfile = () => {
 
   // use effect: set data
   useEffect(() => {
-    const fullName = currentUser.profile.fullName;
-    const gender = currentUser.profile.gender || "";
-    const dateOfBirth = currentUser.profile.dateOfBirth
-      ? dayjs(currentUser.profile.dateOfBirth, "YYYY-MM-DD")
+    const fullName = currentUser.fullName;
+    const gender = currentUser.gender || "";
+    const dateOfBirth = currentUser.dateOfBirth
+      ? dayjs(currentUser.dateOfBirth, "YYYY-MM-DD")
       : undefined;
 
     setInputs((values) => ({
       ...values,
       fullName,
-      gender: currentUser.profile.gender,
-      dateOfBirth: currentUser.profile.dateOfBirth,
+      gender: currentUser.gender,
+      dateOfBirth: currentUser.dateOfBirth,
     }));
     form.setFieldsValue({
       fullName,
@@ -97,8 +97,8 @@ const EditProfile = () => {
         setLoading(false);
         notify("success", "Cập nhật thành công");
         setCurrentUser({
-          ...currentUser,
-          profile: { ...currentUser.profile, ...data.data },
+          ...currentUser, 
+          ...data.data,
         });
       }
     } catch (err) {
@@ -137,7 +137,7 @@ const EditProfile = () => {
             notify("success", "Cập nhật thành công");
             setCurrentUser({
               ...currentUser,
-              profile: { ...currentUser.profile, ...data.data },
+              ...data.data,
             });
           }
         } catch (err) {
@@ -180,7 +180,7 @@ const EditProfile = () => {
             notify("success", "Cập nhật thành công");
             setCurrentUser({
               ...currentUser,
-              profile: { ...currentUser.profile, ...data.data },
+              ...data.data,
             });
           }
         } catch (err) {
@@ -231,7 +231,7 @@ const EditProfile = () => {
                   wrapperStyle={{ width: "100%" }}
                   imageStyle={{ background: "white", width: "100%", height: "auto" }}
                   src={`${
-                    currentUser.profile.avatar ? currentUser.profile.avatar : "/default-avatar.jpg"
+                    currentUser.avatar ? currentUser.avatar : "/default-avatar.jpg"
                   }`}
                 />
 
@@ -262,7 +262,7 @@ const EditProfile = () => {
                   }}
                   imageStyle={{ background: "white", width: "100%", height: "auto" }}
                   src={`${
-                    currentUser.profile.bio ? currentUser.profile.bio : "/default-background.png"
+                    currentUser.bio ? currentUser.bio : "/default-background.png"
                   }`}
                 />
                 <Button

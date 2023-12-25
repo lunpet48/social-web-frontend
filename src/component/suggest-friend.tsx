@@ -81,7 +81,7 @@ const SuggestFriend = () => {
             <div className="avatar rounded-full overflow-hidden mr-3">
               <img
                 src={`${
-                  currentUser.profile.avatar ? currentUser.profile.avatar : "/default-avatar.jpg"
+                  currentUser.avatar ? currentUser.avatar : "/default-avatar.jpg"
                 }`}
                 alt=""
                 style={{ objectFit: "cover", width: "56px", height: "56px" }}
@@ -89,7 +89,7 @@ const SuggestFriend = () => {
             </div>
             <div className="user-name ">
               <span className="text-lg font-semibold text-gray-700">
-                {currentUser.profile.fullName}
+                {currentUser.fullName}
               </span>
               <span className="text-sm text-gray-600  block">{currentUser.username}</span>
             </div>

@@ -1,9 +1,9 @@
 import { Gender, RelationshipProfile } from "./enum";
 
 export type profile = {
-  fullName: string | null;
-  gender: string | null;
-  dateOfBirth: string | null;
+  fullName?: string | null;
+  gender?: string | null;
+  dateOfBirth?: string | null;
 };
 
 export type user = {
