@@ -41,6 +41,10 @@ const CreatePost = ({open, setOpen}: any) => {
 
   const handleSubmit = async (event: any) => {
     try {
+      if(fileList.length == 0) {
+        notify("error", "Không thể thiếu hình ảnh hoặc video");
+        return;
+      }
       setLoading(true);
       const formData:any = new FormData();
 

@@ -48,6 +48,7 @@ type comment = {
 };
 
 const PostDetailV2Component = ({ postId }: { postId: string }) => {
+  let timeoutId: string | number | NodeJS.Timeout | undefined;
   const [comment, setComment] = useState("");
   const [liked, setLiked] = useState(false);
   const [likeNumber, setLikeNumber] = useState(0);
@@ -132,6 +133,17 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
     if (liked === false) {
       setLikeNumber(likeNumber + 1);
       setLiked(true);
+    } else {
+      setLikeNumber(likeNumber - 1);
+      setLiked(false);
+    }
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(likeAPI, 3000);
+  };
+  const likeAPI = async () => {
+    if (liked === false) {
       const response = await fetch(`${process.env.API}/api/v1/post/${postId}/like`, {
         method: "POST",
         headers: {
@@ -140,15 +152,13 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
       });
       if (response.status == 200) {
         const data = await response.json();
-        return data.data.liked;
+        // setLiked(data.data.liked);
+        await getLikeNumber();
       } else if (response.status === 401) {
         console.log("JWT expired");
       }
-      setLikeNumber(likeNumber - 1);
-      setLiked(false);
-    } else {
-      setLikeNumber(likeNumber - 1);
-      setLiked(false);
+    }
+    else if (liked === true) {
       const response = await fetch(`${process.env.API}/api/v1/post/${postId}/like`, {
         method: "DELETE",
         headers: {
@@ -157,12 +167,11 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
       });
       if (response.status == 200) {
         const data = await response.json();
-        return data.data;
+        // setLiked(data.data.liked);
+        await getLikeNumber();
       } else if (response.status === 401) {
         console.log("JWT expired");
       }
-      setLikeNumber(likeNumber + 1);
-      setLiked(true);
     }
   };
 
@@ -175,17 +184,14 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
     });
     if (response.status == 200) {
       const data = await response.json();
-      return data.data.reactions.length;
+      setLikeNumber(data.data.reactions.length);
     } else if (response.status === 401) {
       console.log("JWT expired");
     }
   };
 
   const handleLikeClick = async () => {
-    const isLiked = await likeClick();
-    const likeNum = await getLikeNumber();
-    setLiked(isLiked);
-    setLikeNumber(likeNum);
+    likeClick();
   };
 
   const fetchPostDetail = async () => {
@@ -295,26 +301,26 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
               </div>
               {
                 post.createdAt !== post.updatedAt ?
-                <>
-                  <svg
-                    aria-label="More options"
-                    className="_8-yf5 "
-                    fill="darkgrey"
-                    height="16"
-                    viewBox="0 0 48 48"
-                    width="16"
-                  >
-                    <circle
+                  <>
+                    <svg
+                      aria-label="More options"
+                      className="_8-yf5 "
+                      fill="darkgrey"
+                      height="16"
+                      viewBox="0 0 48 48"
+                      width="16"
+                    >
+                      <circle
                         clipRule="evenodd"
                         cx="24"
                         cy="24"
                         fillRule="evenodd"
                         r="4.5"
                       ></circle>
-                  </svg>
-                  <span style={{ color: "darkgray" }}>Đã chỉnh sửa</span>
-                </>
-              : undefined
+                    </svg>
+                    <span style={{ color: "darkgray" }}>Đã chỉnh sửa</span>
+                  </>
+                  : undefined
               }
               <svg
                 aria-label="More options"
@@ -334,8 +340,8 @@ const PostDetailV2Component = ({ postId }: { postId: string }) => {
               </svg>
               {post.postMode == "PUBLIC" ?
                 <FontAwesomeIcon icon={faEarthAmericas as IconProp} size="sm" style={{ color: "darkgrey", }} />
-              : post.postMode == "FRIEND" ? <FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} />
-              : <FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                : post.postMode == "FRIEND" ? <FontAwesomeIcon icon={faUserGroup as IconProp} size="sm" style={{ color: "darkgrey", }} />
+                  : <FontAwesomeIcon icon={faLock as IconProp} size="sm" style={{ color: "darkgrey", }} />
               }
             </div>
             <div className="right">
