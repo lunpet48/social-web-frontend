@@ -118,15 +118,6 @@ const PostView = ({post}:{post:post}) => {
             ) : (
               <></>
             )}
-
-            {/* <Carousel slides={post.files}></Carousel> */}
-            {/* <img style={{ width: "100%" }}
-                      src={post.files[0]}
-                      alt=""
-                    /> */}
-            {/* <video width="100%" height="500px" controls>
-                      <source src={""} />
-                    </video> */}
           </div>
           <div className="card-footer p-4">
             <div className="top">

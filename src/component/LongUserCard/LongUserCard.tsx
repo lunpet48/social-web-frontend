@@ -161,7 +161,7 @@ const LongUserCard = ({ user }: { user: user }) => {
         return <></>;
     }
   };
-  const handleNavigateProdile = () => {
+  const handleNavigateProfile = () => {
     router.push(`/profile/${user.username}`);
   };
   return (
@@ -176,13 +176,11 @@ const LongUserCard = ({ user }: { user: user }) => {
     >
       <div
         style={{ display: "flex", gap: "20px", alignItems: "center", cursor: "pointer" }}
-        onClick={handleNavigateProdile}
+        onClick={handleNavigateProfile}
       >
         <div>
           <img
-            style={{ borderRadius: "50%" }}
-            width={44}
-            height={44}
+            style={{ borderRadius: "50%", width:"44px", height:"44px" }}
             src={`${user.avatar ? user.avatar : "/default-avatar.jpg"}`}
           />
         </div>

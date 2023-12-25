@@ -82,7 +82,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
           const data = await response.json();
           setLoadingPost(false);
           setPosts(data.data);
-          console.log("post", data.data);
         } else if (response.status === 401) {
           console.log("JWT expired");
         }
@@ -191,7 +190,6 @@ const Profile = ({ params }: { params: { id: string } }) => {
       const response = await getFriend(user.id);
       if (response.status === 200) {
         const data = await response.json();
-        console.log("friend", data.data)
         setFriends(data.data);
       }
     }
@@ -448,7 +446,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
         onCancel={handleCancel}
         footer={null}
       >
-        <div style={{ minHeight: "300px", maxHeight:"370px" }}>
+        <div style={{ minHeight: "300px", maxHeight:"370px",  overflow:"auto" }}>
           {friends.length <= 0 ? (
             <div>Không có bạn bè nào để hiển thị</div>
           ) : (
