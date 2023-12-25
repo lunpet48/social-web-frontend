@@ -1,31 +1,19 @@
 import { useAuth } from "@/context/AuthContext";
 import { acceptFriendRequest, denyFriendRequest } from "@/services/friendService";
+import { user } from "@/type/type";
 import { Button, Col, Row } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-type user = {
-  id: string;
-  username: string;
-  email: string;
-  isLocked: false;
-  bio: string;
-  avatar: string;
-  fullName: string;
-  friendCount: number;
-  postCount: number;
-};
 
 const RequestUser = ({ user }: { user: user }) => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ isSuccess: false, text: "" });
 
   const router = useRouter();
-  const { currentUser } = useAuth();
 
   const handleAcceptFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    const token = localStorage.getItem("token");
 
     try {
       setLoading(true);

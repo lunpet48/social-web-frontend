@@ -5,29 +5,12 @@ import Loading from "./Loading";
 import SuggestUser from "./SuggestUser";
 import RequestUser from "./RequestUser";
 import { getIncomingRequest, getRecommendUser } from "@/services/friendService";
-
-type user = {
-  id: string;
-  username: string;
-  email: string;
-  isLocked: false;
-  bio: string;
-  avatar: string;
-  fullName: string;
-  friendCount: number;
-  postCount: number;
-};
-
-type relationship = {
-  user: user;
-  userRelated: user;
-  status: string;
-};
+import { user } from "@/type/type";
 
 const SuggestFriend = () => {
   const [loadingPage, setLoadingPage] = useState(true);
   const [suggestUsers, setSuggestUsers] = useState<user[]>([]);
-  const [requestFriends, setRequestFriends] = useState<relationship[]>([]);
+  const [requestFriends, setRequestFriends] = useState<user[]>([]);
 
   const router = useRouter();
   const { currentUser } = useAuth();
@@ -102,8 +85,8 @@ const SuggestFriend = () => {
                 </div>
               </div>
 
-              {requestFriends.map((requestFriends, index) => {
-                return <RequestUser user={requestFriends.user} key={index} />;
+              {requestFriends.map((user, index) => {
+                return <RequestUser user={user} key={index} />;
               })}
             </div>
           )}

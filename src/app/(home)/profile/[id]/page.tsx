@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Button, Col, Divider, Image, Row } from "antd";
+import { Button, Col, Divider, Image, Modal, Row } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faLocationDot, faMars, faVenus } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -16,52 +16,14 @@ import {
   cancelFriendRequest,
   deleteFriend,
   denyFriendRequest,
+  getFriend,
   sendFriendRequest,
 } from "@/services/friendService";
 import PostProfileComponent from "@/component/PostProfileComponent";
 import { useRouter } from "next/navigation";
-
-enum RelationshipProfile {
-  SELF = "SELF",
-  STRANGER = "STRANGER",
-  PENDING = "PENDING",
-  INCOMMINGREQUEST = "INCOMMINGREQUEST",
-  FRIEND = "FRIEND",
-  BLOCK = "BLOCK",
-}
-
-enum Gender {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
-  EMPTY = "",
-}
-
-type user = {
-  id: string;
-  username: string;
-  email: string;
-  isLocked: false;
-  bio: string;
-  avatar: string;
-  fullName: string;
-  friendCount: number;
-  postCount: number;
-  relationship: RelationshipProfile;
-  gender: Gender;
-  address: string;
-  dateOfBirth: string;
-};
-
-type post = {
-  postId: string;
-  userId: string;
-  postType: string;
-  postMode: string;
-  caption: string;
-  tagList: string[];
-  files: string[];
-  reactions: string[];
-};
+import { post, user } from "@/type/type";
+import { Gender, RelationshipProfile } from "@/type/enum";
+import LongUserCard from "@/component/LongUserCard";
 
 const Profile = ({ params }: { params: { id: string } }) => {
   const [loadingPage, setLoadingPage] = useState(true);
@@ -81,14 +43,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
     address: "",
     dateOfBirth: "",
   });
-
   const [posts, setPosts] = useState<post[]>([]);
-
-  const setData = (user: user, posts: post[]) => {
-    setUser(user);
-    setPosts(posts);
-    setLoadingPage(false);
-  };
+  const [friends, setFriends] = useState<user[]>([])
+  const [isOpenModalFriendList, setIsOpenModalFriendList] = useState(false)
 
   const router = useRouter();
 
@@ -229,205 +186,232 @@ const Profile = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const fetchFriendList = async () => {
+    try{
+      const response = await getFriend(user.id);
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log("friend", data.data)
+        setFriends(data.data);
+      }
+    }
+    catch(e){
+    }
+
+  }
+
+  const handleOpenFriendList = () => {
+    fetchFriendList();
+    setIsOpenModalFriendList(true)
+  }
+
+  const handleCancel = () => {
+    setIsOpenModalFriendList(false)
+  }
+
   if (loadingPage) {
     return <Loading height="100vh" />;
   }
 
   return (
-    <div>
-      <Row style={{ background: "white" }}>
-        <Col xs={{ span: 24 }} md={{ span: 20, offset: 2 }} lg={{ span: 16, offset: 4 }}>
-          <Row>
-            <Col xs={24}>
-              <ImagePreviewWrapper
-                wrapperStyle={{
-                  borderRadius: "5px",
-                  overflow: "hidden",
-                  height: "300px",
-                }}
-                imageStyle={{
-                  objectFit: "cover",
-                  background: "white",
-                  height: "300px",
-                }}
-                src={`${user.bio ? user.bio : "/default-background.png"}`}
-              />
-            </Col>
-          </Row>
+    <>
+      <div>
+        <Row style={{ background: "white" }}>
+          <Col xs={{ span: 24 }} md={{ span: 20, offset: 2 }} lg={{ span: 16, offset: 4 }}>
+            <Row>
+              <Col xs={24}>
+                <ImagePreviewWrapper
+                  wrapperStyle={{
+                    borderRadius: "5px",
+                    overflow: "hidden",
+                    height: "300px",
+                  }}
+                  imageStyle={{
+                    objectFit: "cover",
+                    background: "white",
+                    height: "300px",
+                  }}
+                  src={`${user.bio ? user.bio : "/default-background.png"}`}
+                />
+              </Col>
+            </Row>
 
-          <Row style={{ marginBottom: "40px" }}>
-            <Col xs={7}>
-              <ImagePreviewWrapper
-                wrapperStyle={{
-                  position: "absolute",
-                  top: "-50px",
-                  marginLeft: "50px",
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "2px solid white",
-                  height: "150px",
-                  width: "150px",
-                }}
-                imageStyle={{
-                  objectFit: "cover",
-                  background: "white",
-                  height: "150px",
-                  width: "150px",
-                }}
-                src={`${user.avatar ? user.avatar : "/default-avatar.jpg"}`}
-              />
-            </Col>
-            <Col xs={{ span: 17 }} style={{ fontSize: "18px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <div style={{ fontSize: "30px" }}>{`${user.username}`}</div>
-                {user.relationship == RelationshipProfile.SELF ? (
-                  <div style={{ display: "flex", gap: "20px" }}>
-                    <Link href="edit" className={`${styles.button} ${styles["btn-link"]}`}>
-                      Chỉnh sửa trang cá nhân
-                    </Link>
-                    {/* <div className={styles.clickable}>
+            <Row style={{ marginBottom: "40px" }}>
+              <Col xs={7}>
+                <ImagePreviewWrapper
+                  wrapperStyle={{
+                    position: "absolute",
+                    top: "-50px",
+                    marginLeft: "50px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: "2px solid white",
+                    height: "150px",
+                    width: "150px",
+                  }}
+                  imageStyle={{
+                    objectFit: "cover",
+                    background: "white",
+                    height: "150px",
+                    width: "150px",
+                  }}
+                  src={`${user.avatar ? user.avatar : "/default-avatar.jpg"}`}
+                />
+              </Col>
+              <Col xs={{ span: 17 }} style={{ fontSize: "18px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div style={{ fontSize: "30px" }}>{`${user.username}`}</div>
+                  {user.relationship == RelationshipProfile.SELF ? (
+                    <div style={{ display: "flex", gap: "20px" }}>
+                      <Link href="edit" className={`${styles.button} ${styles["btn-link"]}`}>
+                        Chỉnh sửa trang cá nhân
+                      </Link>
+                      {/* <div className={styles.clickable}>
                       <FontAwesomeIcon
                         icon={faGear}
                         style={{ fontSize: "30px" }}
                       />
                     </div> */}
-                  </div>
-                ) : user.relationship == RelationshipProfile.PENDING ? (
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={handleCancelFriendRequest} primary danger>
-                      Hủy yêu cầu
-                    </ButtonWrapper>
-                    <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
-                      Nhắn tin
-                    </ButtonWrapper>
-                  </div>
-                ) : user.relationship == RelationshipProfile.INCOMMINGREQUEST ? (
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={handleAcceptFriendRequest} primary>
-                      Chấp nhận
-                    </ButtonWrapper>
-                    <ButtonWrapper onClick={handleDenyFriendRequest} primary danger>
-                      Từ chối
-                    </ButtonWrapper>
+                    </div>
+                  ) : user.relationship == RelationshipProfile.PENDING ? (
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <ButtonWrapper onClick={handleCancelFriendRequest} primary danger>
+                        Hủy yêu cầu
+                      </ButtonWrapper>
+                      <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
+                        Nhắn tin
+                      </ButtonWrapper>
+                    </div>
+                  ) : user.relationship == RelationshipProfile.INCOMMINGREQUEST ? (
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <ButtonWrapper onClick={handleAcceptFriendRequest} primary>
+                        Chấp nhận
+                      </ButtonWrapper>
+                      <ButtonWrapper onClick={handleDenyFriendRequest} primary danger>
+                        Từ chối
+                      </ButtonWrapper>
 
-                    <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
-                      Nhắn tin
-                    </ButtonWrapper>
+                      <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
+                        Nhắn tin
+                      </ButtonWrapper>
+                    </div>
+                  ) : user.relationship == RelationshipProfile.FRIEND ? (
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <ButtonWrapper onClick={handleDeleteFriend} primary danger>
+                        Xóa
+                      </ButtonWrapper>
+                      <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
+                        Nhắn tin
+                      </ButtonWrapper>
+                    </div>
+                  ) : user.relationship == RelationshipProfile.STRANGER ? (
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <ButtonWrapper onClick={handleSendFriendRequest} primary>
+                        Thêm bạn bè
+                      </ButtonWrapper>
+                      <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
+                        Nhắn tin
+                      </ButtonWrapper>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    margin: "10px 0",
+                  }}
+                >
+                  <span>{`${user.fullName}`}</span>
+                  <div style={{ display: "flex", gap: "20px" }}>
+                    <span>{`${user.postCount} bài viết`}</span>
+                    <div
+                      onClick={handleOpenFriendList}
+                      className={styles.button}
+                    >{`${user.friendCount} bạn bè`}</div>
                   </div>
-                ) : user.relationship == RelationshipProfile.FRIEND ? (
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={handleDeleteFriend} primary danger>
-                      Xóa
-                    </ButtonWrapper>
-                    <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
-                      Nhắn tin
-                    </ButtonWrapper>
-                  </div>
-                ) : user.relationship == RelationshipProfile.STRANGER ? (
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <ButtonWrapper onClick={handleSendFriendRequest} primary>
-                      Thêm bạn bè
-                    </ButtonWrapper>
-                    <ButtonWrapper onClick={goToMessage} style={{ background: "#d8dadf" }}>
-                      Nhắn tin
-                    </ButtonWrapper>
+                </div>
+
+                {user.gender || user.address || user.dateOfBirth ? (
+                  <div>
+                    <span style={{ fontWeight: 600 }}>{`Giới thiệu`}</span>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      {user.gender ? (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          {user.gender == Gender.MALE ? (
+                            <FontAwesomeIcon icon={faMars} color="blue" style={{ width: "20px" }} />
+                          ) : user.gender == Gender.FEMALE ? (
+                            <FontAwesomeIcon icon={faVenus} color="red" style={{ width: "20px" }} />
+                          ) : (
+                            ""
+                          )}
+
+                          <div style={{ width: "120px" }}>Giới tính:</div>
+                          <div>
+                            {user.gender == Gender.MALE
+                              ? "Nam"
+                              : user.gender == Gender.FEMALE
+                              ? "Nữ"
+                              : ""}
+                          </div>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+
+                      {user.address ? (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FontAwesomeIcon
+                            icon={faLocationDot}
+                            color="#2666c0"
+                            style={{ width: "20px" }}
+                          />
+                          <div style={{ width: "120px" }}>Sống tại:</div>
+                          <div>{user.address}</div>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+
+                      {user.dateOfBirth ? (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <FontAwesomeIcon
+                            icon={faCalendar}
+                            color="#4889f4"
+                            style={{ width: "20px" }}
+                          />
+
+                          <div style={{ width: "120px" }}>Ngày sinh:</div>
+                          <div>{dayjs(user.dateOfBirth, "YYYY-MM-DD").format("DD/MM/YYYY")}</div>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
                 ) : (
-                  <></>
+                  ""
                 )}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  margin: "10px 0",
-                }}
-              >
-                <span>{`${user.fullName}`}</span>
-                <div style={{ display: "flex", gap: "20px" }}>
-                  <span>{`${user.postCount} bài viết`}</span>
-                  <div className={styles.button}>{`${user.friendCount} bạn bè`}</div>
-                </div>
-              </div>
-
-              {user.gender || user.address || user.dateOfBirth ? (
-                <div>
-                  <span style={{ fontWeight: 600 }}>{`Giới thiệu`}</span>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
-                    {user.gender ? (
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        {user.gender == Gender.MALE ? (
-                          <FontAwesomeIcon icon={faMars} color="blue" style={{ width: "20px" }} />
-                        ) : user.gender == Gender.FEMALE ? (
-                          <FontAwesomeIcon icon={faVenus} color="red" style={{ width: "20px" }} />
-                        ) : (
-                          ""
-                        )}
-
-                        <div style={{ width: "120px" }}>Giới tính:</div>
-                        <div>
-                          {user.gender == Gender.MALE
-                            ? "Nam"
-                            : user.gender == Gender.FEMALE
-                            ? "Nữ"
-                            : ""}
-                        </div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-
-                    {user.address ? (
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <FontAwesomeIcon
-                          icon={faLocationDot}
-                          color="#2666c0"
-                          style={{ width: "20px" }}
-                        />
-                        <div style={{ width: "120px" }}>Sống tại:</div>
-                        <div>{user.address}</div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-
-                    {user.dateOfBirth ? (
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <FontAwesomeIcon
-                          icon={faCalendar}
-                          color="#4889f4"
-                          style={{ width: "20px" }}
-                        />
-
-                        <div style={{ width: "120px" }}>Ngày sinh:</div>
-                        <div>{dayjs(user.dateOfBirth, "YYYY-MM-DD").format("DD/MM/YYYY")}</div>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
-            </Col>
-          </Row>
-          <Divider style={{ borderTop: "1px solid #dbdbdb", marginBottom: "-0.5px" }} />
-          <Row style={{ display: "flex", justifyContent: "center" }}>
-            <div className={`${styles.tag} ${styles.active} ${styles.button}`}>Bài viết</div>
-            {/* <div className={`${styles.tag} ${styles.button}`} style={{cursor:"not-allowed"}}>Reels</div> */}
-            {/* {user.relationship == RelationshipProfile.SELF ? (
+              </Col>
+            </Row>
+            <Divider style={{ borderTop: "1px solid #dbdbdb", marginBottom: "-0.5px" }} />
+            <Row style={{ display: "flex", justifyContent: "center" }}>
+              <div className={`${styles.tag} ${styles.active} ${styles.button}`}>Bài viết</div>
+              {/* <div className={`${styles.tag} ${styles.button}`} style={{cursor:"not-allowed"}}>Reels</div> */}
+              {/* {user.relationship == RelationshipProfile.SELF ? (
               <>
                 <div className={`${styles.tag} ${styles.button}`}>Đã lưu</div>
                 <div className={`${styles.tag} ${styles.button}`}>Đã thích</div>
@@ -435,28 +419,44 @@ const Profile = ({ params }: { params: { id: string } }) => {
             ) : (
               ""
             )} */}
-          </Row>
-          {loadingPost ? (
-            <Loading height="50px" />
-          ) : (
-            <Row gutter={[3, 3]}>
-              {posts.map((post, id) => (
-                <Col xs={8} key={id}>
-                  <PostProfileComponent
-                    src={`${post.files[0]}`}
-                    onClick={() => {
-                      router.push(`/post/${post.postId}`, { scroll: false });
-                    }}
-                    likeNumber={post.reactions.length}
-                    commentNumber={0}
-                  />
-                </Col>
-              ))}
             </Row>
+            {loadingPost ? (
+              <Loading height="50px" />
+            ) : (
+              <Row gutter={[3, 3]}>
+                {posts.map((post, id) => (
+                  <Col xs={8} key={id}>
+                    <PostProfileComponent
+                      src={`${post.files[0]}`}
+                      onClick={() => {
+                        router.push(`/post/${post.postId}`, { scroll: false });
+                      }}
+                      likeNumber={post.reactions.length}
+                      commentNumber={0}
+                    />
+                  </Col>
+                ))}
+              </Row>
+            )}
+          </Col>
+        </Row>
+      </div>
+      <Modal
+        forceRender
+        title="Danh sách bạn bè"
+        open={isOpenModalFriendList}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <div style={{ minHeight: "300px", maxHeight:"370px" }}>
+          {friends.length <= 0 ? (
+            <div>Không có bạn bè nào để hiển thị</div>
+          ) : (
+            friends.map((user, index) => <LongUserCard key={index} user={user} />)
           )}
-        </Col>
-      </Row>
-    </div>
+        </div>
+      </Modal>
+    </>
   );
 };
 

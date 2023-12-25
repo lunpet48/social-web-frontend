@@ -1,27 +1,17 @@
 "use client";
 import UserCard from "@/component/UserCard";
-import UserCardV2 from "@/component/UserCardV2";
-import LikeComponent from "@/component/like-component";
-import MediaView from "@/component/media-view";
 import PostView from "@/component/PostView";
-import { useAuth } from "@/context/AuthContext";
 import { post, user } from "@/type/type";
 import { Col, Input, Row } from "antd";
 import { SearchProps } from "antd/es/input";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const { Search } = Input;
-
-
 
 const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<user[]>([]);
   const [posts, setPosts] = useState<post[]>([]);
-
-  const router = useRouter();
-  const { currentUser } = useAuth();
 
   const onSearch: SearchProps["onSearch"] = async (value, _e, info) => {
     if (info?.source == "input" && value.trim() !== "") {
@@ -76,7 +66,7 @@ const SearchPage = () => {
                 {users.map((user) => {
                   return (
                     <Col xs={12} key={user.id}>
-                      <UserCardV2 user={user} />
+                      <UserCard user={user} />
                     </Col>
                   );
                 })}

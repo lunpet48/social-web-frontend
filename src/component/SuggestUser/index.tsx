@@ -2,18 +2,8 @@ import React, { useState } from "react";
 import Loading from "../Loading";
 import { useRouter } from "next/navigation";
 import { sendFriendRequest } from "@/services/friendService";
+import { user } from "@/type/type";
 
-type user = {
-  id: string;
-  username: string;
-  email: string;
-  isLocked: false;
-  bio: string;
-  avatar: string;
-  fullName: string;
-  friendCount: number;
-  postCount: number;
-};
 
 const SmallUserCard = ({ user }: { user: user }) => {
   const [loading, setLoading] = useState(false);
