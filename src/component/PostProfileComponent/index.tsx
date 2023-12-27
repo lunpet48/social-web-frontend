@@ -23,7 +23,7 @@ const PostProfileComponent = ({
         <img
           src={src}
           alt="post image"
-          style={{ aspectRatio: "1/1", objectFit: "cover" }}
+          style={{ aspectRatio: "1/1", objectFit: "cover", width:"100%" }}
           className={styles.image}
         />
       ) : checkMediaType(src) === MediaType.VIDEO ? (

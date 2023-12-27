@@ -1,6 +1,8 @@
 .container {
   position: relative;
   cursor: pointer;
+  border-radius: 2px;
+  overflow: hidden;
 
   .overlay {
     position: absolute;
