@@ -5,16 +5,24 @@ import { post, user } from "@/type/type";
 import { Col, Input, Row } from "antd";
 import { SearchProps } from "antd/es/input";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const { Search } = Input;
+
+const pattern = /^#[^\s!@#$%^&*()=+.\/,\[{\]};:'"?><]+$/g;
 
 const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<user[]>([]);
   const [posts, setPosts] = useState<post[]>([]);
 
+  const router = useRouter();
+
   const onSearch: SearchProps["onSearch"] = async (value, _e, info) => {
     if (info?.source == "input" && value.trim() !== "") {
+      if (value.match(pattern)) {
+        router.push(`/hashtag/${value.trim().substring(1)}`);
+      }
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
@@ -35,8 +43,8 @@ const SearchPage = () => {
         } else {
           //  success
           setLoading(false);
-          setUsers(data.users);
-          setPosts(data.posts);
+          setUsers(data.data.users);
+          setPosts(data.data.posts);
         }
       } catch (err) {
         console.log(err);
@@ -59,7 +67,7 @@ const SearchPage = () => {
               loading={loading}
             />
           </Row>
-          {users.length > 0 && (
+          {users?.length > 0 && (
             <div style={{ background: "white", padding: "20px 0" }}>
               <div style={{ marginBottom: "20px" }}>Người dùng</div>
               <Row gutter={[5, 5]}>
@@ -73,7 +81,7 @@ const SearchPage = () => {
               </Row>
             </div>
           )}
-          {posts.length > 0 && (
+          {posts?.length > 0 && (
             <div style={{ background: "white", padding: "20px 0" }}>
               <div style={{ marginBottom: "20px" }}>Bài viết</div>
               {/* <div className="left w-6/12 pr-4"> */}
