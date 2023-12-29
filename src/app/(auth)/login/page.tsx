@@ -136,7 +136,9 @@ export default function Login() {
                     />
                   </Form.Item>
 
-                  <Form.Item>
+                  <Link href="/forgot-password" style={{fontSize:"16px"}}>Quên mật khẩu?</Link>
+
+                  <Form.Item style={{marginTop:"10px"}}>
                     <Button size="large" type="primary" htmlType="submit" disabled={loading}>
                       {loading ? "Please wait..." : "Login"}
                     </Button>
