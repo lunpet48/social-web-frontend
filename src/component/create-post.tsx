@@ -92,6 +92,9 @@ const CreatePost = ({open, setOpen}: any) => {
         setLoading(false);
         setOpen(false);
         notify("success", "Đăng bài thành công");
+        setContent("");
+        setFileList([]);
+        setTag([]);
       }
       // axios.post(
       //   `${process.env.API}/api/v1/post`,
@@ -129,6 +132,9 @@ const CreatePost = ({open, setOpen}: any) => {
 
   const handleCancel = () => {
     setOpen(false);
+    setContent("");
+    setFileList([]);
+    setTag([]);
   };
 
   return (
