@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Button, Col, Divider, Image, Modal, Row } from "antd";
+import { Button, Col, Divider, Dropdown, Form, Image, Input, MenuProps, Modal, Row, message } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faLocationDot, faMars, faVenus } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -24,6 +24,28 @@ import { useRouter } from "next/navigation";
 import { post, user } from "@/type/type";
 import { Gender, RelationshipProfile } from "@/type/enum";
 import LongUserCard from "@/component/LongUserCard";
+import { changePassword } from "@/services/authService";
+
+const formItemLayout = {
+  labelCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 8,
+    },
+  },
+  wrapperCol: {
+    xs: {
+      span: 24,
+    },
+    sm: {
+      span: 16,
+    },
+  },
+};
+
+const initChangePasswordForm = {oldPassword: "", newPassword: "", }
 
 const Profile = ({ params }: { params: { id: string } }) => {
   const [loadingPage, setLoadingPage] = useState(true);
@@ -46,8 +68,19 @@ const Profile = ({ params }: { params: { id: string } }) => {
   const [posts, setPosts] = useState<post[]>([]);
   const [friends, setFriends] = useState<user[]>([])
   const [isOpenModalFriendList, setIsOpenModalFriendList] = useState(false)
+  const [isOpenModalChangePassword, setIsOpenModalChangePassword] = useState(false)
+  const [inputs, setInputs] = useState(initChangePasswordForm);
 
   const router = useRouter();
+
+  const [form] = Form.useForm();
+
+  const handleChangeInputChangePasswordForm = (event: any) => {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    setInputs((values) => ({ ...values, [name]: value }));
+  };
 
   const fetchData = async () => {
     const token = localStorage.getItem("token");
@@ -206,10 +239,50 @@ const Profile = ({ params }: { params: { id: string } }) => {
   const handleCancel = () => {
     setIsOpenModalFriendList(false)
   }
+  
+  const handleCancelModalChangePassword = () => {
+    form.resetFields();
+    setInputs(initChangePasswordForm)
+    setIsOpenModalChangePassword(false)
+  }
 
   if (loadingPage) {
     return <Loading height="100vh" />;
   }
+
+  const handleOpenChangePasswordModal = () => {
+    setIsOpenModalChangePassword(true);
+  }
+
+  const handleLogout = () => {
+    router.push("/login")
+  }
+
+  const itemsDropdown: MenuProps["items"] = [
+    {
+      label: <a style={{fontSize:"16px"}} onClick={handleOpenChangePasswordModal}>Đổi mật khẩu</a>,
+      key: "0",
+    },
+    {
+      label: <a style={{fontSize:"16px"}} onClick={handleLogout}>Đăng xuất</a>,
+      key: "1",
+    },
+  ];
+
+  const handleChangePassword = async () => {
+    try {
+      const response = await changePassword(inputs);
+      if (response.status >= 200 && response.status < 300) {
+        message.success("Đổi mật khẩu thành công");
+        handleCancelModalChangePassword();
+      } else {
+        const payload = await response.json();
+        message.error(payload.message);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <>
@@ -270,12 +343,18 @@ const Profile = ({ params }: { params: { id: string } }) => {
                       <Link href="edit" className={`${styles.button} ${styles["btn-link"]}`}>
                         Chỉnh sửa trang cá nhân
                       </Link>
-                      {/* <div className={styles.clickable}>
-                      <FontAwesomeIcon
-                        icon={faGear}
-                        style={{ fontSize: "30px" }}
-                      />
-                    </div> */}
+                      <Dropdown
+                        menu={{ items: itemsDropdown }}
+                        trigger={["click"]}
+                        placement="bottomRight"
+                      >
+                        <div className={styles.clickable}>
+                          <FontAwesomeIcon
+                            icon={faGear}
+                            style={{ fontSize: "30px", color: "#444" }}
+                          />
+                        </div>
+                      </Dropdown>
                     </div>
                   ) : user.relationship == RelationshipProfile.PENDING ? (
                     <div style={{ display: "flex", gap: "10px" }}>
@@ -446,12 +525,94 @@ const Profile = ({ params }: { params: { id: string } }) => {
         onCancel={handleCancel}
         footer={null}
       >
-        <div style={{ minHeight: "300px", maxHeight:"370px",  overflow:"auto" }}>
+        <div style={{ minHeight: "300px", maxHeight: "370px", overflow: "auto" }}>
           {friends.length <= 0 ? (
             <div>Không có bạn bè nào để hiển thị</div>
           ) : (
             friends.map((user, index) => <LongUserCard key={index} user={user} />)
           )}
+        </div>
+      </Modal>
+
+      <Modal
+        forceRender
+        title="Đổi mật khẩu"
+        open={isOpenModalChangePassword}
+        onCancel={handleCancelModalChangePassword}
+        footer={null}
+      >
+        <div>
+          <Form
+            onFinish={handleChangePassword}
+            form={form}
+            autoComplete="off"
+            {...formItemLayout}
+            scrollToFirstError
+          >
+            <Form.Item
+              name="oldPassword"
+              label="Mật khẩu hiện tại"
+              rules={[
+                {
+                  required: true,
+                  message: "Hãy nhập mật khẩu hiện tại!",
+                },
+              ]}
+              hasFeedback
+            >
+              <Input.Password
+                name="oldPassword"
+                value={inputs.oldPassword}
+                onChange={handleChangeInputChangePasswordForm}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="newPassword"
+              label="Mật khẩu mới"
+              rules={[
+                {
+                  required: true,
+                  message: "Hãy nhập mật khẩu mới!",
+                },
+              ]}
+              hasFeedback
+            >
+              <Input.Password
+                name="newPassword"
+                value={inputs.newPassword}
+                onChange={handleChangeInputChangePasswordForm}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="confirm"
+              label="Nhập lại mật khẩu"
+              dependencies={["newPassword"]}
+              hasFeedback
+              rules={[
+                {
+                  required: true,
+                  message: "Xác nhận lại mật khẩu!",
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("newPassword") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error("Nhập lại mật khẩu không chính xác!"));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <div style={{display:"flex", justifyContent:"end"}}>
+              <Button size="large" type="primary" htmlType="submit">
+                 Xác nhận
+              </Button>
+            </div>
+          </Form>
         </div>
       </Modal>
     </>
