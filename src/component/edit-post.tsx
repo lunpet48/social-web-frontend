@@ -24,7 +24,8 @@ const EditPost = ({ editPost, setEditPost, post, user }: any) => {
         const content = event.target.value;
         const pattern = /#[^\s!@#$%^&*()=+.\/,\[{\]};:'"?><]+/g;
         const found = content.match(pattern)
-        setTag(found);
+        const filterTag: string[] = found.map((tag: string) => tag.substring(1));
+        setTag(filterTag);
         setContent(content);
     }
 
