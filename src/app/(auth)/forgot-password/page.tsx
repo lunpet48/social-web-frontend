@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { Row, Col, Input, Form, Button, message } from "antd";
-import styles from "./page.module.scss";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { requestSendOtpForgotPasword, resetPassword } from "@/services/authService";
-import { useRouter } from "next/navigation";
+import { Row, Col, Input, Form, Button, message } from 'antd';
+import styles from './page.module.scss';
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLock } from '@fortawesome/free-solid-svg-icons/faLock';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import { requestSendOtpForgotPasword, resetPassword } from '@/services/authService';
+import { useRouter } from 'next/navigation';
 
 export default function ForgotPasswordPage() {
-  const [inputs, setInputs] = useState({ email: "", newPassword: "", otpCode: "" });
+  const [inputs, setInputs] = useState({ email: '', newPassword: '', otpCode: '' });
   const [loading, setLoading] = useState(false);
   const [isRequestSendOTPToEmail, setIsRequestSendOTPToEmail] = useState(false);
 
@@ -41,12 +41,12 @@ export default function ForgotPasswordPage() {
           //  success
           setLoading(false);
           setIsRequestSendOTPToEmail(true);
-          notify("success", "Hệ thống đã gửi mã OTP đến email của bạn, hãy kiểm tra email!");
+          notify('success', 'Hệ thống đã gửi mã OTP đến email của bạn, hãy kiểm tra email!');
         } else {
           // fail
           const data = await response.json();
           setLoading(false);
-          notify("error", data.message);
+          notify('error', data.message);
         }
         return;
       }
@@ -55,19 +55,19 @@ export default function ForgotPasswordPage() {
       if (response.status >= 200 && response.status < 300) {
         //  success
         setLoading(false);
-        notify("success", "Đã đổi mật khẩu thành công");
+        notify('success', 'Đã đổi mật khẩu thành công');
         setTimeout(() => {
-          router.push("/login");
+          router.push('/login');
         }, 1000);
       } else {
         // fail
         const data = await response.json();
         setLoading(false);
-        notify("error", data.message);
+        notify('error', data.message);
       }
     } catch (err) {
       console.log(err);
-      notify("error", JSON.stringify(err));
+      notify('error', JSON.stringify(err));
       setLoading(false);
     }
   };
@@ -77,18 +77,18 @@ export default function ForgotPasswordPage() {
       {contextHolder}
       <div className={styles.wrapper}>
         <Row className={styles.row} justify="center">
-          <Col xs={24} sm={16} md={12}>
-            <Row className={styles.card} style={{ minHeight: "70vh" }}>
+          <Col xs={24} sm={20} xl={12}>
+            <Row className={styles.card}>
               <Col className={styles.right} span={24}>
                 <div
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    height: "100%",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    height: '100%',
                   }}
                 >
-                  <h2 style={{ marginBottom: "40px" }}>Quên mật khẩu</h2>
+                  <h2 style={{ marginBottom: '40px' }}>Quên mật khẩu</h2>
                   <Form autoComplete="off" onFinish={handleSubmit}>
                     <label>Email</label>
                     <Form.Item
@@ -96,7 +96,7 @@ export default function ForgotPasswordPage() {
                       rules={[
                         {
                           required: true,
-                          message: "Nhập email của bạn!",
+                          message: 'Nhập email của bạn!',
                         },
                       ]}
                     >
@@ -115,11 +115,9 @@ export default function ForgotPasswordPage() {
                       />
                     </Form.Item>
                     {!isRequestSendOTPToEmail && (
-                      // <div style={{ display: "flex", justifyContent: "end" }}>
                       <Button size="large" type="primary" htmlType="submit" disabled={loading}>
-                        {loading ? "Please wait..." : "Tiếp tục"}
+                        {loading ? 'Please wait...' : 'Tiếp tục'}
                       </Button>
-                      // </div>
                     )}
                     {isRequestSendOTPToEmail && (
                       <>
@@ -129,7 +127,7 @@ export default function ForgotPasswordPage() {
                           rules={[
                             {
                               required: true,
-                              message: "Nhập mật khẩu mới",
+                              message: 'Nhập mật khẩu mới',
                             },
                           ]}
                         >
@@ -154,18 +152,12 @@ export default function ForgotPasswordPage() {
                           rules={[
                             {
                               required: true,
-                              message: "Nhập mã otp của bạn !",
+                              message: 'Nhập mã otp của bạn !',
                             },
                           ]}
                         >
                           <Input
                             size="large"
-                            // prefix={
-                            //   <>
-                            //     <FontAwesomeIcon icon={faUser} />
-                            //     &nbsp;&nbsp;&nbsp;
-                            //   </>
-                            // }
                             placeholder="Nhập otp"
                             name="otpCode"
                             value={inputs.otpCode}
@@ -173,17 +165,15 @@ export default function ForgotPasswordPage() {
                           />
                         </Form.Item>
 
-                        {/* <div style={{ display: "flex", justifyContent: "end" }}> */}
-                        <Form.Item style={{ marginTop: "10px" }}>
+                        <Form.Item style={{ marginTop: '10px' }}>
                           <Button size="large" type="primary" htmlType="submit" disabled={loading}>
-                            {loading ? "Please wait..." : "Xác nhận"}
+                            {loading ? 'Please wait...' : 'Xác nhận'}
                           </Button>
                         </Form.Item>
-                        {/* </div> */}
                       </>
                     )}
                   </Form>
-                  <Link href="/login" style={{ fontSize: "16px", textDecoration:"underline" }}>
+                  <Link href="/login" style={{ fontSize: '16px', textDecoration: 'underline' }}>
                     Trở về đăng nhập
                   </Link>
                 </div>

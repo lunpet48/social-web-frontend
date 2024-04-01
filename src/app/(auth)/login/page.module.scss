@@ -1,3 +1,4 @@
+@use '../../../styles/breakpoint.scss';
 .wrapper {
   width: 100vw;
   min-height: 100vh;
@@ -5,27 +6,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 10px;
 
   .row {
     width: 100%;
 
-    .card{
+    .card {
       border-radius: 25px;
-      padding: 70px;
+      padding: 70px 20px;
       background: white;
+      min-height: 90vh;
 
-      .left{
-        padding: 0 50px;
-        figure{
-          margin-bottom: 50px;
-          text-align: center;
-  
-          img{
-            max-width: 100%;
-            height: auto;
-          }
+      .left {
+        display: none;
+
+        img {
+          height: auto;
+          margin: 0 auto;
+          width: 100%;
+          max-width: 300px;
         }
-  
+
         a {
           font-weight: 400;
           text-decoration: underline;
@@ -35,17 +36,58 @@
         }
       }
 
-      .right{
-        padding: 0 50px;
-        h2{
-          font-size: 50px;
+      .right {
+        h2 {
+          font-size: 40px;
         }
 
-        label+div{
+        label + div {
           margin-top: 10px;
+        }
+
+        button {
+          width: 100%;
+        }
+
+        .register {
+          display: block;
+          margin: 36px;
+          font-weight: 400;
+          text-decoration: underline;
+          text-align: center;
+          font-size: 18px;
         }
       }
     }
-      
   }
+
+  @include breakpoint.md {
+    .row {
+      .card {
+        padding: 70px;
+        min-height: fit-content;
+
+        .left {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .right {
+          .register {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  // @include breakpoint.lg {
+  //   .row {
+  //     .card {
+  //       .left {
+  //       }
+  //     }
+  //   }
+  // }
 }

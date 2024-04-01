@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { Row, Col, Input, Form, Button, message } from "antd";
-import styles from "./page.module.scss";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { Row, Col, Input, Form, Button, message } from 'antd';
+import styles from './page.module.scss';
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLock } from '@fortawesome/free-solid-svg-icons/faLock';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Login() {
-  const [inputs, setInputs] = useState({ username: "", password: "" });
+  const [inputs, setInputs] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -37,15 +37,15 @@ export default function Login() {
       setLoading(true);
 
       const response = await fetch(`${process.env.API}/api/v1/auth/authenticate`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           username: inputs.username,
           password: inputs.password,
         }),
-        credentials: "include",
+        credentials: 'include',
       });
 
       const data = await response.json();
@@ -53,19 +53,19 @@ export default function Login() {
       if (data.error) {
         // fail
         setLoading(false);
-        notify("error", data.message);
+        notify('error', data.message);
       } else {
         //  success
         setLoading(false);
         loginContext(data.data.user, data.data.accessToken);
-        notify("success", "Đăng nhập thành công");
+        notify('success', 'Đăng nhập thành công');
         setTimeout(() => {
-          router.push("/");
+          router.push('/');
         }, 1000);
       }
     } catch (err) {
       console.log(err);
-      notify("error", JSON.stringify(err));
+      notify('error', JSON.stringify(err));
       setLoading(false);
     }
   };
@@ -75,16 +75,14 @@ export default function Login() {
       {contextHolder}
       <div className={styles.wrapper}>
         <Row className={styles.row} justify="center">
-          <Col xs={24} sm={20} md={16}>
-            <Row className={styles.card}>
-              <Col className={styles.left} span={12}>
-                <figure>
-                  <img src="./login.jpg" alt="sign up image" />
-                </figure>
+          <Col xs={24} sm={20} xl={14}>
+            <Row className={styles.card} gutter={{ xs: 0, md: 50 }}>
+              <Col className={styles.left} span={0} md={12}>
+                <img src="./login.jpg" alt="sign up image" />
                 <Link href="/register">Tạo tài khoản mới</Link>
               </Col>
-              <Col className={styles.right} span={12}>
-                <h2 style={{ marginBottom: "40px" }}>Đăng nhập</h2>
+              <Col className={styles.right} span={24} md={12}>
+                <h2 style={{ marginBottom: '40px' }}>Đăng nhập</h2>
                 <Form autoComplete="off" onFinish={handleSubmit}>
                   <label>Tài khoản</label>
                   <Form.Item
@@ -92,7 +90,7 @@ export default function Login() {
                     rules={[
                       {
                         required: true,
-                        message: "Nhập tên tài khoản!",
+                        message: 'Nhập tên tài khoản!',
                       },
                     ]}
                   >
@@ -117,7 +115,7 @@ export default function Login() {
                     rules={[
                       {
                         required: true,
-                        message: "Nhập mật khẩu của bạn!",
+                        message: 'Nhập mật khẩu của bạn!',
                       },
                     ]}
                   >
@@ -136,14 +134,20 @@ export default function Login() {
                     />
                   </Form.Item>
 
-                  <Link href="/forgot-password" style={{fontSize:"16px"}}>Quên mật khẩu?</Link>
+                  <Link href="/forgot-password" style={{ fontSize: '16px' }}>
+                    Quên mật khẩu?
+                  </Link>
 
-                  <Form.Item style={{marginTop:"10px"}}>
+                  <Form.Item style={{ margin: '40px 0 0 0' }}>
                     <Button size="large" type="primary" htmlType="submit" disabled={loading}>
-                      {loading ? "Please wait..." : "Login"}
+                      {loading ? 'Please wait...' : 'Đăng nhập'}
                     </Button>
                   </Form.Item>
                 </Form>
+
+                <Link className={styles.register} href="/register">
+                  Tạo tài khoản mới
+                </Link>
               </Col>
             </Row>
           </Col>
