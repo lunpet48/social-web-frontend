@@ -22,7 +22,8 @@ const CreatePost = ({open, setOpen}: any) => {
     const content = event.target.value;
     const pattern = /#[^\s!@#$%^&*()=+.\/,\[{\]};:'"?><]+/g;
     const found = content.match(pattern)
-    setTag(found);
+    const filterTag: string[] = found.map((tag: string) => tag.substring(1));
+    setTag(filterTag);
     setContent(content);
     //setContent(content.replace(pattern, '<span className="hashtag" style={{color: "#ff0000"}}>#$1</span>'))
   }
