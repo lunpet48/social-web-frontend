@@ -1,0 +1,22 @@
+@use '../../styles/breakpoint.scss';
+
+.wrapper {
+  background-color: #fff;
+  padding: 24px 0;
+  display: flex;
+  justify-content: space-evenly;
+
+  .post-view {
+    width: 500px;
+  }
+  .suggest-friend {
+    width: 300px;
+    display: none;
+  }
+
+  @include breakpoint.lg {
+    .suggest-friend {
+      display: block;
+    }
+  }
+}

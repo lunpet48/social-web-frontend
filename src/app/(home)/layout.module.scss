@@ -1,0 +1,33 @@
+@use '../../styles/breakpoint.scss';
+
+.layout {
+  .side-bar {
+    display: none;
+  }
+
+  @include breakpoint.md {
+    .side-bar {
+      display: block;
+      // !important to force override width (inline css) property of antd's Sider
+      width: 70px !important;
+      max-width: 70px !important;
+      min-width: 70px !important;
+    }
+
+    .content {
+      margin-left: 70px;
+    }
+  }
+
+  @include breakpoint.xl {
+    .side-bar {
+      display: block;
+      width: 300px !important;
+      max-width: 300px !important;
+      min-width: 300px !important;
+    }
+    .content {
+      margin-left: 300px;
+    }
+  }
+}
