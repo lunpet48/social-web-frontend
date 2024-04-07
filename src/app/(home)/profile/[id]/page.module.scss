@@ -1,28 +1,147 @@
-.tag{
-  padding: 20px 0;
-  margin: 0 20px;
-  font-size: 16px;
-  color: #737373;
-  &.active {
-    color: black;
-    border-top: 1px solid black;
-  }
-}
-.button{
-  cursor: pointer;
-  
-  &.btn-link{
-    background: #efefef;
-    padding: 4px 10px;
-    border-radius: 10px;
+@use '../../../../styles/breakpoint.scss';
 
-    &:hover{
-      background: #dbdbdb;
-      color: black;
+.content {
+  max-width: 840px;
+  margin: 0px auto;
+  padding: 0 8px;
+  .background-image-wrapper {
+    border-radius: 5px;
+    overflow: hidden;
+    height: 200px;
+    margin: 0 -8px;
+
+    img {
+      object-fit: cover;
+      background: #fff;
+      height: 300px;
+    }
+  }
+
+  .info-wrapper {
+    position: relative;
+    margin-bottom: 40px;
+    font-size: 18px;
+
+    .avatar-image-wrapper {
+      position: absolute;
+      top: -50px;
+      margin-left: 15px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid white;
+      height: 100px;
+      width: 100px;
+
+      img {
+        object-fit: 'cover';
+        background: 'white';
+      }
+    }
+
+    .info {
+      padding: 50px 0 0;
+      position: relative;
+
+      .info-top-row {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+
+        .info-top-row-left {
+        }
+
+        .info-top-row-right {
+          display: flex;
+          flex-direction: column;
+          align-items: end;
+          justify-content: start;
+          gap: 8px;
+          margin-top: 8px;
+
+          .action {
+            position: absolute;
+            display: flex;
+            gap: 10px;
+            top: 10px;
+            left: 130px;
+            right: 8px;
+
+            .btn-edit-profile {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              cursor: pointer;
+              background: #efefef;
+              padding: 4px 10px;
+              border-radius: 10px;
+
+              &:hover {
+                background: #dbdbdb;
+                color: black;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: space-between;
+
+    .tab {
+      padding: 10px 0;
+      font-size: 16px;
+      color: #737373;
+      cursor: pointer;
+
+      &.active {
+        color: black;
+        border-top: 1px solid black;
+      }
+    }
+  }
+
+  @include breakpoint.md {
+    padding: 0px 20px;
+    .background-image-wrapper {
+      height: 300px;
+      margin: 0;
+    }
+
+    .info-wrapper {
+      .avatar-image-wrapper {
+        height: 150px;
+        width: 150px;
+        margin-left: 50px;
+      }
+
+      .info {
+        padding: 0 0 0 250px;
+        .info-top-row {
+          .info-top-row-left {
+          }
+          .info-top-row-right {
+            flex-direction: column;
+            justify-content: center;
+
+            .action {
+              position: relative;
+              top: 0;
+              left: 0;
+              right: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .tabs {
+      justify-content: center;
+      .tab {
+        margin: 0 20px;
+      }
     }
   }
 }
-.clickable{
-  cursor: pointer;
-}
-

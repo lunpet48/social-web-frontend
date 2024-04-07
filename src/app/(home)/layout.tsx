@@ -54,8 +54,8 @@ export default function UserPageLayout({
   return (
     <>
       <Layout className={styles.layout}>
-        <SideBar className={styles['side-bar']} />
-        <Content className={styles.content}>
+        <SideBar className={styles['sidebar-frame']} />
+        <Content className={styles['content-frame']}>
           {loadingPage ? <Loading height="100vh" /> : children}
         </Content>
       </Layout>

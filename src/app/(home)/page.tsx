@@ -8,7 +8,7 @@ import SuggestFriend from '@/component/suggest-friend';
 
 const Home = () => {
   return (
-    <div className={styles['wrapper']}>
+    <div className={styles['content']}>
       <div className={styles['post-view']}>
         <PostView />
       </div>
