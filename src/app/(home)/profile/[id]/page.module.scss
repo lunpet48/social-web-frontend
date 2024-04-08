@@ -47,9 +47,6 @@
         justify-content: space-between;
         flex-direction: row;
 
-        .info-top-row-left {
-        }
-
         .info-top-row-right {
           display: flex;
           flex-direction: column;
@@ -65,6 +62,7 @@
             top: 10px;
             left: 130px;
             right: 8px;
+            justify-content: end;
 
             .btn-edit-profile {
               white-space: nowrap;
@@ -120,8 +118,6 @@
       .info {
         padding: 0 0 0 250px;
         .info-top-row {
-          .info-top-row-left {
-          }
           .info-top-row-right {
             flex-direction: column;
             justify-content: center;

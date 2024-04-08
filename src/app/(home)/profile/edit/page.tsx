@@ -1,30 +1,27 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Button, Col, DatePicker, Form, Input, Row, Select, message } from "antd";
-import dayjs from "dayjs";
+import React, { useState, useEffect } from 'react';
+import { Button, Col, DatePicker, Form, Input, Row, Select, message } from 'antd';
+import dayjs from 'dayjs';
 
-import { useAuth } from "@/context/AuthContext";
-import ImagePreviewWrapper from "@/component/ImagePreviewWrapper";
-import { updateAvatar, updateBackground, updateProfileInfo } from "@/services/profileService";
-import { profile } from "@/type/type";
-import { Gender } from "@/type/enum";
+import styles from './page.module.scss';
+import { useAuth } from '@/context/AuthContext';
+import ImagePreviewWrapper from '@/component/ImagePreviewWrapper';
+import { updateAvatar, updateBackground, updateProfileInfo } from '@/services/profileService';
+import { profile } from '@/type/type';
+import { Gender } from '@/type/enum';
 
 const formItemLayout = {
   labelCol: {
-    xs: {
-      span: 20,
-    },
-    sm: {
+    span: 24,
+    md: {
       span: 4,
     },
   },
   wrapperCol: {
-    xs: {
-      span: 20,
-    },
-    sm: {
-      span: 12,
+    span: 24,
+    md: {
+      span: 16,
     },
   },
 };
@@ -62,9 +59,9 @@ const EditProfile = () => {
   // use effect: set data
   useEffect(() => {
     const fullName = currentUser.fullName;
-    const gender = currentUser.gender || "";
+    const gender = currentUser.gender || '';
     const dateOfBirth = currentUser.dateOfBirth
-      ? dayjs(currentUser.dateOfBirth, "YYYY-MM-DD")
+      ? dayjs(currentUser.dateOfBirth, 'YYYY-MM-DD')
       : undefined;
 
     setInputs((values) => ({
@@ -91,27 +88,27 @@ const EditProfile = () => {
       if (data.error) {
         // fail
         setLoading(false);
-        notify("error", data.message);
+        notify('error', data.message);
       } else {
         //  success
         setLoading(false);
-        notify("success", "Cập nhật thành công");
+        notify('success', 'Cập nhật thành công');
         setCurrentUser({
-          ...currentUser, 
+          ...currentUser,
           ...data.data,
         });
       }
     } catch (err) {
       console.log(err);
-      notify("error", JSON.stringify(err));
+      notify('error', JSON.stringify(err));
       setLoading(false);
     }
   };
 
   const selectAndUpdateAvatar = () => {
-    var input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
 
     input.onchange = async (e) => {
       const files = (e.target as HTMLInputElement).files;
@@ -119,7 +116,7 @@ const EditProfile = () => {
         const file = files[0];
         // if(file.type !== "image/png")
         var formData = new FormData();
-        formData.append("file", file);
+        formData.append('file', file);
 
         try {
           setAvatarLoading(true);
@@ -130,11 +127,11 @@ const EditProfile = () => {
           if (data.error) {
             // fail
             setAvatarLoading(false);
-            notify("error", data.message);
+            notify('error', data.message);
           } else {
             //  success
             setAvatarLoading(false);
-            notify("success", "Cập nhật thành công");
+            notify('success', 'Cập nhật thành công');
             setCurrentUser({
               ...currentUser,
               ...data.data,
@@ -142,7 +139,7 @@ const EditProfile = () => {
           }
         } catch (err) {
           console.log(err);
-          notify("error", JSON.stringify(err));
+          notify('error', JSON.stringify(err));
           setAvatarLoading(false);
         }
       }
@@ -152,9 +149,9 @@ const EditProfile = () => {
   };
 
   const selectAndUpdateBackground = () => {
-    var input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
 
     input.onchange = async (e) => {
       const files = (e.target as HTMLInputElement).files;
@@ -162,7 +159,7 @@ const EditProfile = () => {
         const file = files[0];
         // if(file.type !== "image/png")
         var formData = new FormData();
-        formData.append("file", file);
+        formData.append('file', file);
 
         try {
           setBackgroundLoading(true);
@@ -173,11 +170,11 @@ const EditProfile = () => {
           if (data.error) {
             // fail
             setBackgroundLoading(false);
-            notify("error", data.message);
+            notify('error', data.message);
           } else {
             //  success
             setBackgroundLoading(false);
-            notify("success", "Cập nhật thành công");
+            notify('success', 'Cập nhật thành công');
             setCurrentUser({
               ...currentUser,
               ...data.data,
@@ -185,7 +182,7 @@ const EditProfile = () => {
           }
         } catch (err) {
           console.log(err);
-          notify("error", JSON.stringify(err));
+          notify('error', JSON.stringify(err));
           setBackgroundLoading(false);
         }
       }
@@ -197,157 +194,135 @@ const EditProfile = () => {
   return (
     <>
       {contextHolder}
-      <div
-        style={{
-          padding: "50px 70px",
-          background: "white",
-        }}
-      >
-        <div>
-          <Row>
-            <Col xs={{ span: 20, offset: 4 }}>
-              <h1
-                style={{
-                  fontSize: "22px",
-                  marginBottom: "50px",
-                  fontWeight: 600,
-                }}
-              >
-                Chỉnh sửa trang cá nhân
-              </h1>
-            </Col>
-          </Row>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          <Row>
-            <Col xs={{ span: 20, offset: 4 }}>
-              <div style={{ fontWeight: "600", height: "32px", fontSize: "16px" }}>
-                Ảnh đại diện
-              </div>
-            </Col>
-            <Col xs={{ span: 12, offset: 4 }}>
-              <div>
-                <ImagePreviewWrapper
-                  wrapperStyle={{ width: "100%" }}
-                  imageStyle={{ background: "white", width: "100%", height: "auto" }}
-                  src={`${
-                    currentUser.avatar ? currentUser.avatar : "/default-avatar.jpg"
-                  }`}
-                />
+      <div className={styles['content']}>
+        <Row>
+          <Col xs={{ span: 24, offset: 0 }} md={{ span: 16, offset: 4 }}>
+            <h1>Chỉnh sửa trang cá nhân</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={{ span: 24, offset: 0 }} md={{ span: 16, offset: 4 }}>
+            <div className={styles['field-name']}>Ảnh đại diện</div>
+          </Col>
+          <Col xs={{ span: 24, offset: 0 }} md={{ span: 16, offset: 4 }}>
+            <div>
+              <ImagePreviewWrapper
+                wrapperStyle={{ width: '100%' }}
+                imageStyle={{ background: 'white', width: '100%', height: 'auto' }}
+                src={`${currentUser.avatar ? currentUser.avatar : '/default-avatar.jpg'}`}
+              />
 
-                <Button
-                  style={{
-                    marginTop: "12px",
-                    backgroundColor: "#fafafa",
-                    color: `${avatarLoading ? "#ccc" : "#4096ff"}`,
-                    borderColor: `${avatarLoading ? "#ccc" : "#4096ff"}`,
-                  }}
-                  onClick={selectAndUpdateAvatar}
-                  disabled={avatarLoading}
-                >
-                  {avatarLoading ? "Please wait..." : "Thay đổi ảnh đại diện"}
-                </Button>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={{ span: 20, offset: 4 }}>
-              <div style={{ fontWeight: "600", height: "32px", fontSize: "16px" }}>Ảnh bìa</div>
-            </Col>
-            <Col xs={{ span: 12, offset: 4 }}>
-              <div>
-                <ImagePreviewWrapper
-                  wrapperStyle={{
-                    width: "100%",
-                  }}
-                  imageStyle={{ background: "white", width: "100%", height: "auto" }}
-                  src={`${
-                    currentUser.bio ? currentUser.bio : "/default-background.png"
-                  }`}
-                />
-                <Button
-                  style={{
-                    marginTop: "12px",
-                    backgroundColor: "#fafafa",
-                    color: `${backgroundLoading ? "#ccc" : "#4096ff"}`,
-                    borderColor: `${backgroundLoading ? "#ccc" : "#4096ff"}`,
-                  }}
-                  onClick={selectAndUpdateBackground}
-                  disabled={backgroundLoading}
-                >
-                  {backgroundLoading ? "Please wait..." : "Thay đổi ảnh bìa"}
-                </Button>
-              </div>
-            </Col>
-          </Row>
-          <div>
-            <Form
-              onFinish={handleUpdateProfileInfo}
-              form={form}
-              autoComplete="off"
-              {...formItemLayout}
-              requiredMark={false}
-              colon={false}
-              scrollToFirstError
+              <Button
+                style={{
+                  marginTop: '12px',
+                  backgroundColor: '#fafafa',
+                  color: `${avatarLoading ? '#ccc' : '#4096ff'}`,
+                  borderColor: `${avatarLoading ? '#ccc' : '#4096ff'}`,
+                }}
+                onClick={selectAndUpdateAvatar}
+                disabled={avatarLoading}
+              >
+                {avatarLoading ? 'Please wait...' : 'Thay đổi ảnh đại diện'}
+              </Button>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={{ span: 24, offset: 0 }} md={{ span: 16, offset: 4 }}>
+            <div className={styles['field-name']}>Ảnh bìa</div>
+          </Col>
+          <Col xs={{ span: 24, offset: 0 }} md={{ span: 16, offset: 4 }}>
+            <div>
+              <ImagePreviewWrapper
+                wrapperStyle={{
+                  width: '100%',
+                }}
+                imageStyle={{ background: 'white', width: '100%', height: 'auto' }}
+                src={`${currentUser.bio ? currentUser.bio : '/default-background.png'}`}
+              />
+              <Button
+                style={{
+                  marginTop: '12px',
+                  backgroundColor: '#fafafa',
+                  color: `${backgroundLoading ? '#ccc' : '#4096ff'}`,
+                  borderColor: `${backgroundLoading ? '#ccc' : '#4096ff'}`,
+                }}
+                onClick={selectAndUpdateBackground}
+                disabled={backgroundLoading}
+              >
+                {backgroundLoading ? 'Please wait...' : 'Thay đổi ảnh bìa'}
+              </Button>
+            </div>
+          </Col>
+        </Row>
+        <div>
+          <Form
+            onFinish={handleUpdateProfileInfo}
+            form={form}
+            autoComplete="off"
+            {...formItemLayout}
+            requiredMark={false}
+            colon={false}
+            scrollToFirstError
+          >
+            <Form.Item
+              name="fullName"
+              label={<label style={{ fontSize: '16px', fontWeight: 600 }}>Họ và tên</label>}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your name!',
+                },
+              ]}
             >
-              <Form.Item
-                name="fullName"
-                label={<label style={{ fontSize: "16px", fontWeight: 600 }}>Họ và tên</label>}
-                rules={[
+              <Input name="fullName" onChange={handleChange} />
+            </Form.Item>
+
+            <Form.Item
+              name="gender"
+              label={<label style={{ fontSize: '16px', fontWeight: 600 }}>Giới tính</label>}
+            >
+              <Select
+                style={{
+                  width: 120,
+                }}
+                onChange={(value: string) => {
+                  setInputs((values) => ({ ...values, ['gender']: value || null }));
+                }}
+                options={[
                   {
-                    required: true,
-                    message: "Please input your name!",
+                    value: `${Gender.EMPTY}`,
+                    label: 'Ẩn',
+                  },
+                  {
+                    value: `${Gender.MALE}`,
+                    label: 'Nam',
+                  },
+                  {
+                    value: `${Gender.FEMALE}`,
+                    label: 'Nữ',
                   },
                 ]}
-              >
-                <Input name="fullName" onChange={handleChange} />
-              </Form.Item>
+              />
+            </Form.Item>
 
-              <Form.Item
-                name="gender"
-                label={<label style={{ fontSize: "16px", fontWeight: 600 }}>Giới tính</label>}
-              >
-                <Select
-                  style={{
-                    width: 120,
-                  }}
-                  onChange={(value: string) => {
-                    setInputs((values) => ({ ...values, ["gender"]: value || null }));
-                  }}
-                  options={[
-                    {
-                      value: `${Gender.EMPTY}`,
-                      label: "Ẩn",
-                    },
-                    {
-                      value: `${Gender.MALE}`,
-                      label: "Nam",
-                    },
-                    {
-                      value: `${Gender.FEMALE}`,
-                      label: "Nữ",
-                    },
-                  ]}
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="dateOfBirth"
-                label={<label style={{ fontSize: "16px", fontWeight: 600 }}>Ngày sinh</label>}
-              >
-                <DatePicker
-                  format={"DD/MM/YYYY"}
-                  onChange={(date, dateString) => {
-                    const formattedDate = date ? date.format("YYYY-MM-DD") : "";
-                    setInputs((values) => ({
-                      ...values,
-                      ["dateOfBirth"]: formattedDate,
-                    }));
-                  }}
-                />
-              </Form.Item>
-              {/* <Row>
-                <Col xs={{ offset: 0 }} sm={{ offset: 4 }}>
+            <Form.Item
+              name="dateOfBirth"
+              label={<label style={{ fontSize: '16px', fontWeight: 600 }}>Ngày sinh</label>}
+            >
+              <DatePicker
+                format={'DD/MM/YYYY'}
+                onChange={(date, dateString) => {
+                  const formattedDate = date ? date.format('YYYY-MM-DD') : '';
+                  setInputs((values) => ({
+                    ...values,
+                    ['dateOfBirth']: formattedDate,
+                  }));
+                }}
+              />
+            </Form.Item>
+            {/* <Row>
+                <Col xs={{ offset: 0 }} sm16{ offset: 4 }}>
                   <Select
                     defaultValue={currentUser.profile.gender}
                     style={{
@@ -371,15 +346,14 @@ const EditProfile = () => {
                   />
                 </Col>
               </Row> */}
-              <Row>
-                <Col xs={{ offset: 0 }} sm={{ offset: 4 }}>
-                  <Button type="primary" htmlType="submit" disabled={loading}>
-                    {loading ? "Please wait..." : "Cập nhật"}
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
-          </div>
+            <Row>
+              <Col md={{ offset: 4 }}>
+                <Button type="primary" htmlType="submit" disabled={loading}>
+                  {loading ? 'Please wait...' : 'Cập nhật'}
+                </Button>
+              </Col>
+            </Row>
+          </Form>
         </div>
       </div>
     </>
