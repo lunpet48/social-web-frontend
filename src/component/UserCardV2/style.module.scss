@@ -1,0 +1,51 @@
+.card {
+  height: fit-content;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+
+  img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .user-info {
+    flex: 1;
+  }
+  .action {
+    display: flex;
+  }
+
+  &:hover:not(:has(.show-more-btn:hover)) {
+    background-color: #f2f2f2;
+  }
+
+  &:active:not(:has(.show-more-btn:active)) {
+    background-color: #e5e5e5;
+  }
+
+  .show-more-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+
+    &:hover {
+      background-color: #f2f2f2;
+    }
+
+    &:active {
+      background-color: #e5e5e5;
+    }
+  }
+}

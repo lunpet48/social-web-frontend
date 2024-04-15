@@ -50,8 +50,8 @@
         .info-top-row-right {
           display: flex;
           flex-direction: column;
-          align-items: end;
-          justify-content: start;
+          align-items: flex-end;
+          justify-content: flex-start;
           gap: 8px;
           margin-top: 8px;
 
@@ -62,7 +62,7 @@
             top: 10px;
             left: 130px;
             right: 8px;
-            justify-content: end;
+            justify-content: flex-end;
 
             .btn-edit-profile {
               white-space: nowrap;

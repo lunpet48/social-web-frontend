@@ -1,14 +1,20 @@
-.tab-item {
-    padding: 10px 20px;
-    background-color: #efefef;
-    border-radius: 40px;
-    cursor: pointer;
+.content {
+  padding: 20px 30px;
 
-    &.active {
-        background-color: #bfe1fc;
+  .tablist {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dee0e3;
+
+    .tab-item {
+      font-weight: 600;
+      padding: 12px;
+      cursor: pointer;
+
+      &.active {
         color: #1677ff;
-        
-        // background-color: #1677ff;
-        // color: white;
+        border-bottom: 2px solid #1677ff;
+      }
     }
+  }
 }

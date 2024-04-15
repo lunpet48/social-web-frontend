@@ -1,75 +1,73 @@
-"use client";
-import React, { useState } from "react";
+'use client';
+import React, { useState } from 'react';
 
-import styles from "./page.module.scss";
-import FriendRequest from "./FriendRequest";
-import FriendRequestHaveBeenSent from "./FriendRequestHaveBeenSent";
-import Friend from "./Friend";
+import styles from './page.module.scss';
+import FriendRequest from './FriendRequest';
+import FriendRequestHaveBeenSent from './FriendRequestHaveBeenSent';
+import Friend from './Friend';
 //import Block from "./Block";
 
 enum pages {
+  Friend,
   FriendRequest,
   FriendRequestHaveBeenSent,
-  Friend,
-//  Block,
+  //  Block,
 }
 
 const People = () => {
-  const [page, setPage] = useState(pages.FriendRequest);
-  let Component;
+  const [page, setPage] = useState(pages.Friend);
+  let ContentPage;
   switch (page) {
-    case pages.FriendRequest:
-      Component = FriendRequest;
-      break;
     case pages.Friend:
-      Component = Friend;
+      ContentPage = Friend;
+      break;
+    case pages.FriendRequest:
+      ContentPage = FriendRequest;
       break;
     case pages.FriendRequestHaveBeenSent:
-      Component = FriendRequestHaveBeenSent;
+      ContentPage = FriendRequestHaveBeenSent;
       break;
     // case pages.Block:
-    //   Component = Block;
+    //   ContentPage = Block;
     //   break;
     default:
-      Component = FriendRequest;
+      ContentPage = Friend;
       break;
   }
   return (
-    <div style={{ background: "white", padding: "20px 30px" }}>
-      <ul style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
+    <div className={styles['content']}>
+      <ul className={styles['tablist']}>
         <li
-          className={`${styles["tab-item"]} ${
-            page == pages.FriendRequest ? styles["active"] : null
-          }`}
-          onClick={() => {
-            setPage(pages.FriendRequest);
-          }}
-        >
-          Lời mời kết bạn
-        </li>
-        <li
-          className={`${styles["tab-item"]} ${
-            page == pages.FriendRequestHaveBeenSent ? styles["active"] : null
-          }`}
-          onClick={() => {
-            setPage(pages.FriendRequestHaveBeenSent);
-          }}
-        >
-          Lời mời đã gửi
-        </li>
-        <li
-          className={`${styles["tab-item"]} ${
-            page == pages.Friend ? styles["active"] : null
-          }`}
+          className={`${styles['tab-item']} ${page == pages.Friend && styles['active']} noselect`}
           onClick={() => {
             setPage(pages.Friend);
           }}
         >
           Bạn bè
         </li>
+        <li
+          className={`${styles['tab-item']} ${
+            page == pages.FriendRequestHaveBeenSent && styles['active']
+          } noselect`}
+          onClick={() => {
+            setPage(pages.FriendRequestHaveBeenSent);
+          }}
+        >
+          Đã gửi
+        </li>
+        <li
+          className={`${styles['tab-item']} ${
+            page == pages.FriendRequest && styles['active']
+          } noselect`}
+          onClick={() => {
+            setPage(pages.FriendRequest);
+          }}
+        >
+          Yêu cầu kết bạn
+        </li>
         {/* <li
           className={`${styles["tab-item"]} ${
-            page == pages.Block ? styles["active"] : null
+            page == pages.Block && styles["active"]
           }`}
           onClick={() => {
             setPage(pages.Block);
@@ -78,7 +76,7 @@ const People = () => {
           Đã chặn
         </li> */}
       </ul>
-      <Component />
+      <ContentPage />
     </div>
   );
 };

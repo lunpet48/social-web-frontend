@@ -1,10 +1,11 @@
-import { Col, Row } from "antd";
-import React, { useEffect, useState } from "react";
+import { Col, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
 
-import UserCard from "@/component/UserCard";
-import Loading from "@/component/Loading";
-import { getRecommendUser } from "@/services/friendService";
-import { user } from "@/type/type";
+import UserCard from '@/component/UserCard';
+import Loading from '@/component/Loading';
+import { getRecommendUser } from '@/services/friendService';
+import { user } from '@/type/type';
+import UserCardV2 from '@/component/UserCardV2';
 
 const FriendRequest = () => {
   const [loadingPage, setLoadingPage] = useState(true);
@@ -34,12 +35,12 @@ const FriendRequest = () => {
 
   return (
     <>
-      <div style={{ marginBottom: "20px", marginTop: "20px" }}>Gợi ý kết bạn</div>
-      <Row gutter={[5, 5]}>
+      <div style={{ marginBottom: '20px', marginTop: '20px' }}>Gợi ý kết bạn</div>
+      <Row gutter={[18, 18]}>
         {users.map((user, index) => {
           return (
-            <Col xs={6} key={index}>
-              <UserCard user={user} />
+            <Col xs={24} md={12} key={index}>
+              <UserCardV2 user={user} />
             </Col>
           );
         })}
