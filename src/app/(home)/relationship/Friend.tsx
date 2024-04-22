@@ -1,25 +1,27 @@
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 
-import UserCard from '@/component/UserCard';
+import { useAuth } from '@/context/AuthContext';
 import Loading from '@/component/Loading';
-import { getRecommendUser } from '@/services/friendService';
+import { getFriend } from '@/services/friendService';
 import { user } from '@/type/type';
-import UserCardV2 from '@/component/UserCardV2';
+import UserCard from '@/component/UserCard';
 
-const FriendRequest = () => {
+const Friend = () => {
   const [loadingPage, setLoadingPage] = useState(true);
   const [users, setUsers] = useState<user[]>([]);
+
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getRecommendUser();
+        const response = await getFriend(currentUser.id);
+
         const data = await response.json();
         if (!data.error) {
           //success
           setUsers(data.data);
-
           setLoadingPage(false);
         }
       } catch (err) {
@@ -34,19 +36,19 @@ const FriendRequest = () => {
   }
 
   return (
-    <>
-      <div style={{ marginBottom: '20px', marginTop: '20px' }}>Gợi ý kết bạn</div>
+    <div>
+      <div style={{ marginBottom: '20px' }}>Danh sách bạn bè ({users.length})</div>
       <Row gutter={[18, 18]}>
         {users.map((user, index) => {
           return (
             <Col xs={24} md={12} key={index}>
-              <UserCardV2 user={user} />
+              <UserCard user={user} />
             </Col>
           );
         })}
       </Row>
-    </>
+    </div>
   );
 };
 
-export default FriendRequest;
+export default Friend;

@@ -1,12 +1,10 @@
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 
-import UserCard from '@/component/UserCard';
-import Recommend from './Recommend';
 import Loading from '@/component/Loading';
-import { getIncomingRequest } from '@/services/friendService';
+import { getRecommendUser } from '@/services/friendService';
 import { user } from '@/type/type';
-import UserCardV2 from '@/component/UserCardV2';
+import UserCard from '@/component/UserCard';
 
 const FriendRequest = () => {
   const [loadingPage, setLoadingPage] = useState(true);
@@ -15,11 +13,12 @@ const FriendRequest = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getIncomingRequest();
+        const response = await getRecommendUser();
         const data = await response.json();
         if (!data.error) {
           //success
           setUsers(data.data);
+
           setLoadingPage(false);
         }
       } catch (err) {
@@ -34,19 +33,18 @@ const FriendRequest = () => {
   }
 
   return (
-    <div>
-      <div style={{ marginBottom: '20px' }}>Lời mời kết bạn</div>
+    <>
+      <div style={{ marginBottom: '20px', marginTop: '20px' }}>Gợi ý kết bạn</div>
       <Row gutter={[18, 18]}>
         {users.map((user, index) => {
           return (
             <Col xs={24} md={12} key={index}>
-              <UserCardV2 user={user} />
+              <UserCard user={user} />
             </Col>
           );
         })}
       </Row>
-      <Recommend />
-    </div>
+    </>
   );
 };
 

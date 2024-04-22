@@ -15,7 +15,7 @@ import { RelationshipProfile } from '@/type/enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
 
-const UserCardV2 = ({ user }: { user: user }) => {
+const UserCard = ({ user }: { user: user }) => {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ isSuccess: false, text: '' });
 
@@ -221,4 +221,4 @@ const UserCardV2 = ({ user }: { user: user }) => {
   );
 };
 
-export default UserCardV2;
+export default UserCard;

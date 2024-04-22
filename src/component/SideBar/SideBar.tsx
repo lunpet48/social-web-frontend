@@ -66,7 +66,7 @@ const SideBar = ({ className }: { className?: string }) => {
           router.push('/reels');
           break;
         case 3:
-          router.push('/people');
+          router.push('/relationship');
           break;
         case 4:
           router.push('/message');

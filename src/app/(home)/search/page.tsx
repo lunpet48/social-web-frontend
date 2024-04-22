@@ -1,11 +1,11 @@
-"use client";
-import UserCard from "@/component/UserCard";
-import PostView from "@/component/PostView";
-import { post, user } from "@/type/type";
-import { Col, Input, Row } from "antd";
-import { SearchProps } from "antd/es/input";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+'use client';
+import PostView from '@/component/PostView';
+import { post, user } from '@/type/type';
+import { Col, Input, Row } from 'antd';
+import { SearchProps } from 'antd/es/input';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import UserCard from '@/component/UserCard';
 
 const { Search } = Input;
 
@@ -18,20 +18,20 @@ const SearchPage = () => {
 
   const router = useRouter();
 
-  const onSearch: SearchProps["onSearch"] = async (value, _e, info) => {
-    if (info?.source == "input" && value.trim() !== "") {
+  const onSearch: SearchProps['onSearch'] = async (value, _e, info) => {
+    if (info?.source == 'input' && value.trim() !== '') {
       if (value.match(pattern)) {
         router.push(`/hashtag/${value.trim().substring(1)}`);
       }
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem('token');
 
         const response = await fetch(`${process.env.API}/api/v1/search?keyword=` + value.trim(), {
-          method: "GET",
+          method: 'GET',
           headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token,
           },
         });
 
@@ -55,8 +55,8 @@ const SearchPage = () => {
 
   return (
     <div>
-      <Row style={{ background: "white", paddingTop: "30px" }}>
-        <Col xs={{ span: 24 }} md={{ span: 16, offset: 4 }} lg={{ span: 12, offset: 6 }}>
+      <Row style={{ background: 'white', paddingTop: '30px' }}>
+        <Col xs={{ span: 22, offset: 1 }} md={{ span: 16, offset: 4 }} lg={{ span: 12, offset: 6 }}>
           <Row>
             <Search
               placeholder="Tìm kiếm"
@@ -68,12 +68,12 @@ const SearchPage = () => {
             />
           </Row>
           {users?.length > 0 && (
-            <div style={{ background: "white", padding: "20px 0" }}>
-              <div style={{ marginBottom: "20px" }}>Người dùng</div>
+            <div style={{ background: 'white', padding: '20px 0' }}>
+              <div style={{ marginBottom: '20px' }}>Người dùng</div>
               <Row gutter={[5, 5]}>
                 {users.map((user) => {
                   return (
-                    <Col xs={12} key={user.id}>
+                    <Col xs={24} key={user.id}>
                       <UserCard user={user} />
                     </Col>
                   );
@@ -82,8 +82,8 @@ const SearchPage = () => {
             </div>
           )}
           {posts?.length > 0 && (
-            <div style={{ background: "white", padding: "20px 0" }}>
-              <div style={{ marginBottom: "20px" }}>Bài viết</div>
+            <div style={{ background: 'white', padding: '20px 0' }}>
+              <div style={{ marginBottom: '20px' }}>Bài viết</div>
               {/* <div className="left w-6/12 pr-4"> */}
               {posts.map((post) => (
                 <div key={post.postId}>
