@@ -1,12 +1,11 @@
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 
-import UserCard from '@/component/UserCard';
 import Recommend from './Recommend';
 import Loading from '@/component/Loading';
 import { getIncomingRequest } from '@/services/friendService';
 import { user } from '@/type/type';
-import UserCardV2 from '@/component/UserCardV2';
+import UserCard from '@/component/UserCard';
 
 const FriendRequest = () => {
   const [loadingPage, setLoadingPage] = useState(true);
@@ -40,7 +39,7 @@ const FriendRequest = () => {
         {users.map((user, index) => {
           return (
             <Col xs={24} md={12} key={index}>
-              <UserCardV2 user={user} />
+              <UserCard user={user} />
             </Col>
           );
         })}

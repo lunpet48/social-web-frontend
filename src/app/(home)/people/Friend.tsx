@@ -2,11 +2,10 @@ import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
-import UserCard from '@/component/UserCard';
 import Loading from '@/component/Loading';
 import { getFriend } from '@/services/friendService';
 import { user } from '@/type/type';
-import UserCardV2 from '@/component/UserCardV2';
+import UserCard from '@/component/UserCard';
 
 const Friend = () => {
   const [loadingPage, setLoadingPage] = useState(true);
@@ -43,7 +42,7 @@ const Friend = () => {
         {users.map((user, index) => {
           return (
             <Col xs={24} md={12} key={index}>
-              <UserCardV2 user={user} />
+              <UserCard user={user} />
             </Col>
           );
         })}
