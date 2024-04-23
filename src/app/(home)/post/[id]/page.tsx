@@ -1,13 +1,13 @@
-"use client";
-import PostDetailV2Component from "@/component/PostDetailV2Component";
-import React from "react";
+'use client';
+import PostDetail from '@/component/PostDetail';
+import React from 'react';
 
-const PostDetail = ({ params }: { params: { id: string } }) => {
+const PostDetailPage = ({ params }: { params: { id: string } }) => {
   return (
-    <div style={{ padding: "150px", background: "white" }}>
-      <PostDetailV2Component postId={params.id} />
+    <div style={{ padding: '150px', background: 'white' }}>
+      <PostDetail postId={params.id} />
     </div>
   );
 };
 
-export default PostDetail;
+export default PostDetailPage;

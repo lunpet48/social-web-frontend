@@ -1,5 +1,6 @@
-import { Gender, RelationshipProfile } from "./enum";
+import { Gender, RelationshipProfile } from './enum';
 
+// dùng cho update profile
 export type profile = {
   fullName?: string | null;
   gender?: string | null;
@@ -18,8 +19,8 @@ export type user = {
   gender?: Gender;
   address?: string;
   dateOfBirth?: string;
-  postCount?:number;
-  friendCount?:number;
+  postCount?: number;
+  friendCount?: number;
   relationship?: RelationshipProfile;
 };
 
@@ -34,4 +35,14 @@ export type post = {
   reactions: string[];
   createdAt: string;
   updatedAt?: string;
-}
+};
+
+export type comment = {
+  id: string;
+  postId: string;
+  userId: string;
+  comment: string;
+  mediaLink: string;
+  createdAt: string;
+  repliedCommentId: string;
+};

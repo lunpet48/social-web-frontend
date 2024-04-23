@@ -1,7 +1,7 @@
-"use client";
-import PostDetailV2Component from "@/component/PostDetailV2Component";
-import { Modal } from "antd";
-import { useRouter } from "next/navigation";
+'use client';
+import PostDetail from '@/component/PostDetail';
+import { Modal } from 'antd';
+import { useRouter } from 'next/navigation';
 
 const Page = ({ params }: { params: { postid: string } }) => {
   const router = useRouter();
@@ -9,9 +9,9 @@ const Page = ({ params }: { params: { postid: string } }) => {
     router.back();
   };
   return (
-    <div style={{ position: "fixed", top: 0, right: 0, bottom: 0, left: 0 }}>
+    <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }}>
       <Modal open={true} footer={[]} onCancel={handleCancel} width={1000} centered>
-        <PostDetailV2Component postId={params.postid} />
+        <PostDetail postId={params.postid} />
       </Modal>
     </div>
   );
