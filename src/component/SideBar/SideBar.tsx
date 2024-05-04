@@ -49,7 +49,7 @@ const SideBar = ({ className }: { className?: string }) => {
       style: { fontSize: '25px', marginRight: '8px' },
     }),
     label: (
-      <span className="noselect" style={{ fontSize: '16px' }}>
+      <span className='noselect' style={{ fontSize: '16px' }}>
         {labelContents[index]}
       </span>
     ),
@@ -72,7 +72,7 @@ const SideBar = ({ className }: { className?: string }) => {
           router.push('/message');
           break;
         case 5:
-          router.push('/notify');
+          router.push('/notification');
           break;
         case 6:
           setShowCreatePost(true);
@@ -87,9 +87,9 @@ const SideBar = ({ className }: { className?: string }) => {
     <Sider
       width={300}
       className={className}
-      theme="light"
-      breakpoint="xl"
-      collapsedWidth="70px"
+      theme='light'
+      breakpoint='xl'
+      collapsedWidth='70px'
       style={{
         overflow: 'hidden',
         height: '100vh',
@@ -101,7 +101,7 @@ const SideBar = ({ className }: { className?: string }) => {
       }}
     >
       <div style={{ margin: '50px 10px' }}>
-        <Link href={'/'} className="text-decoration-none">
+        <Link href={'/'} className='text-decoration-none'>
           <Space size={'large'}>
             <span
               style={{
@@ -113,13 +113,13 @@ const SideBar = ({ className }: { className?: string }) => {
                 gap: '20px',
               }}
             >
-              <img style={{ height: '50px' }} src="/logo.jpg" alt="logo" />
+              <img style={{ height: '50px' }} src='/logo.jpg' alt='logo' />
               Sunny
             </span>
           </Space>
         </Link>
       </div>
-      <Menu theme="light" mode="inline" defaultSelectedKeys={['1']} items={items} />
+      <Menu theme='light' mode='inline' defaultSelectedKeys={['1']} items={items} />
       <CreatePost open={showCreatePost} setOpen={setShowCreatePost} />
     </Sider>
   );

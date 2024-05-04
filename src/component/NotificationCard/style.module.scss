@@ -1,0 +1,28 @@
+.content {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 500px;
+  padding: 10px;
+  border-bottom: 1px solid #ececec;
+  cursor: pointer;
+
+  img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+  }
+
+  .actor-and-message {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    color: #999999;
+    font-weight: 600;
+
+    .actor {
+      font-weight: 800;
+      color: #000;
+    }
+  }
+}

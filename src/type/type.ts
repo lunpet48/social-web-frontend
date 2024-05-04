@@ -1,4 +1,4 @@
-import { Gender, RelationshipProfile } from './enum';
+import { Gender, RelationshipProfile, notificationType } from './enum';
 
 // dùng cho update profile
 export type profile = {
@@ -24,6 +24,16 @@ export type user = {
   relationship?: RelationshipProfile;
 };
 
+/*
+ * Dùng cho các trường hợp user chỉ cần thông tin id, user và avatar
+ * như user có trong bài viết, comment ...
+ * */
+export type shortUser = {
+  userId: string;
+  username: string;
+  avatar: string;
+};
+
 export type post = {
   postId: string;
   user: user;
@@ -45,4 +55,13 @@ export type comment = {
   mediaLink: string;
   createdAt: string;
   repliedCommentId: string;
+};
+
+export type notification = {
+  id: string;
+  actor: shortUser;
+  receiver: string;
+  notificationType: notificationType;
+  idType: string;
+  createdAt: string;
 };
