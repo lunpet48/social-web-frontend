@@ -1,11 +1,14 @@
 'use client';
-import PostView from '@/component/PostView';
-import { post, user } from '@/type/type';
+import { useEffect, useState } from 'react';
 import { Col, Input, Row } from 'antd';
-import { SearchProps } from 'antd/es/input';
-import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { SearchProps } from 'antd/es/input';
+
+import Post from '@/component/Post';
 import UserCard from '@/component/UserCard';
+import { post, user } from '@/type/type';
+import { useDispatch } from 'react-redux';
+import { setMenuSelected } from '@/store/slices/app';
 
 const { Search } = Input;
 
@@ -17,6 +20,11 @@ const SearchPage = () => {
   const [posts, setPosts] = useState<post[]>([]);
 
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setMenuSelected(1));
+  }, []);
 
   const onSearch: SearchProps['onSearch'] = async (value, _e, info) => {
     if (info?.source == 'input' && value.trim() !== '') {
@@ -59,11 +67,11 @@ const SearchPage = () => {
         <Col xs={{ span: 22, offset: 1 }} md={{ span: 16, offset: 4 }} lg={{ span: 12, offset: 6 }}>
           <Row>
             <Search
-              placeholder="Tìm kiếm"
+              placeholder='Tìm kiếm'
               allowClear
               enterButton
               onSearch={onSearch}
-              size="large"
+              size='large'
               loading={loading}
             />
           </Row>
@@ -87,7 +95,7 @@ const SearchPage = () => {
               {/* <div className="left w-6/12 pr-4"> */}
               {posts.map((post) => (
                 <div key={post.postId}>
-                  <PostView post={post} />
+                  <Post post={post} />
                 </div>
               ))}
               {/* </div> */}

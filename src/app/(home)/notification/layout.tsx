@@ -1,7 +1,17 @@
 'use client';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { setMenuSelected } from '@/store/slices/app';
 import styles from './layout.module.scss';
 
 const NotificationLayout = ({ children }: { children: React.ReactNode }) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setMenuSelected(5));
+  }, []);
+
   return (
     <div className={styles['content']}>
       <div className={styles['tablist']}>

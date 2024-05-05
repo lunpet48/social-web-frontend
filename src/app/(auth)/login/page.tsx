@@ -1,14 +1,16 @@
 'use client';
 
 import { Row, Col, Input, Form, Button, message } from 'antd';
-import styles from './page.module.scss';
+import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+
+import { login } from '@/store/slices/authUser';
+import styles from './page.module.scss';
 
 export default function Login() {
   const [inputs, setInputs] = useState({ username: '', password: '' });
@@ -17,7 +19,7 @@ export default function Login() {
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const { loginContext } = useAuth();
+  const dispatch = useDispatch();
 
   const handleChange = (event: any) => {
     const name = event.target.name;
@@ -48,16 +50,17 @@ export default function Login() {
         credentials: 'include',
       });
 
-      const data = await response.json();
+      const res = await response.json();
+      const data = res.data;
 
-      if (data.error) {
+      if (res.error) {
         // fail
         setLoading(false);
-        notify('error', data.message);
+        notify('error', res.message);
       } else {
         //  success
         setLoading(false);
-        loginContext(data.data.user, data.data.accessToken);
+        dispatch(login({ user: data.user, accessToken: data.accessToken }));
         notify('success', 'Đăng nhập thành công');
         setTimeout(() => {
           router.push('/');
@@ -74,19 +77,19 @@ export default function Login() {
     <>
       {contextHolder}
       <div className={styles.wrapper}>
-        <Row className={styles.row} justify="center">
+        <Row className={styles.row} justify='center'>
           <Col xs={24} sm={20} xl={14}>
             <Row className={styles.card} gutter={{ xs: 0, md: 50 }}>
               <Col className={styles.left} span={0} md={12}>
-                <img src="./login.jpg" alt="sign up image" />
-                <Link href="/register">Tạo tài khoản mới</Link>
+                <img src='./login.jpg' alt='sign up image' />
+                <Link href='/register'>Tạo tài khoản mới</Link>
               </Col>
               <Col className={styles.right} span={24} md={12}>
                 <h2 style={{ marginBottom: '40px' }}>Đăng nhập</h2>
-                <Form autoComplete="off" onFinish={handleSubmit}>
+                <Form autoComplete='off' onFinish={handleSubmit}>
                   <label>Tài khoản</label>
                   <Form.Item
-                    name="username"
+                    name='username'
                     rules={[
                       {
                         required: true,
@@ -95,15 +98,15 @@ export default function Login() {
                     ]}
                   >
                     <Input
-                      size="large"
+                      size='large'
                       prefix={
                         <>
                           <FontAwesomeIcon icon={faUser} />
                           &nbsp;&nbsp;&nbsp;
                         </>
                       }
-                      placeholder="Nhập tên tài khoản hoặc email"
-                      name="username"
+                      placeholder='Nhập tên tài khoản hoặc email'
+                      name='username'
                       value={inputs.username}
                       onChange={handleChange}
                     />
@@ -111,7 +114,7 @@ export default function Login() {
 
                   <label>Mật khẩu</label>
                   <Form.Item
-                    name="password"
+                    name='password'
                     rules={[
                       {
                         required: true,
@@ -120,32 +123,32 @@ export default function Login() {
                     ]}
                   >
                     <Input.Password
-                      size="large"
+                      size='large'
                       prefix={
                         <>
                           <FontAwesomeIcon icon={faLock} />
                           &nbsp;&nbsp;&nbsp;
                         </>
                       }
-                      placeholder="Nhập mật khẩu"
-                      name="password"
+                      placeholder='Nhập mật khẩu'
+                      name='password'
                       value={inputs.password}
                       onChange={handleChange}
                     />
                   </Form.Item>
 
-                  <Link href="/forgot-password" style={{ fontSize: '16px' }}>
+                  <Link href='/forgot-password' style={{ fontSize: '16px' }}>
                     Quên mật khẩu?
                   </Link>
 
                   <Form.Item style={{ margin: '40px 0 0 0' }}>
-                    <Button size="large" type="primary" htmlType="submit" disabled={loading}>
+                    <Button size='large' type='primary' htmlType='submit' disabled={loading}>
                       {loading ? 'Please wait...' : 'Đăng nhập'}
                     </Button>
                   </Form.Item>
                 </Form>
 
-                <Link className={styles.register} href="/register">
+                <Link className={styles.register} href='/register'>
                   Tạo tài khoản mới
                 </Link>
               </Col>

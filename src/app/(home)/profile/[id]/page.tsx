@@ -36,6 +36,9 @@ import { post, user } from '@/type/type';
 import { Gender, RelationshipProfile } from '@/type/enum';
 import LongUserCard from '@/component/LongUserCard';
 import { changePassword } from '@/services/authService';
+import { useDispatch, useSelector } from 'react-redux';
+import { setMenuSelected } from '@/store/slices/app';
+import { RootState } from '@/store';
 
 const formItemLayout = {
   labelCol: {
@@ -82,7 +85,10 @@ const Profile = ({ params }: { params: { id: string } }) => {
   const [isOpenModalChangePassword, setIsOpenModalChangePassword] = useState(false);
   const [inputs, setInputs] = useState(initChangePasswordForm);
 
+  const currentUser = useSelector((state: RootState) => state.user.user);
+
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [form] = Form.useForm();
 
@@ -137,6 +143,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     fetchData();
+    if (currentUser.username == params.id) {
+      dispatch(setMenuSelected(7));
+    }
   }, []);
 
   const goToMessage = () => {
@@ -255,7 +264,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
   };
 
   if (loadingPage) {
-    return <Loading height="100vh" />;
+    return <Loading height='100vh' />;
   }
 
   const handleOpenChangePasswordModal = () => {
@@ -334,13 +343,13 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   {/* If owner profile then can edit profile else only view & action on this user*/}
                   {user.relationship == RelationshipProfile.SELF ? (
                     <>
-                      <Link href="edit" className={styles['btn-edit-profile']}>
+                      <Link href='edit' className={styles['btn-edit-profile']}>
                         Chỉnh sửa trang cá nhân
                       </Link>
                       <Dropdown
                         menu={{ items: itemsDropdown }}
                         trigger={['click']}
-                        placement="bottomRight"
+                        placement='bottomRight'
                       >
                         <div style={{ cursor: 'pointer' }}>
                           <FontAwesomeIcon
@@ -417,9 +426,9 @@ const Profile = ({ params }: { params: { id: string } }) => {
                   {user.gender && (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       {user.gender == Gender.MALE ? (
-                        <FontAwesomeIcon icon={faMars} color="blue" style={{ width: '20px' }} />
+                        <FontAwesomeIcon icon={faMars} color='blue' style={{ width: '20px' }} />
                       ) : user.gender == Gender.FEMALE ? (
-                        <FontAwesomeIcon icon={faVenus} color="red" style={{ width: '20px' }} />
+                        <FontAwesomeIcon icon={faVenus} color='red' style={{ width: '20px' }} />
                       ) : (
                         ''
                       )}
@@ -439,7 +448,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <FontAwesomeIcon
                         icon={faLocationDot}
-                        color="#2666c0"
+                        color='#2666c0'
                         style={{ width: '20px' }}
                       />
                       <div style={{ width: '120px' }}>Sống tại:</div>
@@ -451,7 +460,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <FontAwesomeIcon
                         icon={faCalendar}
-                        color="#4889f4"
+                        color='#4889f4'
                         style={{ width: '20px' }}
                       />
 
@@ -480,7 +489,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
           )}
         </div>
         {loadingPost ? (
-          <Loading height="50px" />
+          <Loading height='50px' />
         ) : (
           <Row gutter={[3, 3]}>
             {posts.map((post, id) => (
@@ -500,7 +509,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
       </div>
       <Modal
         forceRender
-        title="Danh sách bạn bè"
+        title='Danh sách bạn bè'
         open={isOpenModalFriendList}
         onCancel={handleCancel}
         footer={null}
@@ -516,7 +525,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
 
       <Modal
         forceRender
-        title="Đổi mật khẩu"
+        title='Đổi mật khẩu'
         open={isOpenModalChangePassword}
         onCancel={handleCancelModalChangePassword}
         footer={null}
@@ -525,13 +534,13 @@ const Profile = ({ params }: { params: { id: string } }) => {
           <Form
             onFinish={handleChangePassword}
             form={form}
-            autoComplete="off"
+            autoComplete='off'
             {...formItemLayout}
             scrollToFirstError
           >
             <Form.Item
-              name="oldPassword"
-              label="Mật khẩu hiện tại"
+              name='oldPassword'
+              label='Mật khẩu hiện tại'
               rules={[
                 {
                   required: true,
@@ -541,15 +550,15 @@ const Profile = ({ params }: { params: { id: string } }) => {
               hasFeedback
             >
               <Input.Password
-                name="oldPassword"
+                name='oldPassword'
                 value={inputs.oldPassword}
                 onChange={handleChangeInputChangePasswordForm}
               />
             </Form.Item>
 
             <Form.Item
-              name="newPassword"
-              label="Mật khẩu mới"
+              name='newPassword'
+              label='Mật khẩu mới'
               rules={[
                 {
                   required: true,
@@ -559,15 +568,15 @@ const Profile = ({ params }: { params: { id: string } }) => {
               hasFeedback
             >
               <Input.Password
-                name="newPassword"
+                name='newPassword'
                 value={inputs.newPassword}
                 onChange={handleChangeInputChangePasswordForm}
               />
             </Form.Item>
 
             <Form.Item
-              name="confirm"
-              label="Nhập lại mật khẩu"
+              name='confirm'
+              label='Nhập lại mật khẩu'
               dependencies={['newPassword']}
               hasFeedback
               rules={[
@@ -588,7 +597,7 @@ const Profile = ({ params }: { params: { id: string } }) => {
               <Input.Password />
             </Form.Item>
             <div style={{ display: 'flex', justifyContent: 'end' }}>
-              <Button size="large" type="primary" htmlType="submit">
+              <Button size='large' type='primary' htmlType='submit'>
                 Xác nhận
               </Button>
             </div>

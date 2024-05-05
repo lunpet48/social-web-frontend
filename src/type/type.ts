@@ -36,7 +36,7 @@ export type shortUser = {
 
 export type post = {
   postId: string;
-  user: user;
+  user: shortUser;
   postType: string;
   postMode: string;
   caption: string;

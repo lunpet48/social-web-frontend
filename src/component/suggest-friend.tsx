@@ -1,11 +1,12 @@
-import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Loading from "./Loading";
-import SuggestUser from "./SuggestUser";
-import RequestUser from "./RequestUser";
-import { getIncomingRequest, getRecommendUser } from "@/services/friendService";
-import { user } from "@/type/type";
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Loading from './Loading';
+import SuggestUser from './SuggestUser';
+import RequestUser from './RequestUser';
+import { getIncomingRequest, getRecommendUser } from '@/services/friendService';
+import { user } from '@/type/type';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 const SuggestFriend = () => {
   const [loadingPage, setLoadingPage] = useState(true);
@@ -13,7 +14,7 @@ const SuggestFriend = () => {
   const [requestFriends, setRequestFriends] = useState<user[]>([]);
 
   const router = useRouter();
-  const { currentUser } = useAuth();
+  const currentUser = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
     const fetchRequestFriend = async () => {
@@ -49,39 +50,35 @@ const SuggestFriend = () => {
     fetchRequestFriend();
   }, []);
 
-  if (loadingPage) return <Loading height="100vh" />;
+  if (loadingPage) return <Loading height='100vh' />;
   return (
     <>
-      <div className="right w-12/12 h-screen overflow-visible h-full">
-        <div className="first pl-4 w-full" style={{ top: "85px", maxWidth: "293px" }}>
+      <div className='right w-12/12 h-screen overflow-visible h-full'>
+        <div className='first pl-4 w-full' style={{ top: '85px', maxWidth: '293px' }}>
           <div
-            className="profile flex items-center  mb-4"
+            className='profile flex items-center  mb-4'
             onClick={() => {
               router.push(`/profile/${currentUser.username}`);
             }}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
           >
-            <div className="avatar rounded-full overflow-hidden mr-3">
+            <div className='avatar rounded-full overflow-hidden mr-3'>
               <img
-                src={`${
-                  currentUser.avatar ? currentUser.avatar : "/default-avatar.jpg"
-                }`}
-                alt=""
-                style={{ objectFit: "cover", width: "56px", height: "56px" }}
+                src={`${currentUser.avatar ? currentUser.avatar : '/default-avatar.jpg'}`}
+                alt=''
+                style={{ objectFit: 'cover', width: '56px', height: '56px' }}
               />
             </div>
-            <div className="user-name ">
-              <span className="text-lg font-semibold text-gray-700">
-                {currentUser.fullName}
-              </span>
-              <span className="text-sm text-gray-600  block">{currentUser.username}</span>
+            <div className='user-name '>
+              <span className='text-lg font-semibold text-gray-700'>{currentUser.fullName}</span>
+              <span className='text-sm text-gray-600  block'>{currentUser.username}</span>
             </div>
           </div>
           {requestFriends.length > 0 && (
-            <div className="suggestion-users" style={{ paddingBottom: "30px" }}>
-              <div className="title flex w-full justify-between text-sm">
-                <div className="left">
-                  <h1 className="font-bold">Lời mời kết bạn</h1>
+            <div className='suggestion-users' style={{ paddingBottom: '30px' }}>
+              <div className='title flex w-full justify-between text-sm'>
+                <div className='left'>
+                  <h1 className='font-bold'>Lời mời kết bạn</h1>
                 </div>
               </div>
 
@@ -90,10 +87,10 @@ const SuggestFriend = () => {
               })}
             </div>
           )}
-          <div className="suggestion-users">
-            <div className="title flex w-full justify-between text-sm">
-              <div className="left">
-                <h1 className="font-bold">Gợi ý kết bạn</h1>
+          <div className='suggestion-users'>
+            <div className='title flex w-full justify-between text-sm'>
+              <div className='left'>
+                <h1 className='font-bold'>Gợi ý kết bạn</h1>
               </div>
               {/* <div className="right">
                 <span>Xem tất cả</span>

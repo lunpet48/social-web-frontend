@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './index.css';
 import styles from './page.module.scss';
-import PostView from '@/component/post';
+import PostView from '@/component/PostView';
 import SuggestFriend from '@/component/suggest-friend';
 
 const Home = () => {

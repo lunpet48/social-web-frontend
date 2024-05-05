@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { Content } from 'antd/es/layout/layout';
 
 import Loading from '@/component/Loading';
-import { useAuth } from '@/context/AuthContext';
 import SideBar from '@/component/SideBar';
+import { login } from '@/store/slices/authUser';
 import styles from './layout.module.scss';
-import { Content } from 'antd/es/layout/layout';
 
 export default function UserPageLayout({
   children,
@@ -20,7 +21,7 @@ export default function UserPageLayout({
 
   const router = useRouter();
 
-  const { loginContext } = useAuth();
+  const dispatch = useDispatch();
 
   /* Chỗ này phải gọi api get-user chứ không phải renew-token. 
     Nếu access-token expired mới gọi renew-token*/
@@ -39,7 +40,7 @@ export default function UserPageLayout({
         router.push('/login');
       } else {
         //  success
-        loginContext(data.data.user, data.data.accessToken);
+        dispatch(login({ user: data.data.user, accessToken: data.data.accessToken }));
         setLoadingPage(false);
       }
     } catch (err) {
@@ -51,13 +52,13 @@ export default function UserPageLayout({
     refreshToken();
   }, []);
 
+  if (loadingPage) return <Loading height='100vh' />;
+
   return (
     <>
       <Layout className={styles.layout}>
         <SideBar className={styles['sidebar-frame']} />
-        <Content className={styles['content-frame']}>
-          {loadingPage ? <Loading height="100vh" /> : children}
-        </Content>
+        <Content className={styles['content-frame']}>{children}</Content>
       </Layout>
       {modal}
     </>

@@ -1,10 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styles from './page.module.scss';
 import FriendRequest from './FriendRequest';
 import FriendRequestHaveBeenSent from './FriendRequestHaveBeenSent';
 import Friend from './Friend';
+import { useDispatch } from 'react-redux';
+import { setMenuSelected } from '@/store/slices/app';
 //import Block from "./Block";
 
 enum pages {
@@ -16,6 +18,13 @@ enum pages {
 
 const People = () => {
   const [page, setPage] = useState(pages.Friend);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setMenuSelected(3));
+  }, []);
+
   let ContentPage;
   switch (page) {
     case pages.Friend:

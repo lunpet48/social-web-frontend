@@ -1,5 +1,5 @@
 import { Menu, MenuProps, Space } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Sider from 'antd/es/layout/Sider';
@@ -15,14 +15,18 @@ import {
 } from '@ant-design/icons';
 
 import CreatePost from '../create-post';
-import { useAuth } from '@/context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import { setMenuSelected } from '@/store/slices/app';
 
 const SideBar = ({ className }: { className?: string }) => {
   const [showCreatePost, setShowCreatePost] = useState(false);
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const { currentUser } = useAuth();
+  const currentUser = useSelector((state: RootState) => state.user.user);
+  const { currentKey, previousKey } = useSelector((state: RootState) => state.app.menuSelected);
 
   const labelContents = [
     'Trang chủ',
@@ -44,7 +48,7 @@ const SideBar = ({ className }: { className?: string }) => {
     PlusOutlined,
     UserOutlined,
   ].map((icon, index) => ({
-    key: String(index + 1),
+    key: String(index),
     icon: React.createElement(icon, {
       style: { fontSize: '25px', marginRight: '8px' },
     }),
@@ -55,6 +59,7 @@ const SideBar = ({ className }: { className?: string }) => {
     ),
     style: { margin: '0px 0px 15px 4px', padding: '0px 0px 0px 18px' },
     onClick: () => {
+      dispatch(setMenuSelected(index));
       switch (index) {
         case 0:
           router.push('/');
@@ -82,6 +87,12 @@ const SideBar = ({ className }: { className?: string }) => {
       }
     },
   }));
+
+  useEffect(() => {
+    if (currentKey !== previousKey && showCreatePost === false) {
+      dispatch(setMenuSelected(previousKey));
+    }
+  }, [showCreatePost]);
 
   return (
     <Sider
@@ -119,7 +130,7 @@ const SideBar = ({ className }: { className?: string }) => {
           </Space>
         </Link>
       </div>
-      <Menu theme='light' mode='inline' defaultSelectedKeys={['1']} items={items} />
+      <Menu theme='light' mode='inline' selectedKeys={[currentKey.toString()]} items={items} />
       <CreatePost open={showCreatePost} setOpen={setShowCreatePost} />
     </Sider>
   );

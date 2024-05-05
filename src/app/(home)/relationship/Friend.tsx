@@ -1,17 +1,18 @@
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { useAuth } from '@/context/AuthContext';
 import Loading from '@/component/Loading';
 import { getFriend } from '@/services/friendService';
 import { user } from '@/type/type';
 import UserCard from '@/component/UserCard';
+import { RootState } from '@/store';
 
 const Friend = () => {
   const [loadingPage, setLoadingPage] = useState(true);
   const [users, setUsers] = useState<user[]>([]);
 
-  const { currentUser } = useAuth();
+  const currentUser = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -1,14 +1,12 @@
-import { useAuth } from "@/context/AuthContext";
-import { acceptFriendRequest, denyFriendRequest } from "@/services/friendService";
-import { user } from "@/type/type";
-import { Button, Col, Row } from "antd";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-
+import { acceptFriendRequest, denyFriendRequest } from '@/services/friendService';
+import { user } from '@/type/type';
+import { Button, Col, Row } from 'antd';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
 const RequestUser = ({ user }: { user: user }) => {
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState({ isSuccess: false, text: "" });
+  const [status, setStatus] = useState({ isSuccess: false, text: '' });
 
   const router = useRouter();
 
@@ -24,7 +22,7 @@ const RequestUser = ({ user }: { user: user }) => {
       if (!data.error) {
         //success
         setLoading(false);
-        setStatus({ isSuccess: true, text: "Đã chấp nhận kết bạn" });
+        setStatus({ isSuccess: true, text: 'Đã chấp nhận kết bạn' });
       }
     } catch (err) {
       setLoading(false);
@@ -32,7 +30,7 @@ const RequestUser = ({ user }: { user: user }) => {
   };
   const handleDenyFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
 
     try {
       setLoading(true);
@@ -41,7 +39,7 @@ const RequestUser = ({ user }: { user: user }) => {
       if (response.status >= 200 && response.status < 300) {
         //succcess
         setLoading(false);
-        setStatus({ isSuccess: true, text: "Đã từ chối" });
+        setStatus({ isSuccess: true, text: 'Đã từ chối' });
       }
     } catch (err) {
       setLoading(false);
@@ -54,26 +52,26 @@ const RequestUser = ({ user }: { user: user }) => {
 
   return (
     <div
-      className="users-wrapper mt-4 flex w-full justify-between items-center"
+      className='users-wrapper mt-4 flex w-full justify-between items-center'
       onClick={viewProfile}
     >
-      <div className="user-item flex flex-row pl-2" style={{ width: "100%" }}>
-        <div className="user-img h-10 w-10 border rounded-full overflow-hidden mr-4">
+      <div className='user-item flex flex-row pl-2' style={{ width: '100%' }}>
+        <div className='user-img h-10 w-10 border rounded-full overflow-hidden mr-4'>
           <img
             alt="realdonaldtrump's profile picture"
-            className=""
-            src={`${user.avatar ? user.avatar : "/default-avatar.jpg"}`}
+            className=''
+            src={`${user.avatar ? user.avatar : '/default-avatar.jpg'}`}
           />
         </div>
-        <div style={{ flex: "1" }}>
-          <div className="user-name flex flex-col ">
-            <span className="text-sm font-semibold">{user.fullName}</span>
-            <span className="text-xs -mt-1 text-gray-700">{user.username}</span>
+        <div style={{ flex: '1' }}>
+          <div className='user-name flex flex-col '>
+            <span className='text-sm font-semibold'>{user.fullName}</span>
+            <span className='text-xs -mt-1 text-gray-700'>{user.username}</span>
           </div>
-          <Row gutter={5} style={{ width: "100%" }}>
+          <Row gutter={5} style={{ width: '100%' }}>
             {loading ? (
               <Col xs={24}>
-                <Button style={{ width: "100%", background: "#efefef" }} disabled>
+                <Button style={{ width: '100%', background: '#efefef' }} disabled>
                   Loading
                 </Button>
               </Col>
@@ -81,9 +79,9 @@ const RequestUser = ({ user }: { user: user }) => {
               <Col xs={24}>
                 <Button
                   style={{
-                    width: "100%",
-                    background: "#04AA6D",
-                    color: "white",
+                    width: '100%',
+                    background: '#04AA6D',
+                    color: 'white',
                   }}
                   disabled
                 >
@@ -94,8 +92,8 @@ const RequestUser = ({ user }: { user: user }) => {
               <>
                 <Col xs={12}>
                   <Button
-                    type="primary"
-                    style={{ width: "100%", fontSize: "14px", padding: "0" }}
+                    type='primary'
+                    style={{ width: '100%', fontSize: '14px', padding: '0' }}
                     onClick={(e) => {
                       handleAcceptFriendRequest(e);
                     }}
@@ -106,9 +104,9 @@ const RequestUser = ({ user }: { user: user }) => {
                 <Col xs={12}>
                   <Button
                     style={{
-                      width: "100%",
-                      fontSize: "14x",
-                      background: "#efefef",
+                      width: '100%',
+                      fontSize: '14x',
+                      background: '#efefef',
                     }}
                     onClick={(e) => {
                       handleDenyFriendRequest(e);

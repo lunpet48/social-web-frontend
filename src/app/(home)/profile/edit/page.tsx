@@ -3,13 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Col, DatePicker, Form, Input, Row, Select, message } from 'antd';
 import dayjs from 'dayjs';
+import { useDispatch, useSelector } from 'react-redux';
 
-import styles from './page.module.scss';
-import { useAuth } from '@/context/AuthContext';
 import ImagePreviewWrapper from '@/component/ImagePreviewWrapper';
 import { updateAvatar, updateBackground, updateProfileInfo } from '@/services/profileService';
 import { profile } from '@/type/type';
 import { Gender } from '@/type/enum';
+import { RootState } from '@/store';
+import { setUser } from '@/store/slices/authUser';
+import styles from './page.module.scss';
 
 const formItemLayout = {
   labelCol: {
@@ -37,7 +39,8 @@ const EditProfile = () => {
     dateOfBirth: null,
   });
 
-  const { currentUser, setCurrentUser } = useAuth();
+  const currentUser = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch();
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -93,10 +96,12 @@ const EditProfile = () => {
         //  success
         setLoading(false);
         notify('success', 'Cập nhật thành công');
-        setCurrentUser({
-          ...currentUser,
-          ...data.data,
-        });
+        dispatch(
+          setUser({
+            ...currentUser,
+            ...data.data,
+          })
+        );
       }
     } catch (err) {
       console.log(err);
@@ -132,10 +137,12 @@ const EditProfile = () => {
             //  success
             setAvatarLoading(false);
             notify('success', 'Cập nhật thành công');
-            setCurrentUser({
-              ...currentUser,
-              ...data.data,
-            });
+            dispatch(
+              setUser({
+                ...currentUser,
+                ...data.data,
+              })
+            );
           }
         } catch (err) {
           console.log(err);
@@ -175,10 +182,12 @@ const EditProfile = () => {
             //  success
             setBackgroundLoading(false);
             notify('success', 'Cập nhật thành công');
-            setCurrentUser({
-              ...currentUser,
-              ...data.data,
-            });
+            dispatch(
+              setUser({
+                ...currentUser,
+                ...data.data,
+              })
+            );
           }
         } catch (err) {
           console.log(err);
@@ -259,14 +268,14 @@ const EditProfile = () => {
           <Form
             onFinish={handleUpdateProfileInfo}
             form={form}
-            autoComplete="off"
+            autoComplete='off'
             {...formItemLayout}
             requiredMark={false}
             colon={false}
             scrollToFirstError
           >
             <Form.Item
-              name="fullName"
+              name='fullName'
               label={<label style={{ fontSize: '16px', fontWeight: 600 }}>Họ và tên</label>}
               rules={[
                 {
@@ -275,11 +284,11 @@ const EditProfile = () => {
                 },
               ]}
             >
-              <Input name="fullName" onChange={handleChange} />
+              <Input name='fullName' onChange={handleChange} />
             </Form.Item>
 
             <Form.Item
-              name="gender"
+              name='gender'
               label={<label style={{ fontSize: '16px', fontWeight: 600 }}>Giới tính</label>}
             >
               <Select
@@ -307,7 +316,7 @@ const EditProfile = () => {
             </Form.Item>
 
             <Form.Item
-              name="dateOfBirth"
+              name='dateOfBirth'
               label={<label style={{ fontSize: '16px', fontWeight: 600 }}>Ngày sinh</label>}
             >
               <DatePicker
@@ -348,7 +357,7 @@ const EditProfile = () => {
               </Row> */}
             <Row>
               <Col md={{ offset: 4 }}>
-                <Button type="primary" htmlType="submit" disabled={loading}>
+                <Button type='primary' htmlType='submit' disabled={loading}>
                   {loading ? 'Please wait...' : 'Cập nhật'}
                 </Button>
               </Col>
