@@ -50,7 +50,11 @@ export type post = {
 export type comment = {
   id: string;
   postId: string;
-  userId: string;
+  user: {
+    userId: string;
+    username: string;
+    avatar: string;
+  };
   comment: string;
   mediaLink: string;
   createdAt: string;

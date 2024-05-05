@@ -7,12 +7,12 @@ export interface AppState {
 }
 
 const initialState: AppState = {
-  menuSelected: { currentKey: 0, previousKey: 0 },
+  menuSelected: { currentKey: -1, previousKey: -1 },
   isSoundOn: false,
 };
 
 export const appSlice = createSlice({
-  name: 'counter',
+  name: 'app',
   initialState,
   reducers: {
     setMenuSelected: (state, action: PayloadAction<number>) => {

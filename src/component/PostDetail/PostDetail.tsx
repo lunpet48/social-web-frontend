@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MediaView from '../media-view';
 import { Modal, Space } from 'antd';
-import CommentComponent from '../comment';
+import CommentComponent from '../Comment';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import MoreOption from '../more-option';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,31 +13,7 @@ import VideoPlayerComponent from '../VideoPlayerComponent';
 import LongUserCard from '../LongUserCard';
 import { fetchPostById, getLikesOfPost } from '@/services/postService';
 import { fetchCommentOfPost, postComment } from '@/services/commentService';
-import { fetchUserProfile } from '@/services/profileService';
-import { comment } from '@/type/type';
-
-type user = {
-  id: string;
-  username: string;
-  email: string;
-  isLocked: false;
-  bio: string;
-  avatar: string;
-  fullName: string;
-};
-
-type post = {
-  postId: string;
-  userId: string;
-  postType: string;
-  postMode: string;
-  caption: string;
-  tagList: string[];
-  files: string[];
-  reactions: string[];
-  createdAt: string;
-  updatedAt: string;
-};
+import { comment, post, user } from '@/type/type';
 
 type reaction = {
   userId: string;
@@ -51,34 +27,14 @@ const PostDetail = ({ postId }: { postId: string }) => {
   const [replyCommentId, setReplyCommentId] = useState('');
   const [liked, setLiked] = useState(false);
   const [likeNumber, setLikeNumber] = useState(0);
-  const [post, setPost] = useState<post>({
-    postId: postId,
-    userId: '',
-    postType: '',
-    postMode: '',
-    caption: '',
-    tagList: [],
-    files: [],
-    reactions: [],
-    createdAt: '',
-    updatedAt: '',
-  });
-  const [user, setUser] = useState<user>({
-    id: '',
-    username: '',
-    email: '',
-    isLocked: false,
-    bio: '',
-    avatar: '',
-    fullName: '',
-  });
+  const [post, setPost] = useState<post>();
   const [comments, setComments] = useState<comment[]>([]);
 
   const [isOpenModalLikeList, setIsOpenModalLikeList] = useState(false);
   const [likeList, setLikeList] = useState<user[]>([]);
 
-  const handleCommentChange = (event: any) => {
-    setComment(event.target.value);
+  const handleCommentChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setComment(e.target.value);
   };
 
   const handlePostComment = async () => {
@@ -171,8 +127,6 @@ const PostDetail = ({ postId }: { postId: string }) => {
       };
       const post: post = await fetchPostById(postId);
       setPost(post);
-      const user: user = await fetchUserProfile(post?.userId);
-      setUser(user);
       const reaction: reaction = await fetchLiked(post.postId);
       setLiked(reaction.liked);
       setLikeNumber(post.reactions.length);
@@ -204,7 +158,7 @@ const PostDetail = ({ postId }: { postId: string }) => {
   };
 
   const onReply = (comment: comment) => {
-    setComment(`@${comment?.userId}`);
+    setComment(`@${comment?.user.username} `);
     setReplyCommentId(comment?.id);
   };
 
@@ -227,18 +181,23 @@ const PostDetail = ({ postId }: { postId: string }) => {
                 <div className='left flex flex-row items-center'>
                   <a
                     className='user-img h-10 w-10 border rounded-full overflow-hidden mr-4'
-                    href={`/profile/${user?.username}`}
+                    href={`/profile/${post?.user.username}`}
                   >
-                    <img alt='avatar' className='_6q-tv' draggable='false' src={user?.avatar} />
+                    <img
+                      alt='avatar'
+                      className='_6q-tv'
+                      draggable='false'
+                      src={post?.user.avatar}
+                    />
                   </a>
                   <a
                     className='user-name-and-place flex flex-col no-underline text-gray-900 hover:text-gray-400'
-                    href={`/profile/${user?.username}`}
+                    href={`/profile/${post?.user.username}`}
                   >
-                    <span className='text-sm font-bold'>{user?.username}</span>
+                    <span className='text-sm font-bold'>{post?.user.username}</span>
                     <span className='text-xs font-light text-gray-900'></span>
                   </a>
-                  {post.createdAt !== post.updatedAt ? (
+                  {post?.createdAt !== post?.updatedAt ? (
                     <>
                       <svg
                         aria-label='More options'
@@ -269,13 +228,13 @@ const PostDetail = ({ postId }: { postId: string }) => {
                   >
                     <circle clipRule='evenodd' cx='24' cy='24' fillRule='evenodd' r='4.5'></circle>
                   </svg>
-                  {post.postMode == 'PUBLIC' ? (
+                  {post?.postMode == 'PUBLIC' ? (
                     <FontAwesomeIcon
                       icon={faEarthAmericas as IconProp}
                       size='sm'
                       style={{ color: 'darkgrey' }}
                     />
-                  ) : post.postMode == 'FRIEND' ? (
+                  ) : post?.postMode == 'FRIEND' ? (
                     <FontAwesomeIcon
                       icon={faUserGroup as IconProp}
                       size='sm'
@@ -290,13 +249,13 @@ const PostDetail = ({ postId }: { postId: string }) => {
                   )}
                 </div>
                 <div className='pl-14'>
-                  {post.caption != '' && (
-                    <span className='text-sm font-light text-gray-900'>{post.caption}</span>
+                  {post?.caption != '' && (
+                    <span className='text-sm font-light text-gray-900'>{post?.caption}</span>
                   )}
                 </div>
               </div>
               <div className='right'>
-                <MoreOption post={post} user={user} userId={post.userId}></MoreOption>
+                <MoreOption post={post} user={post?.user} userId={post?.user.userId}></MoreOption>
               </div>
             </div>
 
@@ -342,7 +301,7 @@ const PostDetail = ({ postId }: { postId: string }) => {
                 </div>
                 <div className='post-date mt-1'>
                   <span className='text-xs text-gray-900'>
-                    {new Date(post.createdAt).toLocaleString()}
+                    {post && new Date(post.createdAt).toLocaleString()}
                   </span>
                 </div>
               </div>
