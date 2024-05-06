@@ -119,7 +119,7 @@ const UserCard = ({ user }: { user: user }) => {
       case RelationshipProfile.STRANGER:
         return (
           <Button
-            type="primary"
+            type='primary'
             onClick={(e) => {
               handleSendFriendRequest(e);
             }}
@@ -129,9 +129,9 @@ const UserCard = ({ user }: { user: user }) => {
         );
       case RelationshipProfile.INCOMMINGREQUEST:
         return (
-          <>
+          <div style={{ display: 'flex', gap: '8px' }}>
             <Button
-              type="primary"
+              type='primary'
               onClick={(e) => {
                 HandleAcceptFriendRequest(e);
               }}
@@ -139,18 +139,19 @@ const UserCard = ({ user }: { user: user }) => {
               Chấp nhận
             </Button>
             <Button
+              style={{ color: '#ff0000', borderColor: '#ff0000' }}
               onClick={(e) => {
                 HandleAcceptFriendRequest(e);
               }}
             >
               Từ chối
             </Button>
-          </>
+          </div>
         );
       case RelationshipProfile.PENDING:
         return (
           <Button
-            type="primary"
+            type='primary'
             onClick={(e) => {
               handleCancelFriendRequest(e);
             }}
@@ -192,7 +193,7 @@ const UserCard = ({ user }: { user: user }) => {
         //   background: 'white',
         // }}
         src={`${user.avatar ? user.avatar : '/default-avatar.jpg'}`}
-        alt="avatar"
+        alt='avatar'
       />
 
       <div className={styles['user-info']}>
