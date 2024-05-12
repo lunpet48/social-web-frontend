@@ -68,6 +68,8 @@ const NotificationCard = ({ notification }: { notification: notification }) => {
             ? `${notification.actor.username} đã thích bài viết của bạn`
             : notification.notificationType === notificationType.COMMENT
             ? `Đã bình luận bài viết của bạn`
+            : notification.notificationType === notificationType.MENTION
+            ? `Đã nhắc đến bạn trong một bài viết`
             : ''}
         </div>
       </div>

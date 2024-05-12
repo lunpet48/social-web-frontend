@@ -1,4 +1,5 @@
 import { comment } from '@/type/type';
+import { formatCaption } from '@/utils';
 import { Space } from 'antd';
 
 const CommentComponent = ({
@@ -26,7 +27,7 @@ const CommentComponent = ({
           >
             <span className='text-sm font-bold'>{comment.user.username}</span>
           </a>
-          <span className='text-sm font-light text-gray-900'>{comment.comment}</span>
+          <span className='text-sm font-light text-gray-900'>{formatCaption(comment.comment)}</span>
         </div>
       </div>
       <div className='flex ml-14'>

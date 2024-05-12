@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MediaView from '../media-view';
 import { Modal, Space } from 'antd';
 import CommentComponent from '../Comment';
@@ -7,13 +7,14 @@ import MoreOption from '../more-option';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEarthAmericas, faLock, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { checkMediaType } from '@/utils';
+import { checkMediaType, formatCaption } from '@/utils';
 import { MediaType } from '@/type/enum';
 import VideoPlayerComponent from '../VideoPlayerComponent';
 import LongUserCard from '../LongUserCard';
 import { fetchPostById, getLikesOfPost } from '@/services/postService';
 import { fetchCommentOfPost, postComment } from '@/services/commentService';
 import { comment, post, user } from '@/type/type';
+import EmojiPickerComponent from '../EmojiPicker/EmojiPicker';
 
 type reaction = {
   userId: string;
@@ -23,7 +24,6 @@ type reaction = {
 
 const PostDetail = ({ postId }: { postId: string }) => {
   let timeoutId: string | number | NodeJS.Timeout | undefined;
-  const [comment, setComment] = useState('');
   const [replyCommentId, setReplyCommentId] = useState('');
   const [liked, setLiked] = useState(false);
   const [likeNumber, setLikeNumber] = useState(0);
@@ -33,16 +33,17 @@ const PostDetail = ({ postId }: { postId: string }) => {
   const [isOpenModalLikeList, setIsOpenModalLikeList] = useState(false);
   const [likeList, setLikeList] = useState<user[]>([]);
 
-  const handleCommentChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setComment(e.target.value);
-  };
+  const commentRef = useRef<HTMLInputElement>(null);
 
   const handlePostComment = async () => {
-    await postComment(postId, comment, replyCommentId);
+    console.log('comment', commentRef.current?.value);
+    await postComment(postId, commentRef.current?.value || '', replyCommentId);
     // loadComments();
     const comments: comment[] = await fetchCommentOfPost(postId);
     setComments(comments);
-    setComment('');
+    if (commentRef.current) {
+      commentRef.current.value = '';
+    }
   };
   const likeClick = async () => {
     if (liked === false) {
@@ -158,7 +159,9 @@ const PostDetail = ({ postId }: { postId: string }) => {
   };
 
   const onReply = (comment: comment) => {
-    setComment(`@${comment?.user.username} `);
+    if (commentRef.current) {
+      commentRef.current.value = `@${comment?.user.username} `;
+    }
     setReplyCommentId(comment?.id);
   };
 
@@ -250,7 +253,9 @@ const PostDetail = ({ postId }: { postId: string }) => {
                 </div>
                 <div className='pl-14'>
                   {post?.caption != '' && (
-                    <span className='text-sm font-light text-gray-900'>{post?.caption}</span>
+                    <span className='text-sm font-light text-gray-900'>
+                      {post && formatCaption(post.caption)}
+                    </span>
                   )}
                 </div>
               </div>
@@ -306,18 +311,18 @@ const PostDetail = ({ postId }: { postId: string }) => {
                 </div>
               </div>
               <div className='bottom border-t pt-3 mt-3'>
-                <div className='wrapper flex'>
+                <div className='wrapper flex items-center'>
+                  <EmojiPickerComponent inputRef={commentRef} />
                   <input
+                    ref={commentRef}
                     type='text'
                     className='text-sm h-10 w-full outline-none focus:outline-none w-10/12 p-4'
                     placeholder='Thêm bình luận'
-                    value={comment}
-                    onChange={handleCommentChange}
                   />
                   <button
                     className='text-blue-500 opacity-75 w-2/12 text-right font-bold'
                     onClick={handlePostComment}
-                    disabled={/^\s*$/.test(comment)}
+                    // disabled={/^\s*$/.test(commentRef.current?.value || '')}
                   >
                     Đăng
                   </button>

@@ -1,6 +1,6 @@
 import { MediaType } from '@/type/enum';
 import { post, user } from '@/type/type';
-import { checkMediaType } from '@/utils';
+import { checkMediaType, formatCaption } from '@/utils';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faEarthAmericas, faLock, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -124,7 +124,7 @@ const Post = ({ post }: { post: post }) => {
               <LikeComponent postId={post.postId} numberOfLike={post.reactions.length} />
               <div className='caption text-sm mt-3'>
                 <b>{user?.username} </b>
-                {post.caption}
+                {formatCaption(post.caption)}
               </div>
               <div className='post-date mt-1'>
                 <span className='text-xs text-gray-900'>

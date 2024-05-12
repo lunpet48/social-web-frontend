@@ -24,4 +24,5 @@ export enum notificationType {
   COMMENT = 'COMMENT',
   FRIEND_REQUEST = 'FRIEND_REQUEST',
   FRIEND_ACCEPT = 'FRIEND_ACCEPT',
+  MENTION = 'MENTION',
 }

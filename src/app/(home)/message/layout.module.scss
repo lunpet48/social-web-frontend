@@ -1,0 +1,44 @@
+.content {
+  display: flex;
+  height: 100vh;
+  .left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+    border-right: 1px solid #dcdcdc;
+    padding: 24px 20px 0;
+
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .title {
+        font-size: 20px;
+        font-weight: 800;
+      }
+    }
+
+    .messageTabs {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .tab {
+        font-size: 14px;
+        font-weight: 600;
+        color: #737373;
+
+        &.active {
+          font-size: 16px;
+          font-weight: 800;
+          color: #000;
+        }
+      }
+    }
+  }
+  .right {
+    flex: 1;
+  }
+}
