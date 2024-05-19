@@ -15,8 +15,20 @@
       justify-content: space-between;
 
       .title {
-        font-size: 20px;
+        font-size: 30px;
         font-weight: 800;
+      }
+
+      .new-chat-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.15);
+        }
       }
     }
 
@@ -37,8 +49,125 @@
         }
       }
     }
+
+    .chatroom {
+      margin: 0 -20px;
+      height: fit-content;
+      padding: 10px 20px;
+      gap: 10px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+
+      &:hover {
+        background-color: #efefef;
+      }
+
+      &.active {
+        background-color: #ccc;
+      }
+
+      img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        background: white;
+      }
+
+      .user-info {
+        flex: 1;
+      }
+    }
   }
   .right {
     flex: 1;
+  }
+}
+
+.new-chat-modal {
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .title {
+    font-weight: 800;
+  }
+  .to {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 -8px;
+    padding: 5px 8px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+
+    label {
+      font-weight: 600;
+    }
+
+    .selected-user {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background-color: #e6f4ff;
+      border-radius: 999px;
+      font-size: 15px;
+      line-height: 1;
+      font-weight: 600;
+      color: #1677ff;
+      padding: 0 10px;
+      width: fit-content;
+      cursor: pointer;
+
+      .close {
+        font-size: 24px;
+      }
+    }
+  }
+  .people {
+    font-size: 14px;
+    color: #737373;
+    height: 40vh;
+    margin: 0 -24px;
+    overflow-y: scroll;
+
+    .zero-result {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      // margin: 0 -24px;
+      padding: 10px 24px;
+      height: fit-content;
+      width: 100%;
+      color: #333;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #ccc;
+      }
+
+      img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        background: white;
+      }
+
+      .user-info {
+        flex: 1;
+      }
+    }
   }
 }
