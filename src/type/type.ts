@@ -69,3 +69,19 @@ export type notification = {
   idType: string;
   createdAt: string;
 };
+
+export type message = {
+  messageid: string;
+  sender: shortUser;
+  message: string;
+  mediaLink: string;
+  createdAt: string;
+};
+
+export type chatroom = {
+  roomId: string;
+  users: shortUser[];
+  message: message[];
+  image?: string | string[];
+  name?: string;
+};

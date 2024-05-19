@@ -23,13 +23,24 @@ const useOutsideClick = (callback: () => void) => {
   return ref;
 };
 
-const EmojiPickerComponent = ({ inputRef }: { inputRef: React.RefObject<HTMLInputElement> }) => {
+const EmojiPickerComponent = ({
+  inputRef,
+  divRef,
+}: {
+  inputRef?: React.RefObject<HTMLInputElement>;
+  divRef?: React.RefObject<HTMLDivElement>;
+}) => {
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
 
   const onEmojiClick = (emojiObject: EmojiClickData, event: MouseEvent) => {
-    if (inputRef.current) {
+    if (inputRef?.current) {
       inputRef.current.focus();
       inputRef.current.value += emojiObject.emoji;
+    }
+
+    if (divRef?.current) {
+      divRef.current.focus();
+      divRef.current.innerText += emojiObject.emoji;
     }
   };
 
@@ -54,7 +65,8 @@ const EmojiPickerComponent = ({ inputRef }: { inputRef: React.RefObject<HTMLInpu
 
       <FontAwesomeIcon
         onClick={() => {
-          inputRef.current?.focus();
+          inputRef?.current?.focus();
+          divRef?.current?.focus();
           setIsEmojiPickerOpen((prev) => !prev);
         }}
         style={{ width: '22px', height: '22px' }}
