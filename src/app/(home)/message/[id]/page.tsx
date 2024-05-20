@@ -7,31 +7,56 @@ import { chatRoomContext } from '../layout';
 import { getMessagesOfChatroom, sendMessage } from '@/services/chatService';
 import { chatroom, message } from '@/type/type';
 import EmojiPickerComponent from '@/component/EmojiPicker/EmojiPicker';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import {
+  pushChatroom,
+  pushMessage,
+  setMessages,
+  setSelectedChatroom,
+} from '@/store/slices/chatroom';
 
 const MessagePage = ({ params }: { params: { id: string } }) => {
-  const [messages, setMessages] = useState<message[]>([]);
-  const { chatroom } = useContext(chatRoomContext);
+  // const [messages, setMessages] = useState<message[]>([]);
+  // const { chatroom } = useContext(chatRoomContext);
+  const selectedChatRoom = useSelector((state: RootState) => state.chatrooms.selectedChatroom);
+  if (!selectedChatRoom) {
+    return <></>;
+  }
 
   const messageRef = useRef<HTMLDivElement>(null);
 
   const currentUser = useSelector((state: RootState) => state.user.user);
 
+  const dispatch = useDispatch();
+
   const fetchMessagesOfChatroom = async () => {
     const data: chatroom = await getMessagesOfChatroom(params.id);
-    setMessages(data.message);
+    dispatch(setMessages({ roomId: selectedChatRoom?.roomId, messages: data.message }));
   };
 
   const onSendMessage = async () => {
     if (messageRef.current?.innerText) {
       const data: message = await sendMessage(params.id, messageRef.current?.innerText);
       messageRef.current.innerText = '';
-      messages?.length > 0 ? setMessages((prev) => [data, ...prev]) : setMessages([data]);
+
+      if (selectedChatRoom === null) {
+        return;
+      }
+
+      if (selectedChatRoom.message?.length > 0) {
+        dispatch(pushMessage({ roomId: selectedChatRoom.roomId, message: data }));
+      } else {
+        dispatch(pushChatroom(selectedChatRoom));
+        dispatch(pushMessage({ roomId: selectedChatRoom.roomId, message: data }));
+      }
     }
   };
 
   useEffect(() => {
+    if (selectedChatRoom === null) {
+      // get chatroom infomation and asign to selected chatroom
+    }
     fetchMessagesOfChatroom();
   }, []);
 
@@ -39,21 +64,27 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
     <div className={styles['content']}>
       <div className={styles['header']}>
         <div className={styles['left']}>
-          {Array.isArray(chatroom.image) ? (
-            <>
-              <img src={chatroom.image[0]} alt='avatar' />
-            </>
+          {Array.isArray(selectedChatRoom?.image) ? (
+            <img
+              src={`${
+                selectedChatRoom?.image[0] ? selectedChatRoom.image[0] : '/default-avatar.jpg'
+              }`}
+              alt='avatar'
+            />
           ) : (
-            <img src={chatroom.image} alt='avatar' />
+            <img
+              src={`${selectedChatRoom?.image ? selectedChatRoom?.image : '/default-avatar.jpg'}`}
+              alt='avatar'
+            />
           )}
-          <div>{chatroom?.name}</div>
+          <div>{selectedChatRoom?.name}</div>
         </div>
         <div className={styles['right']}>
           <FontAwesomeIcon icon={faCircleInfo} size='2x' />
         </div>
       </div>
       <div className={styles['list-message']}>
-        {messages?.map((message) => {
+        {selectedChatRoom.message?.map((message) => {
           return (
             <>
               {message.sender.userId === currentUser.id ? (

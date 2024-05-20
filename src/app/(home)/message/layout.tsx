@@ -9,8 +9,9 @@ import { chatroom, shortUser, user } from '@/type/type';
 import { searchUser } from '@/services/searchService';
 import { getChats, newChat } from '@/services/chatService';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
+import { removeSelectedChatroom, setChatrooms, setSelectedChatroom } from '@/store/slices/chatroom';
 
 interface IContextProps {
   chatroom: chatroom;
@@ -19,8 +20,8 @@ interface IContextProps {
 export const chatRoomContext = createContext({} as IContextProps);
 
 const MessageLayout = ({ children }: { children: React.ReactNode }) => {
-  const [chatrooms, setChatrooms] = useState<chatroom[]>([]);
-  const [selectedChatRoom, setSelectedChatRoom] = useState<chatroom>();
+  // const [chatrooms, setChatrooms] = useState<chatroom[]>([]);
+  // const [selectedChatRoom, setSelectedChatRoom] = useState<chatroom>();
   //modal new chat
   const [isShowNewChat, setIsShowNewChat] = useState(false);
   const [searchUserInput, setSearchUserInput] = useState('');
@@ -30,7 +31,11 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
 
   const router = useRouter();
 
+  const dispatch = useDispatch();
+
   const currentUser = useSelector((state: RootState) => state.user.user);
+  const chatrooms = useSelector((state: RootState) => state.chatrooms.chatrooms);
+  const selectedChatRoom = useSelector((state: RootState) => state.chatrooms.selectedChatroom);
 
   const extractChatroomNameAndAvatar = (chatroom: chatroom): chatroom => {
     if (chatroom.users.length == 2) {
@@ -53,15 +58,20 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
 
   const fetchChatRoom = async () => {
     const result = await getChats();
-    setChatrooms(
-      result?.map((chatroom: chatroom) => {
-        return extractChatroomNameAndAvatar(chatroom);
-      })
-    );
+
+    result &&
+      dispatch(
+        setChatrooms(
+          result.map((chatroom: chatroom) => {
+            return extractChatroomNameAndAvatar(chatroom);
+          })
+        )
+      );
   };
 
   useEffect(() => {
     fetchChatRoom();
+    dispatch(removeSelectedChatroom());
   }, []);
 
   //when user input search user on modal new chat, delay 1 second after finish chat to call api
@@ -82,7 +92,7 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
 
   const chat = async () => {
     const data: chatroom = await newChat(selectedUsers.map((u) => u.id));
-    setSelectedChatRoom(extractChatroomNameAndAvatar(data));
+    dispatch(setSelectedChatroom(extractChatroomNameAndAvatar(data)));
     router.push(`/message/${data.roomId}`);
     setIsShowNewChat(false);
   };
@@ -109,39 +119,44 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
             <div className={`${styles['tab']} ${styles['active']}`}>Tin nhắn</div>
             {/* <div className={styles['tab']}>Tin nhắn đang chờ</div> */}
           </div>
+          <div className={styles['chatroom-list']}>
+            {chatrooms && chatrooms.length > 0 ? (
+              chatrooms.map((chatroom) => (
+                <div
+                  key={chatroom.roomId}
+                  className={`${styles['chatroom']} ${
+                    selectedChatRoom?.roomId === chatroom.roomId && styles['active']
+                  }`}
+                  onClick={() => {
+                    dispatch(setSelectedChatroom(chatroom));
+                    router.push(`/message/${chatroom.roomId}`);
+                  }}
+                >
+                  {Array.isArray(chatroom.image) ? (
+                    <img
+                      src={`${chatroom.image[0] ? chatroom.image[0] : '/default-avatar.jpg'}`}
+                      alt='avatar'
+                    />
+                  ) : (
+                    <img
+                      src={`${chatroom.image ? chatroom.image : '/default-avatar.jpg'}`}
+                      alt='avatar'
+                    />
+                  )}
 
-          {chatrooms && chatrooms.length > 0 ? (
-            chatrooms.map((chatroom) => (
-              <div
-                key={chatroom.roomId}
-                className={`${styles['chatroom']} ${
-                  selectedChatRoom?.roomId === chatroom.roomId && styles['active']
-                }`}
-                onClick={() => {
-                  setSelectedChatRoom(chatroom);
-                  router.push(`/message/${chatroom.roomId}`);
-                }}
-              >
-                {Array.isArray(chatroom.image) ? (
-                  <>
-                    <img src={chatroom.image[0]} alt='avatar' />
-                  </>
-                ) : (
-                  <img src={chatroom.image} alt='avatar' />
-                )}
-
-                <div className={styles['user-info']}>
-                  <div>{chatroom.name}</div>
-                  <div>
-                    {chatroom.message[0].sender.userId === currentUser.id ? 'Bạn: ' : ''}{' '}
-                    {chatroom.message[0].message}
+                  <div className={styles['user-info']}>
+                    <div>{chatroom.name}</div>
+                    <div>
+                      {chatroom.message[0].sender.userId === currentUser.id ? 'Bạn: ' : ''}{' '}
+                      {chatroom.message[0].message}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <div>Không có tin nhắn</div>
-          )}
+              ))
+            ) : (
+              <div>Không có tin nhắn</div>
+            )}
+          </div>
         </div>
         <div className={styles['right']}>
           {selectedChatRoom && (
