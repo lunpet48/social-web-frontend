@@ -1,4 +1,6 @@
 import { MediaType } from './type/enum';
+import { chatroom, shortUser } from './type/type';
+import { store } from '@/store';
 
 export function checkMediaType(url: string) {
   const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp']; // Thêm các định dạng hình ảnh khác nếu cần
@@ -31,4 +33,25 @@ export const formatCaption = (caption: string) => {
     (mention) => `<a style="color: #1677ff;" href='/profile/${mention.slice(1)}'>${mention}</a>`
   );
   return <div dangerouslySetInnerHTML={{ __html: caption }}></div>;
+};
+
+export const extractChatroomNameAndAvatar = (chatroom: chatroom): chatroom => {
+  const currentUser = store.getState().user.user;
+
+  if (chatroom.users.length == 2) {
+    const targetUser: shortUser =
+      chatroom.users[0].userId === currentUser.id ? chatroom.users[1] : chatroom.users[0];
+    chatroom.name = targetUser.username;
+    chatroom.image = targetUser.avatar;
+  } else {
+    if (!chatroom.name) {
+      const filterdUserList = chatroom.users.filter((u) => u.userId !== currentUser.id);
+      chatroom.name = `${filterdUserList[0].username}, ${filterdUserList[1].username},...`;
+    }
+    if (!chatroom.image) {
+      const filterdUserList = chatroom.users.filter((u) => u.userId !== currentUser.id);
+      chatroom.image = [filterdUserList[0].avatar, filterdUserList[1].avatar];
+    }
+  }
+  return chatroom;
 };

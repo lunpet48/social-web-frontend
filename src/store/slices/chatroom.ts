@@ -56,17 +56,19 @@ export const chatroomSlice = createSlice({
         }
       }
     },
-    pushMessage: (state, action: PayloadAction<{ roomId: string; message: message }>) => {
-      const { roomId, message } = action.payload;
+    pushMessage: (state, action: PayloadAction<message>) => {
+      const message = action.payload;
 
-      const existingChatroomIndex = state.chatrooms.findIndex((room) => room.roomId === roomId);
+      const existingChatroomIndex = state.chatrooms.findIndex(
+        (room) => room.roomId === message.roomId
+      );
 
       if (existingChatroomIndex !== -1) {
         const chatroom = state.chatrooms.splice(existingChatroomIndex, 1)[0];
         chatroom.message = [message, ...chatroom.message];
         state.chatrooms.unshift(chatroom);
 
-        if (roomId === state.selectedChatroom?.roomId) {
+        if (message.roomId === state.selectedChatroom?.roomId) {
           state.selectedChatroom = chatroom;
         }
       }

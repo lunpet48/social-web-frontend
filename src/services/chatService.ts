@@ -1,3 +1,6 @@
+import { chatroom } from '@/type/type';
+import { extractChatroomNameAndAvatar } from '@/utils';
+
 export const getChats = async () => {
   const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/chat`, {
@@ -7,7 +10,24 @@ export const getChats = async () => {
     },
   });
   const data = await response.json();
-  return data.data;
+  const chatrooms: chatroom[] = data.data;
+  chatrooms.map((chatroom: chatroom) => {
+    return extractChatroomNameAndAvatar(chatroom);
+  });
+  return chatrooms;
+};
+
+export const getOneChat = async (chatroomId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/chat/${chatroomId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  const data = await response.json();
+  const chatroom: chatroom = data.data;
+  return extractChatroomNameAndAvatar(chatroom);
 };
 
 export const newChat = async (userIds: string[]) => {
@@ -21,7 +41,8 @@ export const newChat = async (userIds: string[]) => {
     body: JSON.stringify(userIds),
   });
   const data = await response.json();
-  return data.data;
+  const chatroom: chatroom = data.data;
+  return extractChatroomNameAndAvatar(chatroom);
 };
 
 export const getMessagesOfChatroom = async (roomId: string) => {

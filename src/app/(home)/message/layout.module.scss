@@ -52,6 +52,8 @@
 
     .chatroom-list {
       overflow-y: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
       margin: 0 -20px;
 
       .chatroom {

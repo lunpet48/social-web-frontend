@@ -20,8 +20,6 @@ interface IContextProps {
 export const chatRoomContext = createContext({} as IContextProps);
 
 const MessageLayout = ({ children }: { children: React.ReactNode }) => {
-  // const [chatrooms, setChatrooms] = useState<chatroom[]>([]);
-  // const [selectedChatRoom, setSelectedChatRoom] = useState<chatroom>();
   //modal new chat
   const [isShowNewChat, setIsShowNewChat] = useState(false);
   const [searchUserInput, setSearchUserInput] = useState('');
@@ -37,36 +35,10 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
   const chatrooms = useSelector((state: RootState) => state.chatrooms.chatrooms);
   const selectedChatRoom = useSelector((state: RootState) => state.chatrooms.selectedChatroom);
 
-  const extractChatroomNameAndAvatar = (chatroom: chatroom): chatroom => {
-    if (chatroom.users.length == 2) {
-      const targetUser: shortUser =
-        chatroom.users[0].userId === currentUser.id ? chatroom.users[1] : chatroom.users[0];
-      chatroom.name = targetUser.username;
-      chatroom.image = targetUser.avatar;
-    } else {
-      if (!chatroom.name) {
-        const filterdUserList = chatroom.users.filter((u) => u.userId !== currentUser.id);
-        chatroom.name = `${filterdUserList[0].username}, ${filterdUserList[1].username},...`;
-      }
-      if (!chatroom.image) {
-        const filterdUserList = chatroom.users.filter((u) => u.userId !== currentUser.id);
-        chatroom.image = [filterdUserList[0].avatar, filterdUserList[1].avatar];
-      }
-    }
-    return chatroom;
-  };
-
   const fetchChatRoom = async () => {
     const result = await getChats();
 
-    result &&
-      dispatch(
-        setChatrooms(
-          result.map((chatroom: chatroom) => {
-            return extractChatroomNameAndAvatar(chatroom);
-          })
-        )
-      );
+    dispatch(setChatrooms(result));
   };
 
   useEffect(() => {
@@ -91,9 +63,9 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
   }, [resultSearchUsers, selectedUsers]);
 
   const chat = async () => {
-    const data: chatroom = await newChat(selectedUsers.map((u) => u.id));
-    dispatch(setSelectedChatroom(extractChatroomNameAndAvatar(data)));
-    router.push(`/message/${data.roomId}`);
+    const result: chatroom = await newChat(selectedUsers.map((u) => u.id));
+    dispatch(setSelectedChatroom(result));
+    router.push(`/message/${result.roomId}`);
     setIsShowNewChat(false);
   };
   return (
@@ -154,7 +126,7 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
                 </div>
               ))
             ) : (
-              <div>Không có tin nhắn</div>
+              <div style={{ paddingLeft: '20px' }}>Không có tin nhắn</div>
             )}
           </div>
         </div>

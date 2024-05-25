@@ -72,6 +72,7 @@ export type notification = {
 
 export type message = {
   messageid: string;
+  roomId: string;
   sender: shortUser;
   message: string;
   mediaLink: string;

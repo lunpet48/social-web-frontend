@@ -2,13 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Content } from 'antd/es/layout/layout';
 
 import Loading from '@/component/Loading';
 import SideBar from '@/component/SideBar';
 import { login } from '@/store/slices/authUser';
 import styles from './layout.module.scss';
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
+import { chatroom, message } from '@/type/type';
+import { pushChatroom, pushMessage } from '@/store/slices/chatroom';
+import { RootState } from '@/store';
+import { getOneChat } from '@/services/chatService';
 
 export default function UserPageLayout({
   children,
@@ -20,6 +26,8 @@ export default function UserPageLayout({
   const [loadingPage, setLoadingPage] = useState(true);
 
   const router = useRouter();
+
+  const chatrooms = useSelector((state: RootState) => state.chatrooms.chatrooms);
 
   const dispatch = useDispatch();
 
@@ -39,9 +47,33 @@ export default function UserPageLayout({
         console.log('fail : ' + data.error);
         router.push('/login');
       } else {
-        //  success
+        //  save user-info into redux
         dispatch(login({ user: data.data.user, accessToken: data.data.accessToken }));
         setLoadingPage(false);
+
+        // connect to websocket
+        const socket = new SockJS('http://localhost:8081/ws');
+        const client = Stomp.over(socket);
+        client.connect({ Authorization: `Bearer ${data.data.accessToken}` }, () => {
+          client.subscribe('/user/notification', (notification) => {
+            console.log('notification', notification.body);
+          });
+
+          client.subscribe('/user/chat', async (received) => {
+            const message: message = JSON.parse(received.body);
+
+            const existingChatroomIndex = chatrooms.findIndex(
+              (room) => room.roomId === message.roomId
+            );
+
+            if (existingChatroomIndex !== -1) {
+              dispatch(pushMessage(message));
+            } else {
+              const chatroom: chatroom = await getOneChat(message.roomId);
+              dispatch(pushChatroom(chatroom));
+            }
+          });
+        });
       }
     } catch (err) {
       console.log(err);

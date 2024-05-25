@@ -37,19 +37,8 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
 
   const onSendMessage = async () => {
     if (messageRef.current?.innerText) {
-      const data: message = await sendMessage(params.id, messageRef.current?.innerText);
+      await sendMessage(params.id, messageRef.current?.innerText);
       messageRef.current.innerText = '';
-
-      if (selectedChatRoom === null) {
-        return;
-      }
-
-      if (selectedChatRoom.message?.length > 0) {
-        dispatch(pushMessage({ roomId: selectedChatRoom.roomId, message: data }));
-      } else {
-        dispatch(pushChatroom(selectedChatRoom));
-        dispatch(pushMessage({ roomId: selectedChatRoom.roomId, message: data }));
-      }
     }
   };
 
@@ -88,11 +77,11 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
           return (
             <>
               {message.sender.userId === currentUser.id ? (
-                <div className={styles['message-row']}>
+                <div key={message.messageid} className={styles['message-row']}>
                   <div className={`${styles['message']} ${styles['self']}`}>{message.message}</div>
                 </div>
               ) : (
-                <div className={styles['message-row']}>
+                <div key={message.messageid} className={styles['message-row']}>
                   <img src={message.sender.avatar} alt='avatar' />
                   <div className={`${styles['message']}`}>{message.message}</div>
                 </div>
