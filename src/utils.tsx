@@ -1,5 +1,5 @@
-import { MediaType } from './type/enum';
-import { chatroom, shortUser } from './type/type';
+import { MediaType, notificationType } from './type/enum';
+import { chatroom, notification, shortUser } from './type/type';
 import { store } from '@/store';
 
 export function checkMediaType(url: string) {
@@ -54,4 +54,21 @@ export const extractChatroomNameAndAvatar = (chatroom: chatroom): chatroom => {
     }
   }
   return chatroom;
+};
+
+export const extractNotifyContent = (notification: notification) => {
+  notification.content =
+    notification.notificationType === notificationType.FRIEND_REQUEST
+      ? `Đã gửi cho bạn lời mời kết bạn`
+      : notification.notificationType === notificationType.FRIEND_ACCEPT
+      ? `${notification.actor.username} và bạn đã trở thành bạn bè`
+      : notification.notificationType === notificationType.LIKE
+      ? `${notification.actor.username} đã thích bài viết của bạn`
+      : notification.notificationType === notificationType.COMMENT
+      ? `Đã bình luận bài viết của bạn`
+      : notification.notificationType === notificationType.MENTION
+      ? `Đã nhắc đến bạn trong một bài viết`
+      : '';
+
+  return notification;
 };

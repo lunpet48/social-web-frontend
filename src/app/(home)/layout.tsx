@@ -11,10 +11,12 @@ import { login } from '@/store/slices/authUser';
 import styles from './layout.module.scss';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
-import { chatroom, message } from '@/type/type';
+import { chatroom, message, notification, toastNotify } from '@/type/type';
 import { pushChatroom, pushMessage } from '@/store/slices/chatroom';
-import { RootState } from '@/store';
+import { RootState, store } from '@/store';
 import { getOneChat } from '@/services/chatService';
+import ToastNotification from '@/component/ToastNotification';
+import { extractNotifyContent } from '@/utils';
 
 export default function UserPageLayout({
   children,
@@ -24,11 +26,12 @@ export default function UserPageLayout({
   modal: React.ReactNode;
 }) {
   const [loadingPage, setLoadingPage] = useState(true);
+  const [isShowNotification, setIsShowNotification] = useState(false);
+  const [notifyContent, setNotifyContent] = useState<toastNotify>();
 
   const router = useRouter();
 
   const chatrooms = useSelector((state: RootState) => state.chatrooms.chatrooms);
-
   const dispatch = useDispatch();
 
   /* Chỗ này phải gọi api get-user chứ không phải renew-token. 
@@ -55,13 +58,21 @@ export default function UserPageLayout({
         const socket = new SockJS('http://localhost:8081/ws');
         const client = Stomp.over(socket);
         client.connect({ Authorization: `Bearer ${data.data.accessToken}` }, () => {
-          client.subscribe('/user/notification', (notification) => {
-            console.log('notification', notification.body);
+          client.subscribe('/user/notification', (received) => {
+            const notification: notification = JSON.parse(received.body);
+            console.log(notification);
+            setNotifyContent({
+              image: notification.actor.avatar,
+              name: notification.actor.username,
+              content: extractNotifyContent(notification).content || '',
+            });
+            setIsShowNotification(true);
           });
 
           client.subscribe('/user/chat', async (received) => {
             const message: message = JSON.parse(received.body);
 
+            // add message to chatroom
             const existingChatroomIndex = chatrooms.findIndex(
               (room) => room.roomId === message.roomId
             );
@@ -71,6 +82,17 @@ export default function UserPageLayout({
             } else {
               const chatroom: chatroom = await getOneChat(message.roomId);
               dispatch(pushChatroom(chatroom));
+            }
+
+            // toast notify if not focus in chatroom
+            const selectedChatRoom = store.getState().chatrooms.selectedChatroom;
+            if (message.roomId !== selectedChatRoom?.roomId) {
+              setNotifyContent({
+                image: message.sender.avatar,
+                name: message.sender.username,
+                content: message.message,
+              });
+              setIsShowNotification(true);
             }
           });
         });
@@ -92,6 +114,13 @@ export default function UserPageLayout({
         <SideBar className={styles['sidebar-frame']} />
         <Content className={styles['content-frame']}>{children}</Content>
       </Layout>
+      {notifyContent && (
+        <ToastNotification
+          isShow={isShowNotification}
+          setIsShow={setIsShowNotification}
+          notifyContent={notifyContent}
+        />
+      )}
       {modal}
     </>
   );

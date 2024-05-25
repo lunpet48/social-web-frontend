@@ -6,6 +6,7 @@ import { acceptFriendRequest } from '@/services/friendService';
 import { useState } from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { extractNotifyContent } from '@/utils';
 
 const NotificationCard = ({ notification }: { notification: notification }) => {
   const [loading, setLoading] = useState(false);
@@ -59,19 +60,7 @@ const NotificationCard = ({ notification }: { notification: notification }) => {
       </div>
       <div className={styles['actor-and-message']}>
         <div className={styles['actor']}>{notification.actor.username}</div>
-        <div>
-          {notification.notificationType === notificationType.FRIEND_REQUEST
-            ? `Đã gửi cho bạn lời mời kết bạn`
-            : notification.notificationType === notificationType.FRIEND_ACCEPT
-            ? `${notification.actor.username} và bạn đã trở thành bạn bè`
-            : notification.notificationType === notificationType.LIKE
-            ? `${notification.actor.username} đã thích bài viết của bạn`
-            : notification.notificationType === notificationType.COMMENT
-            ? `Đã bình luận bài viết của bạn`
-            : notification.notificationType === notificationType.MENTION
-            ? `Đã nhắc đến bạn trong một bài viết`
-            : ''}
-        </div>
+        <div>{extractNotifyContent(notification).content}</div>
       </div>
       {loading ? (
         <Button style={{ background: '#efefef' }} disabled>

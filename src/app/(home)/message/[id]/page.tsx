@@ -73,20 +73,18 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
         </div>
       </div>
       <div className={styles['list-message']}>
-        {selectedChatRoom.message?.map((message) => {
+        {selectedChatRoom.message?.map((message, index) => {
           return (
-            <>
+            <div key={index} className={styles['message-row']}>
               {message.sender.userId === currentUser.id ? (
-                <div key={message.messageid} className={styles['message-row']}>
-                  <div className={`${styles['message']} ${styles['self']}`}>{message.message}</div>
-                </div>
+                <div className={`${styles['message']} ${styles['self']}`}>{message.message}</div>
               ) : (
-                <div key={message.messageid} className={styles['message-row']}>
+                <>
                   <img src={message.sender.avatar} alt='avatar' />
                   <div className={`${styles['message']}`}>{message.message}</div>
-                </div>
+                </>
               )}
-            </>
+            </div>
           );
         })}
       </div>

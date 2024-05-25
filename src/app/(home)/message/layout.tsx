@@ -2,10 +2,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './layout.module.scss';
 import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
-import { Button, Divider, Input, Modal } from 'antd';
+import { Button, Input, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { createContext, useEffect, useState } from 'react';
-import { chatroom, shortUser, user } from '@/type/type';
+import { chatroom, user } from '@/type/type';
 import { searchUser } from '@/services/searchService';
 import { getChats, newChat } from '@/services/chatService';
 import { useRouter } from 'next/navigation';
@@ -44,6 +44,10 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     fetchChatRoom();
     dispatch(removeSelectedChatroom());
+
+    return () => {
+      dispatch(removeSelectedChatroom());
+    };
   }, []);
 
   //when user input search user on modal new chat, delay 1 second after finish chat to call api

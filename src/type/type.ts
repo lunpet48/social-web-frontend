@@ -68,6 +68,7 @@ export type notification = {
   notificationType: notificationType;
   idType: string;
   createdAt: string;
+  content?: string;
 };
 
 export type message = {
@@ -85,4 +86,10 @@ export type chatroom = {
   message: message[];
   image?: string | string[];
   name?: string;
+};
+
+export type toastNotify = {
+  image: string;
+  name: string;
+  content: string;
 };
