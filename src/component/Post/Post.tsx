@@ -4,13 +4,23 @@ import { checkMediaType, formatCaption } from '@/utils';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faEarthAmericas, faLock, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { RefObject, useEffect, useRef, useState } from 'react';
 import MediaView from '../media-view';
 import VideoPlayerComponent from '../VideoPlayerComponent';
 import LikeComponent from '../like-component';
+import MediaSlider from '../MediaSlider';
 
 const Post = ({ post }: { post: post }) => {
   const user = post.user;
+
+  const [mediaWidth, setMediaWidth] = useState<number>(0);
+
+  const mediaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    mediaRef.current && setMediaWidth(mediaRef.current.clientWidth);
+  }, [mediaRef]);
+
   return (
     <div className='feeds'>
       <div className='feed-wrapper mb-4'>
@@ -110,14 +120,15 @@ const Post = ({ post }: { post: post }) => {
                       </svg> */}
             </div>
           </div>
-          <div className='feed-img'>
-            {checkMediaType(post.files[0]) === MediaType.IMAGE ? (
+          <div ref={mediaRef} className='feed-img'>
+            {/* {checkMediaType(post.files[0]) === MediaType.IMAGE ? (
               <MediaView slides={post.files}></MediaView>
             ) : checkMediaType(post.files[0]) === MediaType.VIDEO ? (
               <VideoPlayerComponent src={post.files[0]} />
             ) : (
               <></>
-            )}
+            )} */}
+            <MediaSlider fixedWidth={mediaWidth} files={post.files} />
           </div>
           <div className='card-footer p-4'>
             <div className='top'>

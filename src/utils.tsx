@@ -72,3 +72,74 @@ export const extractNotifyContent = (notification: notification) => {
 
   return notification;
 };
+
+function getImageDimensions(url: string): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    if (checkMediaType(url) === MediaType.IMAGE) {
+      const img = new Image();
+      img.onload = () => {
+        resolve({ width: img.width, height: img.height });
+      };
+      img.onerror = (err) => {
+        resolve({ width: 0, height: 0 });
+      };
+      img.src = url;
+    } else if (checkMediaType(url) === MediaType.VIDEO) {
+      const video = document.createElement('video');
+      video.onloadedmetadata = () => {
+        resolve({ width: video.videoWidth, height: video.videoHeight });
+      };
+      video.onerror = (err) => {
+        resolve({ width: 0, height: 0 });
+      };
+      video.src = url;
+    } else {
+      resolve({ width: 0, height: 0 });
+    }
+  });
+}
+
+async function getDimensionsForUrls(urls: string[]): Promise<{ width: number; height: number }[]> {
+  const promises = urls.map((url) => getImageDimensions(url));
+  return Promise.all(promises);
+}
+
+export const calculateSliderHeight = async (
+  fixedWidth: number | undefined,
+  fixedHeight: number | undefined,
+  files: string[]
+) => {
+  if (fixedHeight) {
+    return `${fixedHeight}px`;
+  }
+  if (fixedWidth) {
+    const dimensions = await getDimensionsForUrls(files);
+
+    const adjustedDimensions = dimensions.map((dimension) => {
+      const newHeight = (dimension.height / dimension.width) * fixedWidth;
+      return { width: fixedWidth, height: newHeight || 0 };
+    });
+
+    const maxHeight = Math.max(...adjustedDimensions.map((dim) => dim.height));
+
+    return `${Math.min(maxHeight, fixedWidth * 1.2)}px`;
+  }
+
+  return '100%';
+};
+
+export const calculateSliderWidth = async (
+  fixedWidth: number | undefined,
+  fixedHeight: number | undefined,
+  files: string[]
+) => {
+  if (fixedWidth) {
+    return `${fixedWidth}px`;
+  }
+
+  if (fixedHeight) {
+    return `${fixedHeight}px`;
+  }
+
+  return '100%';
+};

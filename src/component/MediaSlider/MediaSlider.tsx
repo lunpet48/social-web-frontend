@@ -1,10 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './MediaSlider.module.scss';
-import { checkMediaType } from '@/utils';
+import { calculateSliderHeight, calculateSliderWidth, checkMediaType } from '@/utils';
 import { MediaType } from '@/type/enum';
 import VideoPlayerComponent from '../VideoPlayerComponent';
-const MediaSlider = ({ files }: { files: string[] }) => {
+const MediaSlider = ({
+  files,
+  fixedWidth,
+  fixedHeight,
+}: {
+  files: string[];
+  fixedWidth?: number;
+  fixedHeight?: number;
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setSliderDimensions();
+  }, [sliderRef, fixedWidth, fixedHeight]);
+
+  const setSliderDimensions = async () => {
+    if (sliderRef.current) {
+      const width = await calculateSliderWidth(fixedWidth, fixedHeight, files);
+      const height = await calculateSliderHeight(fixedWidth, fixedHeight, files);
+      sliderRef.current.style.width = width;
+      sliderRef.current.style.height = height;
+    }
+  };
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? files.length - 1 : prev - 1));
@@ -15,7 +37,7 @@ const MediaSlider = ({ files }: { files: string[] }) => {
   };
 
   return (
-    <div className={styles['slider']}>
+    <div ref={sliderRef} className={styles['slider']}>
       {currentIndex > 0 && (
         <button className={styles['left-arrow']} onClick={goToPrevious}>
           &#10094;

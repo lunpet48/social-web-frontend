@@ -173,7 +173,7 @@ const PostDetail = ({ postId }: { postId: string }) => {
   return (
     <>
       <div className='relative' style={{ display: 'flex', flexWrap: 'wrap', height: '80vh' }}>
-        <div className='feed-img' style={{ flex: '50%', background: 'black' }}>
+        <div className='feed-img' style={{ flex: '50%' }}>
           {/* {post && checkMediaType(post.files[0]) === MediaType.IMAGE ? (
             <MediaView slides={post?.files} />
           ) : post && checkMediaType(post.files[0]) === MediaType.VIDEO ? (
