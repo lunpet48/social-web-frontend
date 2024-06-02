@@ -1,8 +1,9 @@
 .video-wrapper {
   position: relative;
-  height: 550px;
+  height: 100%;
   overflow: hidden;
   background: black;
+
   .video {
     position: absolute;
     top: 0;
@@ -36,7 +37,7 @@
       }
     }
   }
-  .play{
+  .play {
     position: absolute;
     display: flex;
     justify-content: center;

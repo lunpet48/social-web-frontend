@@ -26,7 +26,7 @@ export const formatCaption = (caption: string) => {
 
   caption = caption.replace(
     regexTag,
-    (tag) => `<a style="color: #1677ff;" href='/tag/${tag.slice(1)}'>${tag}</a>`
+    (tag) => `<a style="color: #1677ff;" href='/hashtag/${tag.slice(1)}'>${tag}</a>`
   );
   caption = caption.replace(
     regexMention,

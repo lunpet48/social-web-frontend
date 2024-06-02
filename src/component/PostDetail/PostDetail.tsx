@@ -15,6 +15,7 @@ import { fetchPostById, getLikesOfPost } from '@/services/postService';
 import { fetchCommentOfPost, postComment } from '@/services/commentService';
 import { comment, post, user } from '@/type/type';
 import EmojiPickerComponent from '../EmojiPicker/EmojiPicker';
+import MediaSlider from '../MediaSlider';
 
 type reaction = {
   userId: string;
@@ -165,17 +166,22 @@ const PostDetail = ({ postId }: { postId: string }) => {
     setReplyCommentId(comment?.id);
   };
 
+  if (!post) {
+    return;
+  }
+
   return (
     <>
-      <div className='relative' style={{ display: 'flex', flexWrap: 'wrap' }}>
-        <div className='feed-img' style={{ flex: '50%' }}>
-          {post && checkMediaType(post.files[0]) === MediaType.IMAGE ? (
-            <MediaView slides={post?.files}></MediaView>
+      <div className='relative' style={{ display: 'flex', flexWrap: 'wrap', height: '80vh' }}>
+        <div className='feed-img' style={{ flex: '50%', background: 'black' }}>
+          {/* {post && checkMediaType(post.files[0]) === MediaType.IMAGE ? (
+            <MediaView slides={post?.files} />
           ) : post && checkMediaType(post.files[0]) === MediaType.VIDEO ? (
             <VideoPlayerComponent src={post.files[0]} />
           ) : (
             <></>
-          )}
+          )} */}
+          <MediaSlider files={post.files} />
         </div>
         <div className='header' style={{ flex: '50%' }}>
           <div className='flex grid grid-cols-1'>
