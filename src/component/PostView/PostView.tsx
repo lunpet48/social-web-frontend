@@ -1,23 +1,43 @@
 import { useEffect, useState } from 'react';
 import '../index.css';
 import Loading from '@/component/Loading';
-import { post } from '@/type/type';
+import { paging, post } from '@/type/type';
 import { getPosts } from '@/services/postService';
 import Post from '../Post/Post';
+import useElementOnScreen from '@/hooks/useElementOnScreen';
 
 const PostView = () => {
   const [posts, setPosts] = useState<post[]>([]);
   const [loadingPage, setLoadingPage] = useState(true);
 
-  const fetchPosts = async () => {
-    const posts: post[] = await getPosts();
-    setPosts(posts);
-    setLoadingPage(false);
+  const [paging, setPaging] = useState<paging>({ pageNo: 0, pageSize: 3 });
+
+  const { ref, isVisible } = useElementOnScreen();
+
+  const fetchPosts = async (paging: paging) => {
+    const posts: post[] = await getPosts(paging);
+    if (posts.length === 0) {
+      /// insert code here: remove loading at bottom and show message that there are no post to show
+    } else {
+      setPosts((prev) => [...prev, ...posts]);
+    }
   };
 
+  // fetch post one when visit home page
   useEffect(() => {
-    fetchPosts();
+    fetchPosts(paging).then(() => setLoadingPage(false));
   }, []);
+
+  // load more post when scroll down
+  useEffect(() => {
+    if (isVisible) {
+      setPaging((prev) => {
+        const nextPage = { ...prev, pageNo: prev.pageNo + 1 };
+        fetchPosts(nextPage);
+        return nextPage;
+      });
+    }
+  }, [ref, isVisible]);
 
   if (loadingPage) return <Loading height='100%' />;
 
@@ -26,6 +46,13 @@ const PostView = () => {
       {posts.map((post) => (
         <Post key={post.postId} post={post} />
       ))}
+      <div style={{ position: 'relative' }}>
+        <Loading height='50px' />
+        <div
+          ref={ref as React.RefObject<HTMLDivElement>}
+          style={{ position: 'absolute', top: '-500px' }}
+        />
+      </div>
     </div>
   );
 };

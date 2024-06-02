@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
-const useElementOnScreen = (options = { root: null, rootMargin: '0px', threshold: 0.75 }) => {
-  const ref = useRef<HTMLDivElement>(null);
+const useElementOnScreen = (options = { root: null, rootMargin: '0px', threshold: 0 }) => {
+  const ref = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   const callbackFunction = (entries: IntersectionObserverEntry[]) => {

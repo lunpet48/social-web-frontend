@@ -1,7 +1,9 @@
-export const getPosts = async (pageNo: number = 0, pageSize: number = 10) => {
+import { paging } from '@/type/type';
+
+export const getPosts = async (paging: paging = { pageNo: 0, pageSize: 10 }) => {
   const access_token = localStorage.getItem('token');
   const response = await fetch(
-    `${process.env.API}/api/v1/home?pageNo=${pageNo}&pageSize=${pageSize}`,
+    `${process.env.API}/api/v1/home?pageNo=${paging.pageNo}&pageSize=${paging.pageSize}`,
     {
       method: 'GET',
       headers: {

@@ -93,3 +93,8 @@ export type toastNotify = {
   name: string;
   content: string;
 };
+
+export type paging = {
+  pageNo: number;
+  pageSize: number;
+};

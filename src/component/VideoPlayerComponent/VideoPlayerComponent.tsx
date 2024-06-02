@@ -16,7 +16,7 @@ const VideoPlayerComponent = ({ src }: { src: string }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  const { ref, isVisible } = useElementOnScreen();
+  const { ref, isVisible } = useElementOnScreen({ root: null, rootMargin: '0px', threshold: 0 });
 
   const isSoundOn = useSelector((state: RootState) => state.app.isSoundOn);
 
@@ -95,7 +95,7 @@ const VideoPlayerComponent = ({ src }: { src: string }) => {
   };
 
   return (
-    <div className={styles['video-wrapper']} ref={ref}>
+    <div className={styles['video-wrapper']} ref={ref as React.RefObject<HTMLDivElement>}>
       <video
         ref={videoRef}
         className={styles.video}
