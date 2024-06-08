@@ -184,7 +184,7 @@ const PostDetail = ({ postId }: { postId: string }) => {
           <MediaSlider files={post.files} />
         </div>
         <div className='header' style={{ flex: '50%' }}>
-          <div className='flex grid grid-cols-1'>
+          <div className='flex flex-col h-full'>
             <div className='header border-b pt-4 pb-4 pl-2 pr-2 flex justify-between items-center'>
               <div className='flex flex-col gap-2'>
                 <div className='left flex flex-row items-center'>
@@ -270,7 +270,7 @@ const PostDetail = ({ postId }: { postId: string }) => {
               </div>
             </div>
 
-            <div className='flex flex-column'>
+            <div className='flex flex-column flex-1'>
               <div
                 className='prose max-w-screen-md overflow-y-auto'
                 style={{ maxHeight: '40vh', backgroundColor: '#fff' }}
@@ -316,7 +316,7 @@ const PostDetail = ({ postId }: { postId: string }) => {
                   </span>
                 </div>
               </div>
-              <div className='bottom border-t pt-3 mt-3'>
+              <div className='bottom border-t pt-3 mt-3 pl-2 pr-2'>
                 <div className='wrapper flex items-center'>
                   <EmojiPickerComponent inputRef={commentRef} />
                   <input

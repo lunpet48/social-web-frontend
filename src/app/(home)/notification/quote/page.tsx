@@ -3,7 +3,8 @@ import NotificationCard from '@/component/NotificationCard/NotificationCard';
 import { getNotificationByType } from '@/services/notification';
 import { notification } from '@/type/type';
 import { useContext, useEffect, useState } from 'react';
-import { TabsContext, tabs } from '../layout';
+import TabsContext from '../context';
+import tabs from '../tabs';
 
 const NotificationQuotePage = () => {
   const [notifications, setNotifications] = useState<notification[]>([]);

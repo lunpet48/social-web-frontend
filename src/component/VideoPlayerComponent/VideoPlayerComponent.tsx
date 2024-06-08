@@ -16,7 +16,7 @@ const VideoPlayerComponent = ({ src }: { src: string }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  const { ref, isVisible } = useElementOnScreen({ root: null, rootMargin: '0px', threshold: 0 });
+  const { ref, isVisible } = useElementOnScreen({ root: null, rootMargin: '0px', threshold: 0.75 });
 
   const isSoundOn = useSelector((state: RootState) => state.app.isSoundOn);
 
@@ -48,7 +48,8 @@ const VideoPlayerComponent = ({ src }: { src: string }) => {
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      if (video.played) {
+      console.log(!isPause);
+      if (!isPause) {
         if (isVisible) {
           video.play();
         } else {
