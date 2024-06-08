@@ -1,32 +1,32 @@
 'use client';
 import Loading from '@/component/Loading';
 import PostProfileComponent from '@/component/PostProfileComponent';
-import { fetchPostByUsername } from '@/services/postService';
 import { post } from '@/type/type';
 import { Col, Row } from 'antd';
 import { useRouter } from 'next/navigation';
-import { useContext, useEffect, useState } from 'react';
-import TabsContext from './context';
-import tabs from './tabs';
+import React, { useContext, useEffect, useState } from 'react';
+import TabsContext from '../context';
+import tabs from '../tabs';
+import { fetchLikedPost } from '@/services/postService';
 
-const ProfilePage = ({ params }: { params: { id: string } }) => {
+const LikedPost = () => {
   const [posts, setPosts] = useState<post[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const { setSelectedTab } = useContext(TabsContext);
 
-  setSelectedTab(tabs[0].name);
+  setSelectedTab(tabs[3].name);
 
-  const fetchPost = async (userId: string) => {
+  const fetchPost = async () => {
     setLoading(true);
-    const data = await fetchPostByUsername(userId);
+    const data = await fetchLikedPost();
     setPosts(data);
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchPost(params.id);
+    fetchPost();
   }, []);
 
   if (loading) {
@@ -35,7 +35,7 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
 
   return (
     <Row gutter={[3, 3]}>
-      {posts.map((post, id) => (
+      {posts?.map((post, id) => (
         <Col xs={8} key={id}>
           <PostProfileComponent
             src={`${post.files[0]}`}
@@ -51,4 +51,4 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default ProfilePage;
+export default LikedPost;
