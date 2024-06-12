@@ -1,10 +1,12 @@
-import { CommentOutlined, HeartFilled, HeartOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Modal } from "antd";
-import LongUserCard from "./LongUserCard";
-import { user } from "@/type/type";
-import { getLikesOfPost } from "@/services/postService";
+import { CommentOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Modal } from 'antd';
+import LongUserCard from '../LongUserCard';
+import { user } from '@/type/type';
+import { getLikesOfPost } from '@/services/postService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBookmark } from '@fortawesome/free-regular-svg-icons';
 
 type reaction = {
   userId: string;
@@ -14,7 +16,7 @@ type reaction = {
 
 const LikeComponent = ({ postId, numberOfLike }: any) => {
   const [reaction, setReaction] = useState<reaction>({
-    userId: "",
+    userId: '',
     postId: postId,
     liked: false,
   });
@@ -43,9 +45,9 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
   const likeAPI = async () => {
     if (reaction!.liked === true) {
       const response = await fetch(`${process.env.API}/api/v1/post/${reaction?.postId}/like`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
         },
       });
       if (response.status == 200) {
@@ -53,13 +55,13 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
         setReaction(data.data);
         await likeNumber();
       } else if (response.status === 401) {
-        console.log("JWT expired");
+        console.log('JWT expired');
       }
     } else if (reaction!.liked === false) {
       const response = await fetch(`${process.env.API}/api/v1/post/${reaction?.postId}/like`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
         },
       });
       if (response.status == 200) {
@@ -67,46 +69,44 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
         setReaction(data.data);
         await likeNumber();
       } else if (response.status === 401) {
-        console.log("JWT expired");
+        console.log('JWT expired');
       }
     }
   };
   const likeNumber = async () => {
     const response = await fetch(`${process.env.API}/api/v1/post/${reaction?.postId}`, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
       },
     });
     if (response.status == 200) {
       const data = await response.json();
       setLike(data.data.reactions.length);
     } else if (response.status === 401) {
-      console.log("JWT expired");
+      console.log('JWT expired');
     }
   };
-  console.log(like);
 
   const handleLikeClick = async () => {
     likeClick();
   };
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       if (token) {
         const fetchLiked = async (postId: string) => {
           const response = await fetch(`${process.env.API}/api/v1/post/${postId}/like`, {
-            method: "GET",
+            method: 'GET',
             headers: {
-              Authorization: "Bearer " + token,
+              Authorization: 'Bearer ' + token,
             },
           });
           if (response.status == 200) {
             const data = await response.json();
-            //console.log(data);
             return data.data;
           } else if (response.status === 401) {
-            console.log("JWT expired");
+            console.log('JWT expired');
           }
         };
         const reaction: reaction = await fetchLiked(postId);
@@ -135,46 +135,50 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
   };
   return (
     <>
-      <div className="icons flex flex-row justify-between items-center">
-        <div className="left flex flex-row">
+      <div className='icons flex flex-row justify-between items-center'>
+        <div className='left flex flex-row w-full'>
           <button onClick={handleLikeClick}>
-            <div className="like mr-4">
+            <div className='like mr-4'>
               {reaction.liked === true ? (
-                <HeartFilled style={{ fontSize: "25px", color: "#FF2F41" }} />
+                <HeartFilled style={{ fontSize: '25px', color: '#FF2F41' }} />
               ) : (
-                <HeartOutlined style={{ fontSize: "25px" }} />
+                <HeartOutlined style={{ fontSize: '25px' }} />
               )}
             </div>
           </button>
-          {/* <PostDetail postId={postId} like={like} reaction={reaction} setLike={setLike} setReaction={setReaction}></PostDetail> */}
           <button
             onClick={() => {
               router.push(`/post/${postId}`, { scroll: false });
             }}
           >
-            <div className="comment mr-4">
-              <CommentOutlined style={{ fontSize: "25px" }} />
+            <div className='comment mr-4'>
+              <CommentOutlined style={{ fontSize: '25px' }} />
+            </div>
+          </button>
+          <button className='flex-1' onClick={() => {}}>
+            <div className='text-right'>
+              <FontAwesomeIcon size='xl' icon={faBookmark} />
             </div>
           </button>
         </div>
       </div>
-      <div className="likes mt-1">
+      <div className='likes mt-1'>
         <span
-          style={{ cursor: "pointer" }}
+          style={{ cursor: 'pointer' }}
           onClick={handleOpenLikeList}
-          className="font-bold text-sm"
+          className='font-bold text-sm'
         >
           {like} likes
         </span>
       </div>
       <Modal
         forceRender
-        title="Lượt thích"
+        title='Lượt thích'
         open={isOpenModalLikeList}
         onCancel={handleCancelModalLikeList}
         footer={null}
       >
-        <div style={{ minHeight: "300px", maxHeight: "370px", overflow: "auto" }}>
+        <div style={{ minHeight: '300px', maxHeight: '370px', overflow: 'auto' }}>
           {likeList.map((user, index) => (
             <LongUserCard key={index} user={user} />
           ))}

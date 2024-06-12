@@ -455,7 +455,7 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
                 <div
                   className={`${styles.tab} ${selectedTab === tab.name && styles['active']}`}
                   onClick={() => {
-                    router.push(tab.href);
+                    router.push(tab.href.replace('{username}', params.id));
                   }}
                 >
                   {tab.name}

@@ -16,7 +16,7 @@ const LikedPost = () => {
 
   const { setSelectedTab } = useContext(TabsContext);
 
-  setSelectedTab(tabs[3].name);
+  setSelectedTab(tabs[4].name);
 
   const fetchPost = async () => {
     setLoading(true);

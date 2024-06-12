@@ -38,12 +38,21 @@ export const formatCaption = (caption: string) => {
 export const extractChatroomNameAndAvatar = (chatroom: chatroom): chatroom => {
   const currentUser = store.getState().user.user;
 
-  if (chatroom.users.length == 2) {
+  // if is self chat, just get itself name and img
+  if (chatroom.users.length == 1) {
+    const targetUser: shortUser = chatroom.users[0];
+    chatroom.name = targetUser.username;
+    chatroom.image = targetUser.avatar;
+  }
+  // if 1-1 chat, then just get opponent name and img
+  else if (chatroom.users.length == 2) {
     const targetUser: shortUser =
       chatroom.users[0].userId === currentUser.id ? chatroom.users[1] : chatroom.users[0];
     chatroom.name = targetUser.username;
     chatroom.image = targetUser.avatar;
-  } else {
+  }
+  // if room chat
+  else {
     if (!chatroom.name) {
       const filterdUserList = chatroom.users.filter((u) => u.userId !== currentUser.id);
       chatroom.name = `${filterdUserList[0].username}, ${filterdUserList[1].username},...`;

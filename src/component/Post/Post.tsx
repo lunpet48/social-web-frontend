@@ -1,13 +1,10 @@
-import { MediaType } from '@/type/enum';
 import { post, user } from '@/type/type';
-import { checkMediaType, formatCaption } from '@/utils';
+import { formatCaption } from '@/utils';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faEarthAmericas, faLock, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { RefObject, useEffect, useRef, useState } from 'react';
-import MediaView from '../media-view';
-import VideoPlayerComponent from '../VideoPlayerComponent';
-import LikeComponent from '../like-component';
+import ActionComponent from './Action';
 import MediaSlider from '../MediaSlider';
 
 const Post = ({ post }: { post: post }) => {
@@ -121,18 +118,11 @@ const Post = ({ post }: { post: post }) => {
             </div>
           </div>
           <div ref={mediaRef} className='feed-img'>
-            {/* {checkMediaType(post.files[0]) === MediaType.IMAGE ? (
-              <MediaView slides={post.files}></MediaView>
-            ) : checkMediaType(post.files[0]) === MediaType.VIDEO ? (
-              <VideoPlayerComponent src={post.files[0]} />
-            ) : (
-              <></>
-            )} */}
             <MediaSlider fixedWidth={mediaWidth} files={post.files} />
           </div>
           <div className='card-footer p-4'>
             <div className='top'>
-              <LikeComponent postId={post.postId} numberOfLike={post.reactions.length} />
+              <ActionComponent postId={post.postId} numberOfLike={post.reactions.length} />
               <div className='caption text-sm mt-3'>
                 <b>{user?.username} </b>
                 {formatCaption(post.caption)}
