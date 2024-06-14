@@ -98,3 +98,9 @@ export type paging = {
   pageNo: number;
   pageSize: number;
 };
+
+export type album = {
+  id: string;
+  name: string;
+  img?: string;
+};
