@@ -14,7 +14,13 @@ import {
   message,
 } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGear, faLocationDot, faMars, faVenus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEllipsis,
+  faGear,
+  faLocationDot,
+  faMars,
+  faVenus,
+} from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import dayjs from 'dayjs';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
@@ -24,6 +30,7 @@ import ButtonWrapper from './ButtonWrapper';
 import Loading from '@/component/Loading';
 import {
   acceptFriendRequest,
+  blockUser,
   cancelFriendRequest,
   deleteFriend,
   denyFriendRequest,
@@ -267,6 +274,22 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
     },
   ];
 
+  const itemsDropdownBlock: MenuProps['items'] = [
+    {
+      label: (
+        <a
+          style={{ fontSize: '16px' }}
+          onClick={() => {
+            blockUser(user.id);
+          }}
+        >
+          Chặn
+        </a>
+      ),
+      key: '0',
+    },
+  ];
+
   const handleChangePassword = async () => {
     try {
       const response = await changePassword(inputs);
@@ -378,6 +401,18 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
                     </>
                   ) : (
                     <></>
+                  )}
+
+                  {user.relationship !== RelationshipProfile.SELF && (
+                    <Dropdown
+                      menu={{ items: itemsDropdownBlock }}
+                      trigger={['click']}
+                      placement='bottomRight'
+                    >
+                      <div style={{ cursor: 'pointer' }}>
+                        <FontAwesomeIcon style={{ fontSize: '18px' }} icon={faEllipsis} />
+                      </div>
+                    </Dropdown>
                   )}
                 </div>
 

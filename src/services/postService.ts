@@ -1,5 +1,6 @@
 import { paging, user } from '@/type/type';
 import { fetchUserProfile } from './profileService';
+import { responseData } from './type';
 
 export const getPosts = async (paging: paging = { pageNo: 0, pageSize: 10 }) => {
   const access_token = localStorage.getItem('token');
@@ -40,6 +41,8 @@ export const getLikesOfPost = async (postId: string) => {
 };
 
 export const fetchPostByUserId = async (userId: string) => {
+  const responseData: responseData = { isSuccess: true };
+
   const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/${userId}/posts`, {
     method: 'GET',
@@ -47,12 +50,15 @@ export const fetchPostByUserId = async (userId: string) => {
       Authorization: 'Bearer ' + access_token,
     },
   });
+  const data = await response.json();
   if (response.status === 200) {
-    const data = await response.json();
-    return data.data;
-  } else if (response.status === 401) {
-    console.log('JWT expired');
+    responseData.data = data.data;
+  } else if (response.status === 404) {
+    responseData.isSuccess = false;
+    responseData.errorCode = '404';
+    responseData.errorMessage = data;
   }
+  return responseData;
 };
 
 export const fetchPostByUsername = async (username: string) => {

@@ -7,13 +7,13 @@ import FriendRequestHaveBeenSent from './FriendRequestHaveBeenSent';
 import Friend from './Friend';
 import { useDispatch } from 'react-redux';
 import { setMenuSelected } from '@/store/slices/app';
-//import Block from "./Block";
+import Block from './Block';
 
 enum pages {
   Friend,
   FriendRequest,
   FriendRequestHaveBeenSent,
-  //  Block,
+  Block,
 }
 
 const People = () => {
@@ -36,9 +36,9 @@ const People = () => {
     case pages.FriendRequestHaveBeenSent:
       ContentPage = FriendRequestHaveBeenSent;
       break;
-    // case pages.Block:
-    //   ContentPage = Block;
-    //   break;
+    case pages.Block:
+      ContentPage = Block;
+      break;
     default:
       ContentPage = Friend;
       break;
@@ -74,16 +74,14 @@ const People = () => {
         >
           Yêu cầu kết bạn
         </li>
-        {/* <li
-          className={`${styles["tab-item"]} ${
-            page == pages.Block && styles["active"]
-          }`}
+        <li
+          className={`${styles['tab-item']} ${page == pages.Block && styles['active']}`}
           onClick={() => {
             setPage(pages.Block);
           }}
         >
           Đã chặn
-        </li> */}
+        </li>
       </ul>
       <ContentPage />
     </div>

@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 import TabsContext from './context';
 import tabs from './tabs';
+import { responseData } from '@/services/type';
 
 const ProfilePage = ({ params }: { params: { id: string } }) => {
   const [posts, setPosts] = useState<post[]>([]);
@@ -20,9 +21,12 @@ const ProfilePage = ({ params }: { params: { id: string } }) => {
 
   const fetchPost = async (userId: string) => {
     setLoading(true);
-    const data = await fetchPostByUsername(userId);
-    setPosts(data);
+    const responseData: responseData = await fetchPostByUsername(userId);
     setLoading(false);
+    if (responseData.isSuccess) {
+      setPosts(responseData.data);
+    } else if (responseData.errorCode === '404') {
+    }
   };
 
   useEffect(() => {

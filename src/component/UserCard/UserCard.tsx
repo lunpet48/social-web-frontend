@@ -1,4 +1,4 @@
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Dropdown, MenuProps, Modal, Row } from 'antd';
 import React, { useState } from 'react';
 
 import styles from './style.module.scss';
@@ -9,11 +9,15 @@ import {
   deleteFriend,
   denyFriendRequest,
   sendFriendRequest,
+  unblockUser,
 } from '@/services/friendService';
 import { user } from '@/type/type';
 import { RelationshipProfile } from '@/type/enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+
+const { confirm } = Modal;
 
 const UserCard = ({ user }: { user: user }) => {
   const [loading, setLoading] = useState(false);
@@ -42,7 +46,6 @@ const UserCard = ({ user }: { user: user }) => {
 
   const HandleAcceptFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    const token = localStorage.getItem('token');
 
     try {
       setLoading(true);
@@ -61,7 +64,6 @@ const UserCard = ({ user }: { user: user }) => {
   };
   const handleDenyFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    const token = localStorage.getItem('token');
 
     try {
       setLoading(true);
@@ -79,7 +81,6 @@ const UserCard = ({ user }: { user: user }) => {
 
   const handleCancelFriendRequest = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    const token = localStorage.getItem('token');
 
     try {
       setLoading(true);
@@ -112,7 +113,51 @@ const UserCard = ({ user }: { user: user }) => {
     }
   };
 
-  const showMore = () => {};
+  const HandleUnblockUser = async (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+
+    try {
+      setLoading(true);
+      const response = await unblockUser(user.id);
+
+      if (response.status === 204) {
+        //success
+        setLoading(false);
+        setStatus({ isSuccess: true, text: 'Đã bỏ chặn' });
+      }
+    } catch (err) {
+      setLoading(false);
+    }
+  };
+
+  const itemsDropdown: MenuProps['items'] = [
+    {
+      label: (
+        <a
+          style={{ fontSize: '16px' }}
+          onClick={(e) => {
+            confirm({
+              title: 'Bạn có chắc muốn xóa?',
+              icon: <ExclamationCircleFilled />,
+              content: '',
+              okText: 'Có',
+              okType: 'danger',
+              cancelText: 'Không',
+              onOk() {
+                handleDeleteFriend(e);
+              },
+              onCancel() {
+                console.log('Cancel');
+              },
+            });
+          }}
+        >
+          Xóa bạn bè
+        </a>
+      ),
+      key: '0',
+    },
+  ];
 
   const renderAction = () => {
     switch (user.relationship) {
@@ -141,7 +186,7 @@ const UserCard = ({ user }: { user: user }) => {
             <Button
               style={{ color: '#ff0000', borderColor: '#ff0000' }}
               onClick={(e) => {
-                HandleAcceptFriendRequest(e);
+                handleDenyFriendRequest(e);
               }}
             >
               Từ chối
@@ -161,17 +206,30 @@ const UserCard = ({ user }: { user: user }) => {
         );
       case RelationshipProfile.FRIEND:
         return (
-          <div className={styles['show-more-btn']}>
-            <FontAwesomeIcon
-              style={{ fontSize: '18px' }}
-              onClick={(e) => {
-                e.stopPropagation();
-                showMore();
-              }}
-              icon={faEllipsis}
-            />
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <Dropdown menu={{ items: itemsDropdown }} trigger={['click']} placement='bottomRight'>
+              <div className={styles['show-more-btn']}>
+                <FontAwesomeIcon style={{ fontSize: '18px' }} icon={faEllipsis} />
+              </div>
+            </Dropdown>
           </div>
         );
+      case RelationshipProfile.BLOCK:
+        return (
+          <Button
+            style={{ color: '#ff0000', borderColor: '#ff0000' }}
+            onClick={(e) => {
+              HandleUnblockUser(e);
+            }}
+          >
+            Bỏ chặn
+          </Button>
+        );
+
       default:
         return <></>;
     }
@@ -184,17 +242,7 @@ const UserCard = ({ user }: { user: user }) => {
         router.push(`/profile/${user.username}`);
       }}
     >
-      <img
-        // style={{
-        //   width: '60px',
-        //   height: '60px',
-        //   objectFit: 'cover',
-        //   borderRadius: '50%',
-        //   background: 'white',
-        // }}
-        src={`${user.avatar ? user.avatar : '/default-avatar.jpg'}`}
-        alt='avatar'
-      />
+      <img src={`${user.avatar ? user.avatar : '/default-avatar.jpg'}`} alt='avatar' />
 
       <div className={styles['user-info']}>
         <div>{`${user.fullName}`}</div>

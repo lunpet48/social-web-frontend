@@ -1,55 +1,55 @@
 export const getOutgoingRequest = async () => {
-  const access_token = localStorage.getItem("token");
+  const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/relationship/outgoing-requests`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      Authorization: "Bearer " + access_token,
+      Authorization: 'Bearer ' + access_token,
     },
   });
   return response;
 };
 
 export const getRecommendUser = async () => {
-  const access_token = localStorage.getItem("token");
+  const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/user/recommend`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      Authorization: "Bearer " + access_token,
+      Authorization: 'Bearer ' + access_token,
     },
   });
   return response;
 };
 
 export const getIncomingRequest = async () => {
-  const access_token = localStorage.getItem("token");
+  const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/relationship/incoming-requests`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      Authorization: "Bearer " + access_token,
+      Authorization: 'Bearer ' + access_token,
     },
   });
   return response;
 };
 
 export const getFriend = async (userId: string) => {
-  const access_token = localStorage.getItem("token");
+  const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/relationship/friends?userId=${userId}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      Authorization: "Bearer " + access_token,
+      Authorization: 'Bearer ' + access_token,
     },
   });
   return response;
 };
 
 export const sendFriendRequest = async (targetId: string) => {
-  const access_token = localStorage.getItem("token");
+  const access_token = localStorage.getItem('token');
 
   const response = await fetch(`${process.env.API}/api/v1/relationship/friend-request`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      Authorization: "Bearer " + access_token,
-      "Content-Type": "application/json",
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       targetId: targetId,
@@ -60,12 +60,12 @@ export const sendFriendRequest = async (targetId: string) => {
 };
 
 export const cancelFriendRequest = async (targetId: string) => {
-  const access_token = localStorage.getItem("token");
+  const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/relationship/friend-request`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      Authorization: "Bearer " + access_token,
-      "Content-Type": "application/json",
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ targetId: targetId }),
   });
@@ -73,12 +73,12 @@ export const cancelFriendRequest = async (targetId: string) => {
 };
 
 export const acceptFriendRequest = async (targetId: string) => {
-  const access_token = localStorage.getItem("token");
+  const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/relationship/received-friend-requests`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      Authorization: "Bearer " + access_token,
-      "Content-Type": "application/json",
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       targetId: targetId,
@@ -88,12 +88,12 @@ export const acceptFriendRequest = async (targetId: string) => {
 };
 
 export const denyFriendRequest = async (targetId: string) => {
-  const access_token = localStorage.getItem("token");
+  const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/relationship/received-friend-requests`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      Authorization: "Bearer " + access_token,
-      "Content-Type": "application/json",
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       targetId: targetId,
@@ -103,16 +103,73 @@ export const denyFriendRequest = async (targetId: string) => {
 };
 
 export const deleteFriend = async (targetId: string) => {
-  const access_token = localStorage.getItem("token");
+  const access_token = localStorage.getItem('token');
   const response = await fetch(`${process.env.API}/api/v1/relationship/friends`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      Authorization: "Bearer " + access_token,
-      "Content-Type": "application/json",
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       targetId: targetId,
     }),
   });
   return response;
+};
+
+export const getBlockList = async () => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/relationship/blocklist`, {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  return response;
+};
+
+export const unblockUser = async (targetId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/relationship/blocklist`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      targetId: targetId,
+    }),
+  });
+  return response;
+};
+
+export const blockUser = async (targetId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/relationship/blocklist`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      targetId: targetId,
+    }),
+  });
+  return response;
+};
+
+export const searchFriend = async (keyword: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(
+    `${process.env.API}/api/v1/relationship/friends/search?keyword=${keyword}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + access_token,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await response.json();
+  return data.data;
 };
