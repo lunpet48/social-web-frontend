@@ -44,6 +44,8 @@ const NotificationCard = ({ notification }: { notification: notification }) => {
       ? `/post/${notification.idType}`
       : notification.notificationType === notificationType.COMMENT
       ? `/post/${notification.idType}`
+      : notification.notificationType === notificationType.MENTION
+      ? `/post/${notification.idType}`
       : `/profile/${notification.actor.username}`;
 
   return (

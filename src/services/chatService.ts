@@ -85,3 +85,20 @@ export const sendMessage = async (roomId: string, message: string) => {
   const data = await response.json();
   return data.data;
 };
+
+export const searchChatroom = async (keyword: string) => {
+  const access_token = localStorage.getItem('token');
+
+  const response = await fetch(`${process.env.API}/api/v1/chat/search?keyword=${keyword}`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  const data = await response.json();
+  const chatrooms: chatroom[] = data.data;
+  chatrooms.map((chatroom: chatroom) => {
+    return extractChatroomNameAndAvatar(chatroom);
+  });
+  return data.data;
+};

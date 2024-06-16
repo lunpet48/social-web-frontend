@@ -16,7 +16,7 @@ const NotificationQuotePage = () => {
   }, []);
 
   const fetchNotification = async () => {
-    const data: notification[] = await getNotificationByType('quote');
+    const data: notification[] = await getNotificationByType('tag');
     setNotifications(data);
   };
 
