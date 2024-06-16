@@ -118,3 +118,32 @@ export const removeAPostFromSaved = async (postId: string) => {
   const data = await response.json();
   return data.data;
 };
+
+export const fetchReelsByUserId = async (userId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/${userId}/reels`, {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  const data = await response.json();
+  return data.data;
+};
+
+export const fetchReelsByUsername = async (username: string) => {
+  const user: user = await fetchUserProfile(username);
+  return await fetchReelsByUserId(user.id);
+};
+
+export const exploreReels = async () => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/reel`, {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  const data = await response.json();
+  return data.data;
+};
