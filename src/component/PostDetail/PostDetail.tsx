@@ -5,17 +5,28 @@ import CommentComponent from '../Comment';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import MoreOption from '../more-option';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEarthAmericas, faLock, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBookmark,
+  faEarthAmericas,
+  faLock,
+  faUserGroup,
+} from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { checkMediaType, formatCaption } from '@/utils';
 import { MediaType } from '@/type/enum';
 import VideoPlayerComponent from '../VideoPlayerComponent';
 import LongUserCard from '../LongUserCard';
-import { fetchPostById, getLikesOfPost } from '@/services/postService';
+import {
+  fetchPostById,
+  getLikesOfPost,
+  removeAPostFromSaved,
+  saveAPost,
+} from '@/services/postService';
 import { fetchCommentOfPost, postComment } from '@/services/commentService';
 import { comment, post, user } from '@/type/type';
 import EmojiPickerComponent from '../EmojiPicker/EmojiPicker';
 import MediaSlider from '../MediaSlider';
+import { faBookmark as faBookmarkSaved } from '@fortawesome/free-regular-svg-icons';
 
 type reaction = {
   userId: string;
@@ -33,6 +44,8 @@ const PostDetail = ({ postId }: { postId: string }) => {
 
   const [isOpenModalLikeList, setIsOpenModalLikeList] = useState(false);
   const [likeList, setLikeList] = useState<user[]>([]);
+
+  const [isSaved, setIsSaved] = useState(false);
 
   const commentRef = useRef<HTMLInputElement>(null);
 
@@ -129,6 +142,7 @@ const PostDetail = ({ postId }: { postId: string }) => {
       };
       const post: post = await fetchPostById(postId);
       setPost(post);
+      setIsSaved(post.saved);
       const reaction: reaction = await fetchLiked(post.postId);
       setLiked(reaction.liked);
       setLikeNumber(post.reactions.length);
@@ -166,26 +180,33 @@ const PostDetail = ({ postId }: { postId: string }) => {
     setReplyCommentId(comment?.id);
   };
 
+  const handleSaveOrUnSaveAPost = () => {
+    setIsSaved((prev) => {
+      if (prev) {
+        removeAPostFromSaved(postId);
+      } else {
+        saveAPost(postId);
+      }
+      return !prev;
+    });
+  };
+
   if (!post) {
     return;
   }
 
   return (
     <>
-      <div className='relative' style={{ display: 'flex', flexWrap: 'wrap', height: '80vh' }}>
-        <div className='feed-img' style={{ flex: '50%' }}>
-          {/* {post && checkMediaType(post.files[0]) === MediaType.IMAGE ? (
-            <MediaView slides={post?.files} />
-          ) : post && checkMediaType(post.files[0]) === MediaType.VIDEO ? (
-            <VideoPlayerComponent src={post.files[0]} />
-          ) : (
-            <></>
-          )} */}
+      <div
+        className='relative'
+        style={{ display: 'flex', flexWrap: 'wrap', height: '80vh', gap: '16px' }}
+      >
+        <div className='feed-img' style={{ flex: 1 }}>
           <MediaSlider files={post.files} />
         </div>
-        <div className='header' style={{ flex: '50%' }}>
-          <div className='flex flex-col h-full'>
-            <div className='header border-b pt-4 pb-4 pl-2 pr-2 flex justify-between items-center'>
+        <div className='header' style={{ flex: 1 }}>
+          <div className='flex flex-col h-full max-h-full'>
+            <div className='header py-3 px-2 flex justify-between items-center'>
               <div className='flex flex-col gap-2'>
                 <div className='left flex flex-row items-center'>
                   <a
@@ -257,13 +278,6 @@ const PostDetail = ({ postId }: { postId: string }) => {
                     />
                   )}
                 </div>
-                <div className='pl-14'>
-                  {post?.caption != '' && (
-                    <span className='text-sm font-light text-gray-900'>
-                      {post && formatCaption(post.caption)}
-                    </span>
-                  )}
-                </div>
               </div>
               <div className='right'>
                 <MoreOption post={post} user={post?.user} userId={post?.user.userId}></MoreOption>
@@ -272,9 +286,16 @@ const PostDetail = ({ postId }: { postId: string }) => {
 
             <div className='flex flex-column flex-1'>
               <div
-                className='prose max-w-screen-md overflow-y-auto'
+                className='prose max-w-screen-md overflow-y-auto no-scrollbar'
                 style={{ maxHeight: '40vh', backgroundColor: '#fff' }}
               >
+                <div className='pl-14 pb-2 border-b'>
+                  {post?.caption != '' && (
+                    <span className='text-sm font-light text-gray-900'>
+                      {post && formatCaption(post.caption)}
+                    </span>
+                  )}
+                </div>
                 <div>
                   {comments?.map((comment, id) => (
                     <CommentComponent
@@ -289,13 +310,22 @@ const PostDetail = ({ postId }: { postId: string }) => {
             <div className='card-footer sticky bottom-0 bg-white'>
               <div className='top border-t mt-2 pt-3 pb-3 pl-2 pr-2'>
                 <div className='icons flex flex-row justify-between items-center'>
-                  <div className='left flex flex-row'>
+                  <div className='left flex flex-row w-full'>
                     <button onClick={handleLikeClick}>
                       <div className='like mr-4'>
                         {liked === true ? (
                           <HeartFilled style={{ fontSize: '25px', color: '#FF2F41' }} />
                         ) : (
                           <HeartOutlined style={{ fontSize: '25px' }} />
+                        )}
+                      </div>
+                    </button>
+                    <button className='flex-1' onClick={handleSaveOrUnSaveAPost}>
+                      <div className='text-right'>
+                        {!isSaved ? (
+                          <FontAwesomeIcon size='xl' icon={faBookmarkSaved} />
+                        ) : (
+                          <FontAwesomeIcon size='xl' icon={faBookmark} />
                         )}
                       </div>
                     </button>

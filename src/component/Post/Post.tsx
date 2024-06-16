@@ -122,7 +122,7 @@ const Post = ({ post }: { post: post }) => {
           </div>
           <div className='card-footer p-4'>
             <div className='top'>
-              <ActionComponent postId={post.postId} numberOfLike={post.reactions.length} />
+              <ActionComponent post={post} />
               <div className='caption text-sm mt-3'>
                 <b>{user?.username} </b>
                 {formatCaption(post.caption)}

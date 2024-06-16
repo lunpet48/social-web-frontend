@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Modal } from 'antd';
 import LongUserCard from '../LongUserCard';
-import { user } from '@/type/type';
-import { getLikesOfPost } from '@/services/postService';
+import { post, user } from '@/type/type';
+import { getLikesOfPost, removeAPostFromSaved, saveAPost } from '@/services/postService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faBookmark as faBookmarkSaved } from '@fortawesome/free-solid-svg-icons';
 
 type reaction = {
   userId: string;
@@ -14,7 +15,9 @@ type reaction = {
   liked: boolean;
 };
 
-const LikeComponent = ({ postId, numberOfLike }: any) => {
+const ActionComponent = ({ post }: { post: post }) => {
+  const postId = post.postId;
+  const numberOfLike = post.reactions.length;
   const [reaction, setReaction] = useState<reaction>({
     userId: '',
     postId: postId,
@@ -22,6 +25,8 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
   });
   const [isOpenModalLikeList, setIsOpenModalLikeList] = useState(false);
   const [likeList, setLikeList] = useState<user[]>([]);
+  const [isSaved, setIsSaved] = useState<boolean>(post.saved);
+
   let timeoutId: string | number | NodeJS.Timeout | undefined;
   //const [open, setOpen] = useState(false);
   //const { liked, numberOfLike, likeContext } = useLike();
@@ -133,6 +138,17 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
   const handleCancelModalLikeList = () => {
     setIsOpenModalLikeList(false);
   };
+
+  const handleSaveOrUnSaveAPost = () => {
+    setIsSaved((prev) => {
+      if (prev) {
+        removeAPostFromSaved(postId);
+      } else {
+        saveAPost(postId);
+      }
+      return !prev;
+    });
+  };
   return (
     <>
       <div className='icons flex flex-row justify-between items-center'>
@@ -155,9 +171,13 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
               <CommentOutlined style={{ fontSize: '25px' }} />
             </div>
           </button>
-          <button className='flex-1' onClick={() => {}}>
+          <button className='flex-1' onClick={handleSaveOrUnSaveAPost}>
             <div className='text-right'>
-              <FontAwesomeIcon size='xl' icon={faBookmark} />
+              {isSaved ? (
+                <FontAwesomeIcon size='xl' icon={faBookmarkSaved} />
+              ) : (
+                <FontAwesomeIcon size='xl' icon={faBookmark} />
+              )}
             </div>
           </button>
         </div>
@@ -188,4 +208,4 @@ const LikeComponent = ({ postId, numberOfLike }: any) => {
   );
 };
 
-export default LikeComponent;
+export default ActionComponent;

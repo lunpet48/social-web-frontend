@@ -4,8 +4,10 @@ import React from 'react';
 
 const PostDetailPage = ({ params }: { params: { id: string } }) => {
   return (
-    <div style={{ padding: '150px', background: 'white' }}>
-      <PostDetail postId={params.id} />
+    <div className='bg-white flex flex-col justify-center h-screen px-36'>
+      <div className='border-1 rounded-sm'>
+        <PostDetail postId={params.id} />
+      </div>
     </div>
   );
 };

@@ -45,6 +45,7 @@ export type post = {
   reactions: string[];
   createdAt: string;
   updatedAt?: string;
+  saved: boolean;
 };
 
 export type comment = {

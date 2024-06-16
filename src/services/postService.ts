@@ -94,3 +94,27 @@ export const fetchLikedPost = async (paging: paging = { pageNo: 0, pageSize: 10 
     console.log('JWT expired');
   }
 };
+
+export const saveAPost = async (postId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/save/${postId}`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  const data = await response.json();
+  return data.data;
+};
+
+export const removeAPostFromSaved = async (postId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/save/${postId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  const data = await response.json();
+  return data.data;
+};
