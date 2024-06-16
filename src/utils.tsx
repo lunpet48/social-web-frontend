@@ -75,8 +75,10 @@ export const extractNotifyContent = (notification: notification) => {
       ? `${notification.actor.username} đã thích bài viết của bạn`
       : notification.notificationType === notificationType.COMMENT
       ? `Đã bình luận bài viết của bạn`
-      : notification.notificationType === notificationType.MENTION
+      : notification.notificationType === notificationType.MENTION_IN_POST
       ? `Đã nhắc đến bạn trong một bài viết`
+      : notification.notificationType === notificationType.MENTION_IN_COMMENT
+      ? `Đã nhắc đến bạn trong một bình luận`
       : '';
 
   return notification;
