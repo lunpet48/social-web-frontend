@@ -55,7 +55,8 @@ export const getMessagesOfChatroom = async (roomId: string) => {
     },
   });
   const data = await response.json();
-  return data.data;
+  const chatroom: chatroom = data.data;
+  return extractChatroomNameAndAvatar(chatroom);
 };
 
 export const sendMessage = async (roomId: string, message: string) => {

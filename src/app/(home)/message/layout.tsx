@@ -13,12 +13,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { removeSelectedChatroom, setChatrooms, setSelectedChatroom } from '@/store/slices/chatroom';
 
-interface IContextProps {
-  chatroom: chatroom;
-}
-
-export const chatRoomContext = createContext({} as IContextProps);
-
 const MessageLayout = ({ children }: { children: React.ReactNode }) => {
   //modal new chat
   const [isShowNewChat, setIsShowNewChat] = useState(false);
@@ -83,7 +77,6 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
 
   const chat = async () => {
     const result: chatroom = await newChat(selectedUsers.map((u) => u.id));
-    dispatch(setSelectedChatroom(result));
     router.push(`/message/${result.roomId}`);
     setIsShowNewChat(false);
   };
@@ -123,7 +116,6 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
                         selectedChatRoom?.roomId === chatroom.roomId && styles['active']
                       }`}
                       onClick={() => {
-                        dispatch(setSelectedChatroom(chatroom));
                         router.push(`/message/${chatroom.roomId}`);
                       }}
                     >
@@ -157,7 +149,6 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
                       selectedChatRoom?.roomId === chatroom.roomId && styles['active']
                     }`}
                     onClick={() => {
-                      dispatch(setSelectedChatroom(chatroom));
                       router.push(`/message/${chatroom.roomId}`);
                     }}
                   >
@@ -189,11 +180,9 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
         <div className={styles['right']}>
-          {selectedChatRoom && (
-            <chatRoomContext.Provider value={{ chatroom: selectedChatRoom }}>
-              {children}
-            </chatRoomContext.Provider>
-          )}
+          {/* <chatRoomContext.Provider value={{ chatroom: selectedChatRoom }}> */}
+          {children}
+          {/* </chatRoomContext.Provider> */}
         </div>
       </div>
       <Modal

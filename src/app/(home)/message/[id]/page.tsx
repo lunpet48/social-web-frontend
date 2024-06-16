@@ -2,27 +2,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './page.module.scss';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { chatRoomContext } from '../layout';
+import { useEffect, useRef, useState } from 'react';
 import { getMessagesOfChatroom, sendMessage } from '@/services/chatService';
-import { chatroom, message } from '@/type/type';
+import { chatroom } from '@/type/type';
 import EmojiPickerComponent from '@/component/EmojiPicker/EmojiPicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
-import {
-  pushChatroom,
-  pushMessage,
-  setMessages,
-  setSelectedChatroom,
-} from '@/store/slices/chatroom';
+import { setMessages, setSelectedChatroom } from '@/store/slices/chatroom';
 
 const MessagePage = ({ params }: { params: { id: string } }) => {
-  // const [messages, setMessages] = useState<message[]>([]);
-  // const { chatroom } = useContext(chatRoomContext);
   const selectedChatRoom = useSelector((state: RootState) => state.chatrooms.selectedChatroom);
-  if (!selectedChatRoom) {
-    return <></>;
-  }
 
   const messageRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +21,7 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
 
   const fetchMessagesOfChatroom = async () => {
     const data: chatroom = await getMessagesOfChatroom(params.id);
-    dispatch(setMessages({ roomId: selectedChatRoom?.roomId, messages: data.message }));
+    dispatch(setSelectedChatroom(data));
   };
 
   const onSendMessage = async () => {
@@ -43,11 +32,12 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if (selectedChatRoom === null) {
-      // get chatroom infomation and asign to selected chatroom
-    }
     fetchMessagesOfChatroom();
   }, []);
+
+  if (!selectedChatRoom) {
+    return <></>;
+  }
 
   return (
     <div className={styles['content']}>

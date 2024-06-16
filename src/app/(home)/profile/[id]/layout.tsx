@@ -31,7 +31,7 @@ import {
   sendFriendRequest,
 } from '@/services/friendService';
 import { useRouter } from 'next/navigation';
-import { user } from '@/type/type';
+import { chatroom, user } from '@/type/type';
 import { Gender, RelationshipProfile } from '@/type/enum';
 import LongUserCard from '@/component/LongUserCard';
 import { changePassword } from '@/services/authService';
@@ -41,6 +41,8 @@ import { RootState } from '@/store';
 import { fetchUserProfile } from '@/services/profileService';
 import tabs from './tabs';
 import TabsContext from './context';
+import { newChat } from '@/services/chatService';
+import { setSelectedChatroom } from '@/store/slices/chatroom';
 
 const formItemLayout = {
   labelCol: {
@@ -121,8 +123,10 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
     }
   }, []);
 
-  const goToMessage = () => {
-    alert('Tính năng này chưa có');
+  const goToMessage = async () => {
+    const result: chatroom = await newChat([user.id]);
+    dispatch(setSelectedChatroom(result));
+    router.push(`/message/${result.roomId}`);
   };
 
   const handleCancelFriendRequest = async (
