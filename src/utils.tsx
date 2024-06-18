@@ -1,5 +1,5 @@
 import { MediaType, notificationType } from './type/enum';
-import { chatroom, notification, shortUser } from './type/type';
+import { chatroom, comment, notification, shortUser } from './type/type';
 import { store } from '@/store';
 
 export function checkMediaType(url: string) {
@@ -153,4 +153,34 @@ export const calculateSliderWidth = async (
   }
 
   return '100%';
+};
+
+interface commentFiltered {
+  rootComments: comment[];
+  subComments: comment[];
+}
+
+export const extractComment = (comments: comment[]) => {
+  const { rootComments, subComments }: commentFiltered = comments.reduce<commentFiltered>(
+    (result, comment: comment) => {
+      if (comment.repliedCommentId) {
+        result.subComments.push(comment);
+      } else {
+        comment.subComments = [];
+        result.rootComments.push(comment);
+      }
+      return result;
+    },
+    { rootComments: [], subComments: [] }
+  );
+
+  subComments.forEach((subComment) => {
+    const rootComment = rootComments.find((root) => root.id === subComment.repliedCommentId);
+    if (rootComment) {
+      rootComment.subComments.push(subComment);
+    }
+  });
+  console.log('debug', rootComments);
+
+  return rootComments;
 };

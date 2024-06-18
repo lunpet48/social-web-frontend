@@ -177,7 +177,11 @@ const PostDetail = ({ postId }: { postId: string }) => {
     if (commentRef.current) {
       commentRef.current.value = `@${comment?.user.username} `;
     }
-    setReplyCommentId(comment?.id);
+    if (comment.repliedCommentId) {
+      setReplyCommentId(comment.repliedCommentId);
+    } else {
+      setReplyCommentId(comment.id);
+    }
   };
 
   const handleSaveOrUnSaveAPost = () => {
@@ -199,14 +203,19 @@ const PostDetail = ({ postId }: { postId: string }) => {
     <>
       <div
         className='relative'
-        style={{ display: 'flex', flexWrap: 'wrap', height: '80vh', gap: '16px' }}
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          height: '80vh',
+          gap: '16px',
+        }}
       >
         <div className='feed-img' style={{ flex: 1 }}>
           <MediaSlider files={post.files} />
         </div>
-        <div className='header' style={{ flex: 1 }}>
+        <div className='header flex-1 max-h-full'>
           <div className='flex flex-col h-full max-h-full'>
-            <div className='header py-3 px-2 flex justify-between items-center'>
+            <div className='header py-2 px-2 flex justify-between items-center'>
               <div className='flex flex-col gap-2'>
                 <div className='left flex flex-row items-center'>
                   <a
@@ -284,12 +293,9 @@ const PostDetail = ({ postId }: { postId: string }) => {
               </div>
             </div>
 
-            <div className='flex flex-column flex-1'>
-              <div
-                className='prose max-w-screen-md overflow-y-auto no-scrollbar'
-                style={{ maxHeight: '40vh', backgroundColor: '#fff' }}
-              >
-                <div className='pl-14 pb-2 border-b'>
+            <div className='flex flex-column flex-1 overflow-y-scroll no-scrollbar'>
+              <div className='prose max-w-screen-md'>
+                <div className='pl-16 pb-2 border-b'>
                   {post?.caption != '' && (
                     <span className='text-sm font-light text-gray-900'>
                       {post && formatCaption(post.caption)}

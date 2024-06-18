@@ -60,6 +60,7 @@ export type comment = {
   mediaLink: string;
   createdAt: string;
   repliedCommentId: string;
+  subComments: comment[];
 };
 
 export type notification = {

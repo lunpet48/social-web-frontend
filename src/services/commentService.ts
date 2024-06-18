@@ -1,3 +1,6 @@
+import { paging } from '@/type/type';
+import { extractComment } from '@/utils';
+
 export const postComment = async (
   postId: string,
   comment: string,
@@ -30,14 +33,14 @@ export const postComment = async (
   });
   return response;
 };
+
 export const fetchCommentOfPost = async (
   postId: string,
-  pageNo: number = 0,
-  pageSize: number = 10
+  paging: paging = { pageNo: 0, pageSize: 999 }
 ) => {
   const access_token = localStorage.getItem('token');
   const response = await fetch(
-    `${process.env.API}/api/v1/posts/${postId}/comments?pageNo=${pageNo}&pageSize=${pageSize}`,
+    `${process.env.API}/api/v1/posts/${postId}/comments?pageNo=${paging.pageNo}&pageSize=${paging.pageSize}`,
     {
       method: 'GET',
       headers: {
@@ -46,5 +49,5 @@ export const fetchCommentOfPost = async (
     }
   );
   const data = await response.json();
-  return data.data;
+  return extractComment(data.data);
 };

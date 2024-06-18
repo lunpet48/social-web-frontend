@@ -1,6 +1,7 @@
 import { comment } from '@/type/type';
 import { formatCaption } from '@/utils';
 import { Space } from 'antd';
+import { useState } from 'react';
 
 const CommentComponent = ({
   comment,
@@ -9,9 +10,10 @@ const CommentComponent = ({
   comment: comment;
   onReply: (comment: comment) => void;
 }) => {
+  const [showSubComment, setShowSubComment] = useState(false);
   return (
     <>
-      <div className='content pl-2 pr-2 pt-4 pb-2 flex'>
+      <div className='content pl-2 pr-2 pt-3  flex'>
         <div className='left flex flex-row'>
           <a
             className='user-img h-10 w-10 border rounded-full overflow-hidden mr-4'
@@ -32,7 +34,7 @@ const CommentComponent = ({
       </div>
       <div className='flex ml-14'>
         <Space>
-          <span className='text-sm font-light text-gray-900'>
+          <span className='text-sm font-light text-gray-900 pl-2'>
             {new Date(comment.createdAt).toLocaleString()}
           </span>
           <a
@@ -44,6 +46,23 @@ const CommentComponent = ({
           </a>
         </Space>
       </div>
+      {comment.subComments?.length > 0 && (
+        <>
+          <div onClick={() => setShowSubComment((prev) => !prev)} className='ml-16 cursor-pointer'>
+            {showSubComment ? `Ẩn câu trả lời` : `Xem câu trả lời (${comment.subComments.length})`}
+          </div>
+          <div className='ml-14'>
+            {showSubComment &&
+              comment.subComments.map((subComment, id) => (
+                <CommentComponent
+                  key={id}
+                  comment={subComment}
+                  onReply={onReply}
+                ></CommentComponent>
+              ))}
+          </div>
+        </>
+      )}
     </>
   );
 };
