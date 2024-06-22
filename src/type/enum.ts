@@ -27,3 +27,9 @@ export enum notificationType {
   MENTION_IN_COMMENT = 'MENTION_IN_COMMENT',
   MENTION_IN_POST = 'MENTION_IN_POST',
 }
+
+export enum postMode {
+  PUBLIC = 'PUBLIC',
+  FRIEND = 'FRIEND',
+  PRIVATE = 'PRIVATE',
+}

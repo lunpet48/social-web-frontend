@@ -13,9 +13,9 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-
-import CreatePost from '../create-post';
 import { useDispatch, useSelector } from 'react-redux';
+
+import CreatePost from '../CreatePost';
 import { RootState } from '@/store';
 import { setMenuSelected } from '@/store/slices/app';
 

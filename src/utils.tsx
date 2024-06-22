@@ -180,7 +180,6 @@ export const extractComment = (comments: comment[]) => {
       rootComment.subComments.push(subComment);
     }
   });
-  console.log('debug', rootComments);
 
   return rootComments;
 };

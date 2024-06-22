@@ -7,12 +7,19 @@ const MediaSlider = ({
   files,
   fixedWidth,
   fixedHeight,
+  index,
+  setIndex,
 }: {
   files: string[];
   fixedWidth?: number;
   fixedHeight?: number;
+  index?: number;
+  setIndex?: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [defaultIndexState, setDefaultIndexState] = useState(0);
+  const currentIndex = index || defaultIndexState;
+  const setCurrentIndex = setIndex || setDefaultIndexState;
+
   const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

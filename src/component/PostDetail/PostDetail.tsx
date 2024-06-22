@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import MediaView from '../media-view';
-import { Modal, Space } from 'antd';
+import { Modal } from 'antd';
 import CommentComponent from '../Comment';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 import MoreOption from '../more-option';
@@ -12,9 +11,7 @@ import {
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { checkMediaType, formatCaption } from '@/utils';
-import { MediaType } from '@/type/enum';
-import VideoPlayerComponent from '../VideoPlayerComponent';
+import { formatCaption } from '@/utils';
 import LongUserCard from '../LongUserCard';
 import {
   fetchPostById,

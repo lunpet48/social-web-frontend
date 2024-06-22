@@ -43,3 +43,20 @@ export const fetchPostsOfAlbum = async (albumId: string) => {
   const data = await response.json();
   return data.data;
 };
+
+export const createNewAlbum = async (albumName: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/album`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: albumName,
+      posts: [],
+    }),
+  });
+  const data = await response.json();
+  return data;
+};
