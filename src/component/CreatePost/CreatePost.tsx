@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import '../index.css';
 import { Button, Modal, Input, Select, Space, message } from 'antd';
-import { faEarthAmericas, faLock, faPlus, faUserGroup } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowUpFromBracket,
+  faEarthAmericas,
+  faLock,
+  faPlus,
+  faUserGroup,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { postMode } from '@/type/enum';
@@ -12,6 +18,7 @@ import { RootState } from '@/store';
 import { fetchAlbumsByUserId } from '@/services/albumService';
 import { album } from '@/type/type';
 import AddNewAlbumModal from '../AddNewAlbumModal/AddNewAlbumModal';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
 const { TextArea } = Input;
 
@@ -210,6 +217,16 @@ const CreatePost = ({ open, setOpen }: any) => {
     setSelectedAlbum(id);
   };
 
+  // remove file from selected list
+  const removeFile = (index: number) => {
+    setSelectedFiles((prev) => {
+      const newArray = prev.filter((item, i) => {
+        return index !== i;
+      });
+      return newArray;
+    });
+  };
+
   useEffect(() => {
     loadAlbumSelection();
   }, []);
@@ -233,7 +250,7 @@ const CreatePost = ({ open, setOpen }: any) => {
         ]}
         centered
       >
-        <div className='flex flex-wrap gap-3 w-900 h-70vh'>
+        <div className='flex flex-wrap gap-3 w-1000 h-70vh'>
           <div className='flex-1 flex flex-col gap-1 overflow-hidden noselect '>
             <div className='flex-1'>
               {selectedFiles.length > 0 ? (
@@ -243,51 +260,75 @@ const CreatePost = ({ open, setOpen }: any) => {
                   setIndex={setCurrentIndex}
                 />
               ) : (
-                <></>
+                <label
+                  htmlFor='inputFile'
+                  className='flex flex-col justify-center items-center h-full text-xl rounded-lg
+                     border-2 border-dashed border-blue-300 text-blue-300 hover:border-blue-600
+                      hover:text-blue-600 cursor-pointer'
+                >
+                  <FontAwesomeIcon icon={faArrowUpFromBracket} />
+                  Thêm ảnh hoặc video
+                </label>
               )}
             </div>
-            <div className='flex gap-1 h-20 no-scrollbar overflow-x-scroll relative'>
-              <input
-                id='inputFile'
-                type='file'
-                accept='image/png, image/jpeg, image/gif, video/mp4'
-                multiple
-                onChange={handleFileChange}
-                className='absolute w-0 h-0 opacity-0 cursor-pointer'
-              />
-
-              <label
-                htmlFor='inputFile'
-                className='flex justify-center align-middle h-full rounded-lg border-2 border-dashed hover:border-blue-600'
-                style={{ aspectRatio: 1 }}
-              >
-                <PlusOutlined />
-              </label>
-              {selectedFiles?.map((file, index) => {
-                return (
-                  <div
-                    key={index}
-                    onClick={() => {
-                      setCurrentIndex(index);
-                    }}
-                    className='h-full'
-                    style={{ aspectRatio: 1 }}
-                  >
+            <input
+              id='inputFile'
+              type='file'
+              accept='image/png, image/jpeg, image/gif, video/mp4'
+              multiple
+              onChange={handleFileChange}
+              className='absolute w-0 h-0 opacity-0 '
+            />
+            {selectedFiles.length > 0 && (
+              <div className='flex gap-1 h-20 no-scrollbar overflow-x-scroll relative '>
+                <label
+                  htmlFor='inputFile'
+                  className='flex justify-center align-middle h-full rounded-lg border-2 
+                  border-dashed border-blue-300 text-blue-300 hover:border-blue-600 
+                  hover:text-blue-600 cursor-pointer'
+                  style={{ aspectRatio: 1 }}
+                >
+                  <PlusOutlined />
+                </label>
+                {selectedFiles.map((file, index) => {
+                  return (
                     <div
-                      className={`overflow-hidden opacity-60  rounded-lg border-2 border-opacity-0 border-blue-700 w-full h-full ${
-                        currentIndex === index && 'border-opacity-100 opacity-100'
-                      }`}
+                      key={index}
+                      onClick={() => {
+                        setCurrentIndex(index);
+                      }}
+                      className='h-full group relative'
+                      style={{ aspectRatio: 1 }}
                     >
-                      <img
-                        className='object-cover w-full h-full overflow-hidden'
-                        src={URL.createObjectURL(file)}
-                        alt=''
-                      />
+                      <div
+                        className={`overflow-hidden opacity-60  rounded-lg border-2 border-opacity-0 border-blue-700 w-full h-full ${
+                          currentIndex === index && 'border-opacity-100 opacity-100'
+                        }`}
+                      >
+                        <img
+                          className='object-cover w-full h-full overflow-hidden'
+                          src={URL.createObjectURL(file)}
+                          alt=''
+                        />
+                      </div>
+                      <div className='absolute top-0 left-0 w-full h-full rounded-lg overflow-hidden opacity-0 group-hover:opacity-100'>
+                        <div className='bg-black w-full h-full opacity-50' />
+                        <div className='absolute top-1 right-1'>
+                          <FontAwesomeIcon
+                            icon={faTrashCan}
+                            size='lg'
+                            className='text-white cursor-pointer opacity-70 hover:opacity-100'
+                            onClick={() => {
+                              removeFile(index);
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className='flex-1 flex flex-col gap-4'>
