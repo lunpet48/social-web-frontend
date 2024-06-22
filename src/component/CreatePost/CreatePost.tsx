@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { postMode } from '@/type/enum';
-import MediaSlider from '../MediaSlider';
+import MediaSlider from '../MediaSliderForFileUpload';
 import { PlusOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
@@ -255,7 +255,7 @@ const CreatePost = ({ open, setOpen }: any) => {
             <div className='flex-1'>
               {selectedFiles.length > 0 ? (
                 <MediaSlider
-                  files={selectedFiles.map((file) => URL.createObjectURL(file))}
+                  files={selectedFiles}
                   index={currentIndex}
                   setIndex={setCurrentIndex}
                 />
@@ -305,11 +305,15 @@ const CreatePost = ({ open, setOpen }: any) => {
                           currentIndex === index && 'border-opacity-100 opacity-100'
                         }`}
                       >
-                        <img
-                          className='object-cover w-full h-full overflow-hidden'
-                          src={URL.createObjectURL(file)}
-                          alt=''
-                        />
+                        {file.type.startsWith('image') ? (
+                          <img
+                            className='object-cover w-full h-full overflow-hidden'
+                            src={URL.createObjectURL(file)}
+                            alt=''
+                          />
+                        ) : (
+                          <video src={URL.createObjectURL(file)} />
+                        )}
                       </div>
                       <div className='absolute top-0 left-0 w-full h-full rounded-lg overflow-hidden opacity-0 group-hover:opacity-100'>
                         <div className='bg-black w-full h-full opacity-50' />

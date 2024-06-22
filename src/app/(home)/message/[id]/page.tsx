@@ -67,11 +67,15 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
           return (
             <div key={index} className={styles['message-row']}>
               {message.sender.userId === currentUser.id ? (
-                <div className={`${styles['message']} ${styles['self']}`}>{message.message}</div>
+                <div className={`${styles['message']} ${styles['self']} whitespace-pre-line	`}>
+                  {message.message}
+                </div>
               ) : (
                 <>
                   <img src={message.sender.avatar} alt='avatar' />
-                  <div className={`${styles['message']}`}>{message.message}</div>
+                  <div className={`${styles['message']} whitespace-pre-line	`}>
+                    {message.message}
+                  </div>
                 </>
               )}
             </div>

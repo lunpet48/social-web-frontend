@@ -123,7 +123,7 @@ const Post = ({ post }: { post: post }) => {
           <div className='card-footer p-4'>
             <div className='top'>
               <ActionComponent post={post} />
-              <div className='caption text-sm mt-3'>
+              <div className='caption text-sm mt-3 whitespace-pre-line'>
                 <b>{user?.username} </b>
                 {formatCaption(post.caption)}
               </div>

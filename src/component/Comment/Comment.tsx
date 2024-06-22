@@ -29,7 +29,9 @@ const CommentComponent = ({
           >
             <span className='text-sm font-bold'>{comment.user.username}</span>
           </a>
-          <span className='text-sm font-light text-gray-900'>{formatCaption(comment.comment)}</span>
+          <span className='text-sm font-light text-gray-900 whitespace-pre-line'>
+            {formatCaption(comment.comment)}
+          </span>
         </div>
       </div>
       <div className='flex ml-14'>

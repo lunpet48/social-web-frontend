@@ -294,9 +294,9 @@ const PostDetail = ({ postId }: { postId: string }) => {
               <div className='prose max-w-screen-md'>
                 <div className='pl-16 pb-2 border-b'>
                   {post?.caption != '' && (
-                    <span className='text-sm font-light text-gray-900'>
+                    <div className='text-sm font-light text-gray-900 whitespace-pre-line	'>
                       {post && formatCaption(post.caption)}
-                    </span>
+                    </div>
                   )}
                 </div>
                 <div>
