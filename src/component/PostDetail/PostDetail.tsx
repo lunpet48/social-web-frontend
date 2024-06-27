@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
 import CommentComponent from '../Comment';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
-import MoreOption from '../more-option';
+import MoreOption from './MoreOption';
+import MoreOptionSelf from './MoreOptionSelf';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBookmark,
@@ -11,7 +12,7 @@ import {
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { formatCaption } from '@/utils';
+import { formatCaption, formatDate } from '@/utils';
 import LongUserCard from '../LongUserCard';
 import {
   fetchPostById,
@@ -24,6 +25,8 @@ import { comment, post, user } from '@/type/type';
 import EmojiPickerComponent from '../EmojiPicker/EmojiPicker';
 import MediaSlider from '../MediaSlider';
 import { faBookmark as faBookmarkSaved } from '@fortawesome/free-regular-svg-icons';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 type reaction = {
   userId: string;
@@ -43,6 +46,8 @@ const PostDetail = ({ postId }: { postId: string }) => {
   const [likeList, setLikeList] = useState<user[]>([]);
 
   const [isSaved, setIsSaved] = useState(false);
+
+  const currentUser = useSelector((state: RootState) => state.user.user);
 
   const commentRef = useRef<HTMLInputElement>(null);
 
@@ -286,7 +291,11 @@ const PostDetail = ({ postId }: { postId: string }) => {
                 </div>
               </div>
               <div className='right'>
-                <MoreOption post={post} user={post?.user} userId={post?.user.userId}></MoreOption>
+                {currentUser.id === post?.user.userId ? (
+                  <MoreOptionSelf post={post} />
+                ) : (
+                  <MoreOption post={post} />
+                )}
               </div>
             </div>
 
@@ -344,9 +353,7 @@ const PostDetail = ({ postId }: { postId: string }) => {
                   </span>
                 </div>
                 <div className='post-date mt-1'>
-                  <span className='text-xs text-gray-900'>
-                    {post && new Date(post.createdAt).toLocaleString()}
-                  </span>
+                  <span className='text-xs text-gray-900'>{formatDate(post.createdAt)}</span>
                 </div>
               </div>
               <div className='bottom border-t pt-3 mt-3 pl-2 pr-2'>

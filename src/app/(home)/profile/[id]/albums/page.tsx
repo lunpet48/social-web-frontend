@@ -1,22 +1,22 @@
 'use client';
 import { useContext, useEffect, useState } from 'react';
-import { Col, Row } from 'antd';
+import { Row } from 'antd';
 
 import TabsContext from '../context';
 import tabs from '../tabs';
-import styles from './albums.module.scss';
 import { album, post } from '@/type/type';
 import Loading from '@/component/Loading';
-import { fetchAlbumsByUsername, fetchPostsOfAlbum } from '@/services/albumService';
-import { usePathname, useRouter } from 'next/navigation';
+import { fetchAlbumsByUsername } from '@/services/albumService';
+import AlbumViewComponent from './AlbumViewComponent';
+import { store } from '@/store';
 
 const Albums = ({ params }: { params: { id: string } }) => {
   const { setSelectedTab } = useContext(TabsContext);
 
   const [albums, setAlbums] = useState<album[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const pathname = usePathname();
+
+  const currentUser = store.getState().user.user;
 
   setSelectedTab(tabs[2].name);
 
@@ -36,24 +36,20 @@ const Albums = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <Row gutter={[10, 10]}>
-      {albums.map((album, id) => {
-        return (
-          <Col
-            xs={8}
-            key={id}
-            onClick={() => {
-              router.push(`${pathname}/${album.id}`);
-            }}
-          >
-            <div className={`${styles['album-wrapper']} noselect`}>
-              <img src={album.img || '/image_holder.jpg'} alt='' />
-              <div className={styles['album-description']}>{album.name}</div>
-            </div>
-          </Col>
-        );
-      })}
-    </Row>
+    <>
+      <Row gutter={[10, 10]}>
+        {albums.map((album, id) => {
+          return (
+            <AlbumViewComponent
+              key={id}
+              album={album}
+              reload={getAlbums}
+              hideOption={currentUser.username !== params.id}
+            />
+          );
+        })}
+      </Row>
+    </>
   );
 };
 

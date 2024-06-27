@@ -1,5 +1,5 @@
 import { post, user } from '@/type/type';
-import { formatCaption } from '@/utils';
+import { formatCaption, formatDate } from '@/utils';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faEarthAmericas, faLock, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -128,9 +128,7 @@ const Post = ({ post }: { post: post }) => {
                 {formatCaption(post.caption)}
               </div>
               <div className='post-date mt-1'>
-                <span className='text-xs text-gray-900'>
-                  {new Date(post.createdAt).toLocaleString()}
-                </span>
+                <span className='text-xs text-gray-900'>{formatDate(post.createdAt)}</span>
               </div>
             </div>
           </div>

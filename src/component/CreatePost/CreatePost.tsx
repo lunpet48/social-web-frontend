@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../index.css';
 import { Button, Modal, Input, Select, Space, message } from 'antd';
 import {
@@ -44,6 +44,8 @@ const CreatePost = ({ open, setOpen }: any) => {
   const [albums, setAlbums] = useState(albumSelectionInit);
   const [selectedAlbum, setSelectedAlbum] = useState(albumSelectionInit[0].value);
   const [isOpenNewAlbum, setIsOpenNewAlbum] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentUser = useSelector((state: RootState) => state.user.user);
 
@@ -134,12 +136,9 @@ const CreatePost = ({ open, setOpen }: any) => {
         setOpen(false);
         notify('error', data.message);
       } else {
+        handleCancel();
         setLoading(false);
-        setOpen(false);
         notify('success', 'Đăng bài thành công');
-        setContent('');
-        setSelectedFiles([]);
-        setTag([]);
       }
     } catch (err) {
       console.log(err);
@@ -153,6 +152,7 @@ const CreatePost = ({ open, setOpen }: any) => {
     setTag([]);
     setMode(postMode.PUBLIC);
     setOpen(false);
+    setSelectedAlbum(albumSelectionInit[0].value);
   };
 
   const postModeOption = [
@@ -193,6 +193,9 @@ const CreatePost = ({ open, setOpen }: any) => {
     if (!event.target.files) return;
     const files = Array.from(event.target.files);
     setSelectedFiles((prev) => [...prev, ...files]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Clear input value
+    }
   };
 
   // load album list to Select dropdown
@@ -273,6 +276,7 @@ const CreatePost = ({ open, setOpen }: any) => {
             </div>
             <input
               id='inputFile'
+              ref={fileInputRef}
               type='file'
               accept='image/png, image/jpeg, image/gif, video/mp4'
               multiple

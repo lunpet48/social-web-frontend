@@ -46,6 +46,7 @@ export type post = {
   createdAt: string;
   updatedAt?: string;
   saved: boolean;
+  album: album;
 };
 
 export type comment = {

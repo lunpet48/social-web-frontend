@@ -183,3 +183,29 @@ export const extractComment = (comments: comment[]) => {
 
   return rootComments;
 };
+
+export function formatDate(dateString: string): string {
+  const inputDate = new Date(dateString);
+  const now = new Date();
+
+  const diffInSeconds = Math.floor((now.getTime() - inputDate.getTime()) / 1000);
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  const diffInDays = Math.floor(diffInHours / 24);
+
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds} giây trước`;
+  } else if (diffInMinutes < 60) {
+    return `${diffInMinutes} phút trước`;
+  } else if (diffInHours < 24) {
+    return `${diffInHours} giờ trước`;
+  } else if (diffInDays <= 7) {
+    return `${diffInDays} ngày trước`;
+  } else {
+    const day = inputDate.getDate().toString().padStart(2, '0');
+    const month = (inputDate.getMonth() + 1).toString().padStart(2, '0');
+    const year = inputDate.getFullYear().toString();
+
+    return `${day}/${month}/${year}`;
+  }
+}

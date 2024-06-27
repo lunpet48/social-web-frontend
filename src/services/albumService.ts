@@ -60,3 +60,65 @@ export const createNewAlbum = async (albumName: string) => {
   const data = await response.json();
   return data;
 };
+
+export const addPostToAlbum = async (albumId: string, postId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/album`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id: albumId,
+      posts: [
+        {
+          postId: postId,
+        },
+      ],
+    }),
+  });
+  const data = await response.json();
+  return data;
+};
+
+export const deleteAlbum = async (albumId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/album/${albumId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    },
+  });
+  return response;
+};
+
+export const changeAlbumName = async (albumId: string, albumName: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/album`, {
+    method: 'PUT',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id: albumId,
+      name: albumName,
+    }),
+  });
+  const data = await response.json();
+  return data;
+};
+
+export const removePostFromAlbum = async (postId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/album/post/${postId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    },
+  });
+  return response;
+};
