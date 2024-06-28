@@ -16,6 +16,9 @@ module.exports = {
         '80vh': '80vh',
         '70vh': '70vh',
       },
+      opacity: {
+        '0%': '0%',
+      },
     },
   },
   plugins: [],

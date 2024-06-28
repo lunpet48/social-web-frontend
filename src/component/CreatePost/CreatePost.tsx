@@ -301,11 +301,11 @@ const CreatePost = ({ open, setOpen }: any) => {
                       onClick={() => {
                         setCurrentIndex(index);
                       }}
-                      className='h-full group relative'
+                      className='h-full relative'
                       style={{ aspectRatio: 1 }}
                     >
                       <div
-                        className={`overflow-hidden opacity-60  rounded-lg border-2 border-opacity-0 border-blue-700 w-full h-full ${
+                        className={`overflow-hidden opacity-60 rounded-lg border-2 border-opacity-0 border-blue-700 w-full h-full ${
                           currentIndex === index && 'border-opacity-100 opacity-100'
                         }`}
                       >
@@ -319,7 +319,7 @@ const CreatePost = ({ open, setOpen }: any) => {
                           <video src={URL.createObjectURL(file)} />
                         )}
                       </div>
-                      <div className='absolute top-0 left-0 w-full h-full rounded-lg overflow-hidden opacity-0 group-hover:opacity-100'>
+                      <div className='absolute top-0 left-0 w-full h-full rounded-lg overflow-hidden opacity-0% hover:opacity-100'>
                         <div className='bg-black w-full h-full opacity-50' />
                         <div className='absolute top-1 right-1'>
                           <FontAwesomeIcon
