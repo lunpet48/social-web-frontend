@@ -9,6 +9,7 @@ import EmojiPickerComponent from '@/component/EmojiPicker/EmojiPicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { setMessages, setSelectedChatroom } from '@/store/slices/chatroom';
+import { formatDatetimeForMessage } from '@/utils';
 
 const MessagePage = ({ params }: { params: { id: string } }) => {
   const selectedChatRoom = useSelector((state: RootState) => state.chatrooms.selectedChatroom);
@@ -69,12 +70,18 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
               {message.sender.userId === currentUser.id ? (
                 <div className={`${styles['message']} ${styles['self']} whitespace-pre-line	`}>
                   {message.message}
+                  <div className={styles['time']}>
+                    {formatDatetimeForMessage(message.createdAt)}
+                  </div>
                 </div>
               ) : (
                 <>
                   <img src={message.sender.avatar} alt='avatar' />
                   <div className={`${styles['message']} whitespace-pre-line	`}>
                     {message.message}
+                    <div className={styles['time']}>
+                      {formatDatetimeForMessage(message.createdAt)}
+                    </div>
                   </div>
                 </>
               )}

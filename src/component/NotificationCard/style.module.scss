@@ -23,6 +23,12 @@
     .actor {
       font-weight: 800;
       color: #000;
+      display: flex;
+      gap: 8px;
+
+      .time {
+        color: #999999;
+      }
     }
   }
 }

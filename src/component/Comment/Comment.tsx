@@ -1,5 +1,5 @@
 import { comment } from '@/type/type';
-import { formatCaption } from '@/utils';
+import { formatCaption, formatDate } from '@/utils';
 import { Space } from 'antd';
 import { useState } from 'react';
 
@@ -37,7 +37,7 @@ const CommentComponent = ({
       <div className='flex ml-14'>
         <Space>
           <span className='text-sm font-light text-gray-900 pl-2'>
-            {new Date(comment.createdAt).toLocaleString()}
+            {formatDate(comment.createdAt)}
           </span>
           <a
             onClick={() => {

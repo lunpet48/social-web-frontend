@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { removeSelectedChatroom, setChatrooms, setSelectedChatroom } from '@/store/slices/chatroom';
+import { formatDate } from '@/utils';
 
 const MessageLayout = ({ children }: { children: React.ReactNode }) => {
   //modal new chat
@@ -166,9 +167,14 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
 
                     <div className={styles['user-info']}>
                       <div>{chatroom.name}</div>
-                      <div>
-                        {chatroom.message[0].sender.userId === currentUser.id ? 'Bạn: ' : ''}{' '}
-                        {chatroom.message[0].message}
+                      <div className={styles['preview-message']}>
+                        <div className={styles['message']}>
+                          {chatroom.message[0].sender.userId === currentUser.id ? 'Bạn: ' : ''}{' '}
+                          {chatroom.message[0].message}
+                        </div>
+                        <div className={styles['time']}>
+                          {formatDate(chatroom.message[0].createdAt)}
+                        </div>
                       </div>
                     </div>
                   </div>

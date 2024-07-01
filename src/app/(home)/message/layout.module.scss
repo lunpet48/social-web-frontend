@@ -74,8 +74,8 @@
         }
 
         img {
-          width: 60px;
-          height: 60px;
+          width: 40px;
+          height: 40px;
           object-fit: cover;
           border-radius: 50%;
           background: white;
@@ -83,6 +83,23 @@
 
         .user-info {
           flex: 1;
+          overflow: hidden;
+
+          .preview-message {
+            display: flex;
+            font-size: 12px;
+
+            .message {
+              flex: 1;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            .time {
+              color: #737373;
+            }
+          }
         }
       }
     }

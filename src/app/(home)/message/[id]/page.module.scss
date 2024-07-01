@@ -64,11 +64,21 @@
         padding: 6px 12px;
         border-radius: 16px;
 
+        .time {
+          font-size: 12px;
+          width: fit-content;
+          padding-top: 4px;
+          color: #707579;
+        }
+
         &.self {
-          background-color: #0084ff;
-          word-wrap: break-word;
+          background-color: #e3fee0;
           margin-left: auto;
-          color: #fff;
+          color: #000;
+
+          .time {
+            color: #5ca853;
+          }
         }
       }
     }

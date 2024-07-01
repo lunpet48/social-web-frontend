@@ -6,7 +6,7 @@ import { acceptFriendRequest } from '@/services/friendService';
 import { useState } from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { extractNotifyContent } from '@/utils';
+import { extractNotifyContent, formatDate } from '@/utils';
 
 const NotificationCard = ({ notification }: { notification: notification }) => {
   const [loading, setLoading] = useState(false);
@@ -63,7 +63,10 @@ const NotificationCard = ({ notification }: { notification: notification }) => {
         />
       </div>
       <div className={styles['actor-and-message']}>
-        <div className={styles['actor']}>{notification.actor.username}</div>
+        <div className={styles['actor']}>
+          {notification.actor.username}
+          <div className={styles['time']}>{formatDate(notification.createdAt)}</div>
+        </div>
         <div>{extractNotifyContent(notification).content}</div>
       </div>
       {loading ? (
