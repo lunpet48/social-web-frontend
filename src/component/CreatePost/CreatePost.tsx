@@ -44,6 +44,7 @@ const CreatePost = ({ open, setOpen }: any) => {
   const [albums, setAlbums] = useState(albumSelectionInit);
   const [selectedAlbum, setSelectedAlbum] = useState(albumSelectionInit[0].value);
   const [isOpenNewAlbum, setIsOpenNewAlbum] = useState(false);
+  const [isReelVideo, setIsReelVideo] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -91,7 +92,7 @@ const CreatePost = ({ open, setOpen }: any) => {
         [
           JSON.stringify({
             userId: '',
-            postType: 'POST',
+            postType: isReelVideo ? 'REELS' : 'POST',
             postMode: mode,
             caption: content,
             tagList: tag,
@@ -233,6 +234,14 @@ const CreatePost = ({ open, setOpen }: any) => {
   useEffect(() => {
     loadAlbumSelection();
   }, []);
+
+  useEffect(() => {
+    if (selectedFiles.length === 1 && selectedFiles[0].type.startsWith('video')) {
+      setIsReelVideo(true);
+    } else {
+      setIsReelVideo(false);
+    }
+  }, [selectedFiles]);
 
   return (
     <>

@@ -153,3 +153,39 @@ export const exploreReels = async () => {
   const data = await response.json();
   return data.data;
 };
+
+export const getIsLikedPost = async (postId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/post/${postId}/like`, {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  const data = await response.json();
+  return data.data;
+};
+
+export const likePost = async (postId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/post/${postId}/like`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  const data = await response.json();
+  return data.data;
+};
+
+export const dislikePost = async (postId: string) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/post/${postId}/like`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  const data = await response.json();
+  return data.data;
+};
