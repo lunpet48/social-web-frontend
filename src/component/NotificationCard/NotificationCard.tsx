@@ -78,14 +78,16 @@ const NotificationCard = ({ notification }: { notification: notification }) => {
           {status.text}
         </Button>
       ) : notification.notificationType === notificationType.FRIEND_REQUEST ? (
-        <Button
-          type='primary'
-          onClick={(e) => {
-            handleAcceptFriendRequest(e);
-          }}
-        >
-          Chấp nhận
-        </Button>
+        <>
+          {/* <Button
+            type='primary'
+            onClick={(e) => {
+              handleAcceptFriendRequest(e);
+            }}
+          >
+            Chấp nhận
+          </Button> */}
+        </>
       ) : (
         <></>
       )}

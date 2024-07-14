@@ -343,7 +343,7 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
                   {/* If owner profile then can edit profile else only view & action on this user*/}
                   {user.relationship == RelationshipProfile.SELF ? (
                     <>
-                      <Link href='edit' className={styles['btn-edit-profile']}>
+                      <Link href='/profile/edit' className={styles['btn-edit-profile']}>
                         Chỉnh sửa trang cá nhân
                       </Link>
                       <Dropdown

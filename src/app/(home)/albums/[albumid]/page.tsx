@@ -35,9 +35,9 @@ const AlbumDetail = ({ params: { albumid } }: { params: { albumid: string } }) =
         <FontAwesomeIcon icon={faArrowLeft} onClick={() => router.back()} />
         Album
       </div>
-      <Row gutter={[3, 3]} justify='center'>
+      <Row gutter={[3, 3]} className='m-2'>
         {posts?.map((post, id) => (
-          <Col xs={5} key={id}>
+          <Col xs={6} key={id}>
             <PostProfileComponent
               src={`${post.files[0]}`}
               onClick={() => {

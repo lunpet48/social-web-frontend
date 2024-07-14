@@ -11,7 +11,7 @@ const PostView = () => {
   const [loadingPage, setLoadingPage] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
-  const [paging, setPaging] = useState<paging>({ pageNo: 0, pageSize: 3 });
+  const [paging, setPaging] = useState<paging>({ pageNo: 0, pageSize: 5 });
 
   const { ref, isVisible } = useElementOnScreen();
 

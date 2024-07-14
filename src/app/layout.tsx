@@ -1,7 +1,8 @@
 'use client';
 import { Provider } from 'react-redux';
 import StyledComponentsRegistry from '@/lib/AntdRegistry';
-import { store } from '@/store';
+import { store, persistor } from '@/store';
+import { PersistGate } from 'redux-persist/integration/react';
 import './globals.css';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -9,7 +10,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en'>
       <body>
         <StyledComponentsRegistry>
-          <Provider store={store}>{children}</Provider>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              {children}
+            </PersistGate>
+          </Provider>
         </StyledComponentsRegistry>
       </body>
     </html>

@@ -52,10 +52,13 @@ const MediaSlider = ({
       )}
       {files?.map((file, index) => {
         if (checkMediaType(file) === MediaType.IMAGE) {
-          return <img src={file} style={{ left: `${(index - currentIndex) * 100}%` }} />;
+          return (
+            <img key={index} src={file} style={{ left: `${(index - currentIndex) * 100}%` }} />
+          );
         } else if (checkMediaType(file) === MediaType.VIDEO) {
           return (
             <div
+              key={index}
               className={styles['video']}
               style={{
                 left: `${(index - currentIndex) * 100}%`,
