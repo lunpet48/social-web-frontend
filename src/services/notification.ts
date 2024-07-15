@@ -31,3 +31,13 @@ export const getNotificationByType = async (
   const data = await response.json();
   return data.data;
 };
+
+export const readNotification = async (id: string) => {
+  const access_token = localStorage.getItem('token');
+  await fetch(`${process.env.API}/api/v1/notification/${id}`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+};

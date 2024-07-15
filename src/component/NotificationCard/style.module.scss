@@ -22,12 +22,22 @@
 
     .actor {
       font-weight: 800;
-      color: #000;
+      color: #777;
       display: flex;
       gap: 8px;
 
       .time {
         color: #999999;
+      }
+    }
+
+    &.unread {
+      color: #000;
+      .actor {
+        color: #000;
+      }
+      .time {
+        color: #000;
       }
     }
   }

@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { extractNotifyContent, formatDate } from '@/utils';
+import { readNotification } from '@/services/notification';
 
 const NotificationCard = ({ notification }: { notification: notification }) => {
   const [loading, setLoading] = useState(false);
@@ -54,6 +55,7 @@ const NotificationCard = ({ notification }: { notification: notification }) => {
     <div
       className={styles['content']}
       onClick={() => {
+        readNotification(notification.id);
         location.href = href;
       }}
     >
@@ -62,7 +64,11 @@ const NotificationCard = ({ notification }: { notification: notification }) => {
           src={`${notification?.actor?.avatar ? notification.actor.avatar : '/default-avatar.jpg'}`}
         />
       </div>
-      <div className={styles['actor-and-message']}>
+      <div
+        className={`${styles['actor-and-message']} ${
+          notification.status === 'UNREAD' && styles['unread']
+        }`}
+      >
         <div className={styles['actor']}>
           {notification.actor.username}
           <div className={styles['time']}>{formatDate(notification.createdAt)}</div>

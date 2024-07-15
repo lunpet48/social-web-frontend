@@ -72,6 +72,7 @@ export type notification = {
   idType: string;
   createdAt: string;
   content?: string;
+  status?: string;
 };
 
 export type message = {
