@@ -10,7 +10,7 @@ const NotificationQuotePage = () => {
   const [notifications, setNotifications] = useState<notification[]>([]);
   const { setSelectedTab } = useContext(TabsContext);
 
-  setSelectedTab(tabs[4].name);
+  setSelectedTab(tabs[5].name);
   useEffect(() => {
     fetchNotification();
   }, []);

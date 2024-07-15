@@ -10,7 +10,7 @@ const NotificationCommentPage = () => {
   const [notifications, setNotifications] = useState<notification[]>([]);
   const { setSelectedTab } = useContext(TabsContext);
 
-  setSelectedTab(tabs[2].name);
+  setSelectedTab(tabs[3].name);
   useEffect(() => {
     fetchNotification();
   }, []);

@@ -1,6 +1,6 @@
 'use client';
 import NotificationCard from '@/component/NotificationCard/NotificationCard';
-import { getNotificationByType } from '@/services/notification';
+import { getNotificationByType, getNotificationUnread } from '@/services/notification';
 import { notification } from '@/type/type';
 import { useContext, useEffect, useState } from 'react';
 import tabs from '../tabs';
@@ -10,13 +10,13 @@ const NotificationFriendPage = () => {
   const [notifications, setNotifications] = useState<notification[]>([]);
   const { setSelectedTab } = useContext(TabsContext);
 
-  setSelectedTab(tabs[4].name);
+  setSelectedTab(tabs[1].name);
   useEffect(() => {
     fetchNotification();
   }, []);
 
   const fetchNotification = async () => {
-    const data: notification[] = await getNotificationByType('friend');
+    const data: notification[] = await getNotificationUnread();
     setNotifications(data);
   };
 

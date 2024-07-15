@@ -11,7 +11,7 @@ const NotificationPostPage = () => {
 
   const { setSelectedTab } = useContext(TabsContext);
 
-  setSelectedTab(tabs[1].name);
+  setSelectedTab(tabs[2].name);
 
   useEffect(() => {
     fetchNotification();

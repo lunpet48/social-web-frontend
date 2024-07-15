@@ -16,7 +16,7 @@ export const getNotification = async (pageNo: number = 0, pageSize: number = 10)
 export const getNotificationByType = async (
   type: string,
   pageNo: number = 0,
-  pageSize: number = 10
+  pageSize: number = 100
 ) => {
   const access_token = localStorage.getItem('token');
   const response = await fetch(
@@ -40,4 +40,19 @@ export const readNotification = async (id: string) => {
       Authorization: 'Bearer ' + access_token,
     },
   });
+};
+
+export const getNotificationUnread = async (pageNo: number = 0, pageSize: number = 100) => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(
+    `${process.env.API}/api/v1/unread-notification?pageNo=${pageNo}&pageSize=${pageSize}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + access_token,
+      },
+    }
+  );
+  const data = await response.json();
+  return data.data;
 };

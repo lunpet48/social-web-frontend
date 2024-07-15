@@ -101,6 +101,14 @@
             }
           }
         }
+
+        &.unread {
+          .user-info {
+            div {
+              font-weight: 800;
+            }
+          }
+        }
       }
     }
   }
