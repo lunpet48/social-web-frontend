@@ -50,6 +50,7 @@ import tabs from './tabs';
 import TabsContext from './context';
 import { newChat } from '@/services/chatService';
 import { setSelectedChatroom } from '@/store/slices/chatroom';
+import AddReportModal from '@/component/AddReportModal/AddReportModal';
 
 const formItemLayout = {
   labelCol: {
@@ -101,7 +102,7 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
   const [isOpenModalChangePassword, setIsOpenModalChangePassword] = useState(false);
   const [inputs, setInputs] = useState(initChangePasswordForm);
   const [selectedTab, setSelectedTab] = useState(tabs[0].name);
-
+  const [isOpenReportModal, setIsOpenReportModal] = useState(false);
   const currentUser = useSelector((state: RootState) => state.user.user);
 
   const router = useRouter();
@@ -287,6 +288,20 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
         </a>
       ),
       key: '0',
+    },
+
+    {
+      label: (
+        <a
+          style={{ fontSize: '16px' }}
+          onClick={() => {
+            setIsOpenReportModal(true);
+          }}
+        >
+          Báo cáo người dùng
+        </a>
+      ),
+      key: '1',
     },
   ];
 
@@ -603,6 +618,12 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
         </div>
       </Modal>
       {modal}
+      <AddReportModal
+        open={isOpenReportModal}
+        setOpen={setIsOpenReportModal}
+        targetId={user.id}
+        reportType='USER'
+      />
     </>
   );
 };

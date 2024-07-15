@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { RefObject, useEffect, useRef, useState } from 'react';
 import ActionComponent from './Action';
 import MediaSlider from '../MediaSlider';
+import MoreOption from './MoreOption';
 
 const Post = ({ post }: { post: post }) => {
   const user = post.user;
@@ -84,7 +85,7 @@ const Post = ({ post }: { post: post }) => {
               )}
             </div>
             <div className='right'>
-              {/* <MoreOption userId={post.userId}></MoreOption> */}
+              <MoreOption postId={post.postId}></MoreOption>
               {/* <svg
                         aria-label="More options"
                         className="_8-yf5 "

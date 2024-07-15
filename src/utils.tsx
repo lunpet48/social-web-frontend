@@ -211,7 +211,11 @@ export function formatDate(dateString: string): string {
 }
 
 export const formatDatetimeForMessage = (datetimeString: string) => {
-  const date = new Date(datetimeString);
+  const utcDate = new Date(datetimeString);
+
+  const utcTime = utcDate.getTime();
+  const offset = 7 * 60 * 60 * 1000;
+  const date = new Date(utcTime + offset);
 
   const hours = date.getUTCHours().toString().padStart(2, '0');
   const minutes = date.getUTCMinutes().toString().padStart(2, '0');
