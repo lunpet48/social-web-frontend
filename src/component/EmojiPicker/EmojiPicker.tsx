@@ -39,8 +39,43 @@ const EmojiPickerComponent = ({
     }
 
     if (divRef?.current) {
-      divRef.current.focus();
-      divRef.current.innerText += emojiObject.emoji;
+      const selection = window.getSelection();
+      if (selection) {
+        // Lưu lại vị trí hiện tại của con trỏ
+        const range = selection.getRangeAt(0);
+        const currentPosition = range.startOffset;
+
+        const textNode = divRef.current.childNodes[0] as Text;
+
+        if (!textNode || textNode.nodeType !== Node.ELEMENT_NODE || !textNode.textContent) {
+          // Thêm emojiObject.emoji vào vị trí hiện tại
+          const currentText = divRef.current.textContent || '';
+          const newText =
+            currentText.slice(0, currentPosition) +
+            emojiObject.emoji +
+            currentText.slice(currentPosition);
+          divRef.current.textContent = newText;
+
+          // Đặt lại vị trí con trỏ sau emoji vừa thêm
+          range.setStart(divRef.current.childNodes[0], currentPosition + emojiObject.emoji.length);
+          range.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        } else {
+          // Thêm emoji vào vị trí hiện tại của con trỏ
+          const newText =
+            textNode.textContent.slice(0, currentPosition) +
+            emojiObject.emoji +
+            textNode.textContent.slice(currentPosition);
+          textNode.textContent = newText;
+
+          // Đặt lại vị trí con trỏ vào sau emoji vừa thêm
+          range.setStart(textNode, currentPosition + emojiObject.emoji.length);
+          range.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      }
     }
   };
 
@@ -64,12 +99,13 @@ const EmojiPickerComponent = ({
       />
 
       <FontAwesomeIcon
-        onClick={() => {
+        onMouseDown={(e) => {
+          e.preventDefault();
           inputRef?.current?.focus();
           divRef?.current?.focus();
           setIsEmojiPickerOpen((prev) => !prev);
         }}
-        style={{ width: '22px', height: '22px' }}
+        style={{ width: '22px', height: '22px', cursor: 'pointer' }}
         icon={faFaceSmile}
       />
     </div>

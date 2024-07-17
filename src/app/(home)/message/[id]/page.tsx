@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { setMessages, setSelectedChatroom } from '@/store/slices/chatroom';
 import { formatDatetimeForMessage } from '@/utils';
+import { useRouter } from 'next/navigation';
 
 const MessagePage = ({ params }: { params: { id: string } }) => {
   const selectedChatRoom = useSelector((state: RootState) => state.chatrooms.selectedChatroom);
@@ -20,6 +21,8 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
 
   const dispatch = useDispatch();
 
+  const router = useRouter();
+
   const fetchMessagesOfChatroom = async () => {
     const data: chatroom = await getMessagesOfChatroom(params.id);
     dispatch(setSelectedChatroom(data));
@@ -29,6 +32,18 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
     if (messageRef.current?.innerText) {
       await sendMessage(params.id, messageRef.current?.innerText);
       messageRef.current.innerText = '';
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      if (event.shiftKey) {
+        document.execCommand('insertHTML', false, '<br><br>');
+        event.preventDefault();
+      } else {
+        event.preventDefault();
+        onSendMessage();
+      }
     }
   };
 
@@ -43,7 +58,14 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
   return (
     <div className={styles['content']}>
       <div className={styles['header']}>
-        <div className={styles['left']}>
+        <div
+          className={styles['left']}
+          onClick={() => {
+            if (!Array.isArray(selectedChatRoom?.image)) {
+              router.push(`/profile/${selectedChatRoom.name}`);
+            }
+          }}
+        >
           {Array.isArray(selectedChatRoom?.image) ? (
             <img
               src={`${
@@ -76,7 +98,14 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
                 </div>
               ) : (
                 <>
-                  <img src={message.sender.avatar} alt='avatar' />
+                  <img
+                    src={message.sender.avatar}
+                    alt='avatar'
+                    className='cursor-pointer'
+                    onClick={() => {
+                      router.push(`/profile/${message.sender.username}`);
+                    }}
+                  />
                   <div className={`${styles['message']} whitespace-pre-line	`}>
                     {message.message}
                     <div className={styles['time']}>
@@ -91,7 +120,16 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
       </div>
       <div className={styles['input-chat-section']}>
         <EmojiPickerComponent divRef={messageRef} />
-        <div ref={messageRef} contentEditable='true' placeholder='Nhắn tin'></div>
+        <div className={styles['input-chat-wrapper']}>
+          <div
+            ref={messageRef}
+            contentEditable='true'
+            onKeyDown={handleKeyDown}
+            placeholder='Nhắn tin'
+          />
+          <div className={styles['padding-scroll']} />
+        </div>
+
         <div className={styles['btn-send-message']} onClick={onSendMessage}>
           Gửi
         </div>

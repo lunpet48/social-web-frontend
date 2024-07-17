@@ -23,6 +23,8 @@ module.exports = {
         'gray-f5': '#f5f5f5',
         'gray-f2': '#f2f2f2',
         'gray-e6': '#e6e6e6',
+        'gray-text': '#65676b',
+        'blue-a': '#1677ff',
       },
       zIndex: {
         100: '100',

@@ -54,6 +54,7 @@ import AddReportModal from '@/component/AddReportModal/AddReportModal';
 import { logout } from '@/store/slices/authUser';
 import { removeAll } from '@/store/slices/search';
 import { ExclamationCircleFilled } from '@ant-design/icons';
+import UserNotFound from './UserNotFound';
 
 const formItemLayout = {
   labelCol: {
@@ -374,6 +375,10 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
 
   if (loadingPage) {
     return <Loading height='100vh' />;
+  }
+
+  if (!user || !user.id) {
+    return <UserNotFound />;
   }
 
   return (

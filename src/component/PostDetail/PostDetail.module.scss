@@ -1,0 +1,18 @@
+.input-chat-wrapper {
+  width: 100%;
+  display: flex;
+
+  div[contentEditable='true'] {
+    flex: 1;
+    outline: 0px solid transparent;
+    word-wrap: break-word;
+    max-height: 100px;
+    overflow-y: auto;
+    cursor: text;
+
+    &[placeholder]:empty:before {
+      content: attr(placeholder);
+      color: #555;
+    }
+  }
+}

@@ -36,6 +36,9 @@ export const formatCaption = (caption: string) => {
 };
 
 export const extractChatroomNameAndAvatar = (chatroom: chatroom): chatroom => {
+  if (!chatroom) {
+    return chatroom;
+  }
   const currentUser = store.getState().user.user;
 
   // if is self chat, just get itself name and img

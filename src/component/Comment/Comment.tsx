@@ -22,7 +22,7 @@ const CommentComponent = ({
             <img alt='avatar' className='_6q-tv' draggable='false' src={comment.user.avatar} />
           </a>
         </div>
-        <div className='user-name-and-place mt-2 flex justify-stretch'>
+        <div className='user-name-and-place mt-2 flex flex-wrap justify-stretch'>
           <a
             className='user-name-and-place no-underline text-gray-900 hover:text-gray-400 mr-1'
             href={`/profile/${comment.user.username}`}
