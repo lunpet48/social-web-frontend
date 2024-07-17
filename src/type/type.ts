@@ -90,7 +90,7 @@ export type chatroom = {
   message: message[];
   image?: string | string[];
   name?: string;
-  read?: boolean;
+  isRead?: boolean;
 };
 
 export type toastNotify = {

@@ -173,3 +173,15 @@ export const searchFriend = async (keyword: string) => {
   const data = await response.json();
   return data.data;
 };
+export const getOnline = async () => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/relationship/online`, {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await response.json();
+  return data.data;
+};

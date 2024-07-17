@@ -5,7 +5,7 @@ import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { Button, Input, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { createContext, useEffect, useState } from 'react';
-import { chatroom, user } from '@/type/type';
+import { chatroom, shortUser, user } from '@/type/type';
 import { searchUser } from '@/services/searchService';
 import { getChats, newChat, searchChatroom } from '@/services/chatService';
 import { useRouter } from 'next/navigation';
@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { removeSelectedChatroom, setChatrooms, setSelectedChatroom } from '@/store/slices/chatroom';
 import { formatChatTimestamp, formatDate } from '@/utils';
+import { getOnline } from '@/services/friendService';
 
 const MessageLayout = ({ children }: { children: React.ReactNode }) => {
   //modal new chat
@@ -23,6 +24,7 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
   const [selectedUsers, setSelectedUsers] = useState<user[]>([]);
   const [filteredResults, setFilteredResults] = useState<user[]>([]);
   const [listChatroomSearchResult, setListChatroomSearchResult] = useState<chatroom[]>([]);
+  const [onlineIds, setOnlineIds] = useState<string[]>([]);
 
   const router = useRouter();
 
@@ -32,6 +34,12 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
   const chatrooms = useSelector((state: RootState) => state.chatrooms.chatrooms);
   const selectedChatRoom = useSelector((state: RootState) => state.chatrooms.selectedChatroom);
 
+  const fetchOnlineList = async () => {
+    const onlineUsers: shortUser[] = await getOnline();
+    const result: string[] = onlineUsers.map((u) => u.username);
+    setOnlineIds(result);
+  };
+
   const fetchChatRoom = async () => {
     const result = await getChats();
     dispatch(setChatrooms(result));
@@ -39,6 +47,7 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
 
   // fetch all chat room to redux store
   useEffect(() => {
+    fetchOnlineList();
     fetchChatRoom();
     dispatch(removeSelectedChatroom());
 
@@ -147,23 +156,27 @@ const MessageLayout = ({ children }: { children: React.ReactNode }) => {
                   <div
                     key={chatroom.roomId}
                     className={`${styles['chatroom']} ${
+                      onlineIds.includes(chatroom.name || 'notfound') && styles['online']
+                    } ${!chatroom.isRead && styles['unread']} ${
                       selectedChatRoom?.roomId === chatroom.roomId && styles['active']
                     }`}
                     onClick={() => {
                       router.push(`/message/${chatroom.roomId}`);
                     }}
                   >
-                    {Array.isArray(chatroom.image) ? (
-                      <img
-                        src={`${chatroom.image[0] ? chatroom.image[0] : '/default-avatar.jpg'}`}
-                        alt='avatar'
-                      />
-                    ) : (
-                      <img
-                        src={`${chatroom.image ? chatroom.image : '/default-avatar.jpg'}`}
-                        alt='avatar'
-                      />
-                    )}
+                    <div className={styles['avatar-wrapper']}>
+                      {Array.isArray(chatroom.image) ? (
+                        <img
+                          src={`${chatroom.image[0] ? chatroom.image[0] : '/default-avatar.jpg'}`}
+                          alt='avatar'
+                        />
+                      ) : (
+                        <img
+                          src={`${chatroom.image ? chatroom.image : '/default-avatar.jpg'}`}
+                          alt='avatar'
+                        />
+                      )}
+                    </div>
 
                     <div className={styles['user-info']}>
                       <div>{chatroom.name}</div>

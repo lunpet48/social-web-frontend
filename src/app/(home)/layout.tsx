@@ -14,9 +14,11 @@ import { Stomp } from '@stomp/stompjs';
 import { chatroom, message, notification, toastNotify } from '@/type/type';
 import { pushChatroom, pushMessage } from '@/store/slices/chatroom';
 import { RootState, store } from '@/store';
-import { getOneChat } from '@/services/chatService';
+import { getChats, getOneChat } from '@/services/chatService';
 import ToastNotification from '@/component/ToastNotification';
 import { extractNotifyContent } from '@/utils';
+import { setCountUnreadMessage, setCountUnreadNotify } from '@/store/slices/app';
+import { getNotificationUnread } from '@/services/notification';
 
 export default function UserPageLayout({
   children,
@@ -33,6 +35,23 @@ export default function UserPageLayout({
 
   const chatrooms = useSelector((state: RootState) => state.chatrooms.chatrooms);
   const dispatch = useDispatch();
+
+  const countUnreadMessage = async () => {
+    const data: chatroom[] = await getChats();
+    let count = 0;
+    data.forEach((room) => {
+      if (!room.isRead) {
+        count++;
+      }
+    });
+    dispatch(setCountUnreadMessage(count));
+  };
+
+  const countUnreadNotify = async () => {
+    const data: notification[] = await getNotificationUnread();
+
+    dispatch(setCountUnreadNotify(data.length));
+  };
 
   /* Chỗ này phải gọi api get-user chứ không phải renew-token. 
     Nếu access-token expired mới gọi renew-token*/
@@ -67,6 +86,7 @@ export default function UserPageLayout({
               content: extractNotifyContent(notification).content || '',
             });
             setIsShowNotification(true);
+            countUnreadNotify();
           });
 
           client.subscribe('/user/chat', async (received) => {
@@ -94,6 +114,8 @@ export default function UserPageLayout({
               });
               setIsShowNotification(true);
             }
+
+            countUnreadMessage();
           });
         });
       }

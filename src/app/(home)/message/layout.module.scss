@@ -73,12 +73,14 @@
           background-color: #ccc;
         }
 
-        img {
-          width: 40px;
-          height: 40px;
-          object-fit: cover;
-          border-radius: 50%;
-          background: white;
+        .avatar-wrapper {
+          img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+            background: white;
+          }
         }
 
         .user-info {
@@ -106,6 +108,24 @@
           .user-info {
             div {
               font-weight: 800;
+            }
+          }
+        }
+
+        &.online {
+          .avatar-wrapper {
+            position: relative;
+            &::after {
+              content: '';
+              display: block;
+              height: 12px;
+              width: 12px;
+              background-color: #31a24c;
+              position: absolute;
+              bottom: 0;
+              right: 0;
+              border-radius: 50%;
+              border: 2px solid #fff;
             }
           }
         }

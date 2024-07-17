@@ -3,17 +3,27 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from './page.module.scss';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useRef, useState } from 'react';
-import { getMessagesOfChatroom, sendMessage } from '@/services/chatService';
-import { chatroom } from '@/type/type';
+import {
+  getChats,
+  getMessagesOfChatroom,
+  markReadMessage,
+  sendMessage,
+} from '@/services/chatService';
+import { chatroom, user } from '@/type/type';
 import EmojiPickerComponent from '@/component/EmojiPicker/EmojiPicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
-import { setMessages, setSelectedChatroom } from '@/store/slices/chatroom';
+import { markReadChatRoom, setMessages, setSelectedChatroom } from '@/store/slices/chatroom';
 import { formatDatetimeForMessage } from '@/utils';
 import { useRouter } from 'next/navigation';
+import { RelationshipProfile } from '@/type/enum';
+import { fetchUserProfile } from '@/services/profileService';
+import { setCountUnreadMessage } from '@/store/slices/app';
 
 const MessagePage = ({ params }: { params: { id: string } }) => {
   const selectedChatRoom = useSelector((state: RootState) => state.chatrooms.selectedChatroom);
+
+  const [blockStatus, setBlockStatus] = useState<RelationshipProfile>();
 
   const messageRef = useRef<HTMLDivElement>(null);
 
@@ -23,8 +33,29 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
 
   const router = useRouter();
 
+  const countUnreadMessage = async () => {
+    const data: chatroom[] = await getChats();
+    let count = 0;
+    data.forEach((room) => {
+      if (!room.isRead) {
+        count++;
+      }
+    });
+    dispatch(setCountUnreadMessage(count));
+  };
+  const fetchUserStatus = async (userId: string) => {
+    const user: user = await fetchUserProfile(userId);
+    setBlockStatus(user.relationship);
+  };
+
   const fetchMessagesOfChatroom = async () => {
+    await markReadMessage(params.id);
+    dispatch(markReadChatRoom(params.id));
+    countUnreadMessage();
     const data: chatroom = await getMessagesOfChatroom(params.id);
+    if (data.users.length === 2 && data.name) {
+      fetchUserStatus(data.name);
+    }
     dispatch(setSelectedChatroom(data));
   };
 
@@ -82,7 +113,7 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
           <div>{selectedChatRoom?.name}</div>
         </div>
         <div className={styles['right']}>
-          <FontAwesomeIcon icon={faCircleInfo} size='2x' />
+          {/* <FontAwesomeIcon icon={faCircleInfo} size='2x' /> */}
         </div>
       </div>
       <div className={styles['list-message']}>
@@ -118,22 +149,26 @@ const MessagePage = ({ params }: { params: { id: string } }) => {
           );
         })}
       </div>
-      <div className={styles['input-chat-section']}>
-        <EmojiPickerComponent divRef={messageRef} />
-        <div className={styles['input-chat-wrapper']}>
-          <div
-            ref={messageRef}
-            contentEditable='true'
-            onKeyDown={handleKeyDown}
-            placeholder='Nhắn tin'
-          />
-          <div className={styles['padding-scroll']} />
-        </div>
+      {blockStatus === null ? (
+        <div className='py-3 text-center text-md'>Hiện không thể liên lạc với tài khoản này</div>
+      ) : (
+        <div className={styles['input-chat-section']}>
+          <EmojiPickerComponent divRef={messageRef} />
+          <div className={styles['input-chat-wrapper']}>
+            <div
+              ref={messageRef}
+              contentEditable='true'
+              onKeyDown={handleKeyDown}
+              placeholder='Nhắn tin'
+            />
+            <div className={styles['padding-scroll']} />
+          </div>
 
-        <div className={styles['btn-send-message']} onClick={onSendMessage}>
-          Gửi
+          <div className={styles['btn-send-message']} onClick={onSendMessage}>
+            Gửi
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

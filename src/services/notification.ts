@@ -56,3 +56,14 @@ export const getNotificationUnread = async (pageNo: number = 0, pageSize: number
   const data = await response.json();
   return data.data;
 };
+
+export const markAllRead = async () => {
+  const access_token = localStorage.getItem('token');
+  const response = await fetch(`${process.env.API}/api/v1/notification/mark-all-read`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  return response;
+};

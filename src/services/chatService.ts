@@ -103,3 +103,15 @@ export const searchChatroom = async (keyword: string) => {
   });
   return data.data;
 };
+
+export const markReadMessage = async (roomId: string) => {
+  const access_token = localStorage.getItem('token');
+
+  const response = await fetch(`${process.env.API}/api/v1/chat/${roomId}`, {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + access_token,
+    },
+  });
+  return response;
+};

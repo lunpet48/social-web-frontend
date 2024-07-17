@@ -17,6 +17,7 @@ export enum RelationshipProfile {
   INCOMMINGREQUEST = 'INCOMMINGREQUEST',
   FRIEND = 'FRIEND',
   BLOCK = 'BLOCK',
+  BLOCKED = 'BLOCKED',
 }
 
 export enum notificationType {

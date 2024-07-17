@@ -42,6 +42,15 @@ export const chatroomSlice = createSlice({
       }
     },
 
+    markReadChatRoom: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      const prev = state.chatrooms;
+      const updatedArray = prev.map((chatroom) =>
+        chatroom.roomId === id ? { ...chatroom, isRead: true } : chatroom
+      );
+      state.chatrooms = updatedArray;
+    },
+
     setMessages: (state, action: PayloadAction<{ roomId: string; messages: message[] }>) => {
       const { roomId, messages } = action.payload;
 
@@ -83,6 +92,7 @@ export const {
   setMessages,
   setSelectedChatroom,
   removeSelectedChatroom,
+  markReadChatRoom,
 } = chatroomSlice.actions;
 
 export default chatroomSlice.reducer;

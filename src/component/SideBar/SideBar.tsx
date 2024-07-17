@@ -1,4 +1,4 @@
-import { Menu, MenuProps, Space } from 'antd';
+import { Badge, Menu, MenuProps, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -17,7 +17,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import CreatePost from '../CreatePost';
 import { RootState } from '@/store';
-import { setMenuSelected } from '@/store/slices/app';
+import { setCountUnreadMessage, setCountUnreadNotify, setMenuSelected } from '@/store/slices/app';
+import { getNotificationUnread } from '@/services/notification';
+import { chatroom, notification } from '@/type/type';
+import { getChats } from '@/services/chatService';
 
 const SideBar = ({ className }: { className?: string }) => {
   const [showCreatePost, setShowCreatePost] = useState(false);
@@ -26,7 +29,26 @@ const SideBar = ({ className }: { className?: string }) => {
   const dispatch = useDispatch();
 
   const currentUser = useSelector((state: RootState) => state.user.user);
+  const notifyBadge = useSelector((state: RootState) => state.app.countUnreadNotify);
+  const messageBadge = useSelector((state: RootState) => state.app.countUnreadMessage);
   const { currentKey, previousKey } = useSelector((state: RootState) => state.app.menuSelected);
+
+  const countUnreadMessage = async () => {
+    const data: chatroom[] = await getChats();
+    let count = 0;
+    data.forEach((room) => {
+      if (!room.isRead) {
+        count++;
+      }
+    });
+    dispatch(setCountUnreadMessage(count));
+  };
+
+  const countUnreadNotify = async () => {
+    const data: notification[] = await getNotificationUnread();
+
+    dispatch(setCountUnreadNotify(data.length));
+  };
 
   const labelContents = [
     'Trang chủ',
@@ -47,52 +69,72 @@ const SideBar = ({ className }: { className?: string }) => {
     BellOutlined,
     PlusOutlined,
     UserOutlined,
-  ].map((icon, index) => ({
-    key: String(index),
-    icon: React.createElement(icon, {
-      style: { fontSize: '25px', marginRight: '8px' },
-    }),
-    label: (
-      <span className='noselect' style={{ fontSize: '16px' }}>
-        {labelContents[index]}
-      </span>
-    ),
-    style: { margin: '0px 0px 15px 4px', padding: '0px 0px 0px 18px' },
-    onClick: () => {
-      dispatch(setMenuSelected(index));
-      switch (index) {
-        case 0:
-          router.push('/');
-          break;
-        case 1:
-          router.push('/search');
-          break;
-        case 2:
-          router.push('/reels');
-          break;
-        case 3:
-          router.push('/relationship');
-          break;
-        case 4:
-          router.push('/message');
-          break;
-        case 5:
-          router.push('/notification');
-          break;
-        case 6:
-          setShowCreatePost(true);
-          break;
-        case 7:
-          router.push('/profile/' + currentUser.username);
-      }
-    },
-  }));
+  ].map((Icon, index) => {
+    let MenuIcon = <Icon style={{ fontSize: '25px', marginRight: '8px' }} />;
+    if (index === 4) {
+      MenuIcon = (
+        <Badge count={messageBadge} size='small'>
+          <Icon style={{ fontSize: '25px', marginRight: '8px' }} />
+        </Badge>
+      );
+    } else if (index === 5) {
+      MenuIcon = (
+        <Badge count={notifyBadge} size='small'>
+          <Icon style={{ fontSize: '25px', marginRight: '8px' }} />
+        </Badge>
+      );
+    }
+
+    return {
+      key: String(index),
+      icon: MenuIcon,
+      label: (
+        <span className='noselect' style={{ fontSize: '16px' }}>
+          {labelContents[index]}
+        </span>
+      ),
+      style: { margin: '0px 0px 15px 4px', padding: '0px 0px 0px 18px' },
+      onClick: () => {
+        dispatch(setMenuSelected(index));
+        switch (index) {
+          case 0:
+            router.push('/');
+            break;
+          case 1:
+            router.push('/search');
+            break;
+          case 2:
+            router.push('/reels');
+            break;
+          case 3:
+            router.push('/relationship');
+            break;
+          case 4:
+            router.push('/message');
+            break;
+          case 5:
+            router.push('/notification');
+            break;
+          case 6:
+            setShowCreatePost(true);
+            break;
+          case 7:
+            router.push('/profile/' + currentUser.username);
+        }
+      },
+    };
+  });
 
   useEffect(() => {
     if (currentKey !== previousKey && showCreatePost === false) {
       dispatch(setMenuSelected(previousKey));
     }
   }, [showCreatePost]);
+
+  useEffect(() => {
+    countUnreadNotify();
+    countUnreadMessage();
+  }, []);
 
   return (
     <Sider
