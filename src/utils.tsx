@@ -226,3 +226,32 @@ export const formatDatetimeForMessage = (datetimeString: string) => {
 
   return `${hours}:${minutes} ${day}/${month}/${year}`;
 };
+
+export function formatChatTimestamp(datetimeString: string): string {
+  const date = new Date(datetimeString);
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const oneDay = 24 * 60 * 60 * 1000;
+  const oneWeek = 7 * oneDay;
+  const daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+
+  const localDate = new Date(date.getTime());
+  const localNow = new Date(now.getTime());
+
+  if (diff < oneDay && localDate.getDate() === localNow.getDate()) {
+    return localDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  } else if (
+    diff < oneWeek &&
+    localDate.getTime() >= localNow.getTime() - localNow.getDay() * oneDay
+  ) {
+    return daysOfWeek[localDate.getDay()];
+  } else if (localDate.getFullYear() === localNow.getFullYear()) {
+    return localDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+  } else {
+    return localDate.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  }
+}

@@ -78,7 +78,7 @@ const SuggestFriend = () => {
             <div className='suggestion-users' style={{ paddingBottom: '30px' }}>
               <div className='title flex w-full justify-between text-sm'>
                 <div className='left'>
-                  <h1 className='font-bold'>Lời mời kết bạn</h1>
+                  <h1 className='font-bold text-4xl'>Lời mời kết bạn</h1>
                 </div>
               </div>
 
@@ -90,7 +90,7 @@ const SuggestFriend = () => {
           <div className='suggestion-users'>
             <div className='title flex w-full justify-between text-sm'>
               <div className='left'>
-                <h1 className='font-bold'>Gợi ý kết bạn</h1>
+                <h1 className='font-bold text-4xl'>Gợi ý kết bạn</h1>
               </div>
               {/* <div className="right">
                 <span>Xem tất cả</span>

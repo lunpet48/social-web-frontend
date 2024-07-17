@@ -130,6 +130,22 @@ const UserCard = ({ user }: { user: user }) => {
     }
   };
 
+  const blockUser = async (targetId: string) => {
+    const access_token = localStorage.getItem('token');
+    const response = await fetch(`${process.env.API}/api/v1/relationship/blocklist`, {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + access_token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        targetId: targetId,
+      }),
+    });
+    setStatus({ isSuccess: true, text: 'Đã chặn' });
+    return response;
+  };
+
   const itemsDropdown: MenuProps['items'] = [
     {
       label: (
@@ -156,6 +172,32 @@ const UserCard = ({ user }: { user: user }) => {
         </a>
       ),
       key: '0',
+    },
+    {
+      label: (
+        <a
+          style={{ fontSize: '16px' }}
+          onClick={() => {
+            confirm({
+              title: 'Bạn có chắc muốn chặn người dùng này?',
+              icon: <ExclamationCircleFilled />,
+              content: '',
+              okText: 'Có',
+              okType: 'danger',
+              cancelText: 'Không',
+              onOk() {
+                blockUser(user.id);
+              },
+              onCancel() {
+                console.log('Cancel');
+              },
+            });
+          }}
+        >
+          Chặn
+        </a>
+      ),
+      key: '1',
     },
   ];
 

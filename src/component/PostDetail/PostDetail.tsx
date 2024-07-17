@@ -294,7 +294,8 @@ const PostDetail = ({ postId }: { postId: string }) => {
                 {currentUser.id === post?.user.userId ? (
                   <MoreOptionSelf post={post} />
                 ) : (
-                  <MoreOption post={post} />
+                  // <MoreOption post={post} />
+                  <></>
                 )}
               </div>
             </div>

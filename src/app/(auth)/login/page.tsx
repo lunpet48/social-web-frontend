@@ -11,6 +11,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { login } from '@/store/slices/authUser';
 import styles from './page.module.scss';
+import { removeAll } from '@/store/slices/search';
 
 export default function Login() {
   const [inputs, setInputs] = useState({ username: '', password: '' });
@@ -62,6 +63,7 @@ export default function Login() {
         setLoading(false);
         dispatch(login({ user: data.user, accessToken: data.accessToken }));
         notify('success', 'Đăng nhập thành công');
+        dispatch(removeAll());
         setTimeout(() => {
           router.push('/');
         }, 1000);

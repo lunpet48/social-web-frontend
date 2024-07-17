@@ -30,8 +30,10 @@ const MediaSlider = ({
     if (sliderRef.current) {
       const width = await calculateSliderWidth(fixedWidth, fixedHeight, files);
       const height = await calculateSliderHeight(fixedWidth, fixedHeight, files);
-      sliderRef.current.style.width = width;
-      sliderRef.current.style.height = height;
+      if (sliderRef.current.style) {
+        sliderRef.current.style.width = width;
+        sliderRef.current.style.height = height;
+      }
     }
   };
 

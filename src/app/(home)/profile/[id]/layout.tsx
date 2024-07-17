@@ -51,6 +51,9 @@ import TabsContext from './context';
 import { newChat } from '@/services/chatService';
 import { setSelectedChatroom } from '@/store/slices/chatroom';
 import AddReportModal from '@/component/AddReportModal/AddReportModal';
+import { logout } from '@/store/slices/authUser';
+import { removeAll } from '@/store/slices/search';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 
 const formItemLayout = {
   labelCol: {
@@ -104,11 +107,13 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
   const [selectedTab, setSelectedTab] = useState(tabs[0].name);
   const [isOpenReportModal, setIsOpenReportModal] = useState(false);
   const currentUser = useSelector((state: RootState) => state.user.user);
+  const [isBlockNotifyModalOpen, setIsBlockNotifyModalOpen] = useState(false);
 
   const router = useRouter();
   const dispatch = useDispatch();
 
   const [form] = Form.useForm();
+  const { confirm } = Modal;
 
   const handleChangeInputChangePasswordForm = (event: any) => {
     const name = event.target.name;
@@ -203,6 +208,22 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
       setLoading(false);
     }
   };
+  const confirmDeleteFriend = async (setLoading: React.Dispatch<React.SetStateAction<boolean>>) => {
+    confirm({
+      title: 'Bạn có chắc muốn xóa?',
+      icon: <ExclamationCircleFilled />,
+      content: '',
+      okText: 'Có',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        handleDeleteFriend(setLoading);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
 
   const handleSendFriendRequest = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
@@ -253,7 +274,34 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
   };
 
   const handleLogout = () => {
+    dispatch(logout());
+    dispatch(removeAll());
     router.push('/login');
+  };
+
+  const handleBlockUser = async (userId: string) => {
+    const res = await blockUser(userId);
+    if (res.status >= 200 && res.status < 300) {
+      setIsBlockNotifyModalOpen(true);
+    } else {
+    }
+  };
+
+  const confirmBlockUser = async (userId: string) => {
+    confirm({
+      title: 'Bạn có chắc muốn chặn người dùng này?',
+      icon: <ExclamationCircleFilled />,
+      content: '',
+      okText: 'Có',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        handleBlockUser(userId);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   };
 
   const itemsDropdown: MenuProps['items'] = [
@@ -281,7 +329,7 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
         <a
           style={{ fontSize: '16px' }}
           onClick={() => {
-            blockUser(user.id);
+            confirmBlockUser(user.id);
           }}
         >
           Chặn
@@ -290,19 +338,19 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
       key: '0',
     },
 
-    {
-      label: (
-        <a
-          style={{ fontSize: '16px' }}
-          onClick={() => {
-            setIsOpenReportModal(true);
-          }}
-        >
-          Báo cáo người dùng
-        </a>
-      ),
-      key: '1',
-    },
+    // {
+    //   label: (
+    //     <a
+    //       style={{ fontSize: '16px' }}
+    //       onClick={() => {
+    //         setIsOpenReportModal(true);
+    //       }}
+    //     >
+    //       Báo cáo người dùng
+    //     </a>
+    //   ),
+    //   key: '1',
+    // },
   ];
 
   const handleChangePassword = async () => {
@@ -318,6 +366,10 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const handleOkBlockNotifyModal = () => {
+    router.push('/relationship');
   };
 
   if (loadingPage) {
@@ -398,7 +450,7 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
                     </>
                   ) : user.relationship == RelationshipProfile.FRIEND ? (
                     <>
-                      <ButtonWrapper onClick={handleDeleteFriend} primary danger>
+                      <ButtonWrapper onClick={confirmDeleteFriend} primary danger>
                         Xóa
                       </ButtonWrapper>
                       <ButtonWrapper onClick={goToMessage} style={{ background: '#d8dadf' }}>
@@ -624,6 +676,27 @@ const ProfileLayout = ({ params, children, modal }: IProfileLayout) => {
         targetId={user.id}
         reportType='USER'
       />
+      {/* Modal notify blocked */}
+      <Modal
+        title={<div style={{ fontSize: '20px' }}>Bạn đã chặn {user.username}</div>}
+        open={isBlockNotifyModalOpen}
+        onOk={handleOkBlockNotifyModal}
+        onCancel={handleOkBlockNotifyModal}
+        footer={[
+          <Button key='submit' type='primary' onClick={handleOkBlockNotifyModal}>
+            Oke
+          </Button>,
+        ]}
+      >
+        <div style={{ fontSize: '18px' }}>
+          {user.username} sẽ không thể:
+          <ul style={{ marginLeft: '20px', fontSize: '16px' }}>
+            <li style={{ listStyleType: 'disc' }}>Xem trang cá nhân của bạn</li>
+            <li style={{ listStyleType: 'disc' }}>Xem bài viết của bạn</li>
+            <li style={{ listStyleType: 'disc' }}>Nhắn tin cho bạn</li>
+          </ul>
+        </div>
+      </Modal>
     </>
   );
 };
